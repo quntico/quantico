@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;500;600&family=Michroma&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Deep black #020409 */
+    --background: 223 64% 2%; 
+    /* Cold white #F4F6FA */
+    --foreground: 220 33% 96%; 
+    /* Borders rgba(255,255,255,0.12) */
+    --border: 0 0% 100%; 
+    --input: 0 0% 100%;
+    --ring: 82 100% 50%;
+    
+    /* Dark translucent card bg rgba(10,15,24,0.6) */
+    --card: 219 41% 7%; 
+    --card-foreground: 220 33% 96%;
+    
+    --popover: 219 41% 7%;
+    --popover-foreground: 220 33% 96%;
+    
+    /* Green #8CFF00 */
+    --primary: 82 100% 50%; 
+    --primary-foreground: 223 64% 2%;
+    
+    /* Muted #B8BDC7 */
+    --secondary: 220 12% 75%; 
+    --secondary-foreground: 223 64% 2%;
+    
+    /* Text gray #8A8F98 */
+    --muted: 220 6% 57%; 
+    --muted-foreground: 220 6% 57%;
+    
+    --accent: 82 100% 50%; /* Using the green as accent */
+    --accent-foreground: 223 64% 2%;
+    
+    --destructive: 356 100% 56%; 
+    --destructive-foreground: 220 33% 96%;
+    
+    --radius: 0.25rem;
+  }
+  
+  .dark {
+    --background: 223 64% 2%;
+    --foreground: 220 33% 96%;
+    --card: 219 41% 7%;
+    --card-foreground: 220 33% 96%;
+    --popover: 219 41% 7%;
+    --popover-foreground: 220 33% 96%;
+    --primary: 82 100% 50%;
+    --primary-foreground: 223 64% 2%;
+    --secondary: 220 12% 75%;
+    --secondary-foreground: 223 64% 2%;
+    --muted: 220 6% 57%;
+    --muted-foreground: 220 6% 57%;
+    --accent: 82 100% 50%;
+    --accent-foreground: 223 64% 2%;
+    --destructive: 356 100% 56%;
+    --destructive-foreground: 220 33% 96%;
+    --border: 0 0% 100%;
+    --input: 0 0% 100%;
+    --ring: 82 100% 50%;
+  }
+  
+  * {
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    background-color: #020409;
+  }
+  
+  body {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    background-color: #020409;
+    color: hsl(var(--foreground));
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6, .font-title {
+    font-family: 'Rajdhani', sans-serif;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  .font-logo {
+    font-family: 'Michroma', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+}
+
+@layer components {
+  .glass-card {
+    background: rgba(10, 15, 24, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .glass-card:hover {
+    background: rgba(15, 20, 30, 0.7);
+    border-color: rgba(140, 255, 0, 0.3); /* Accent glow border */
+    box-shadow: 0 8px 32px rgba(140, 255, 0, 0.05), inset 0 0 0 1px rgba(140, 255, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px rgba(140, 255, 0, 0.4);
+  }
+  
+  .hero-background {
+    background-color: #020409;
+    position: relative;
+    overflow: hidden;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

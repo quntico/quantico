@@ -1,0 +1,40 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+web-deps/
+
+# Build outputs
+dist/
+build/
+.turbo/
+out/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local.php
+
+# Editor / System files
+.DS_Store
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary / Cache folders
+tmp/
+.tempmediaStorage/
+app.tar.gz
