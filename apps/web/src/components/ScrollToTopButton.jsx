@@ -34,7 +34,7 @@ const ScrollToTopButton = () => {
           exit={{ opacity: 0, scale: 0.5, y: 20 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 flex items-center justify-center w-12 h-12 rounded-full bg-[#020409]/80 border border-white/10 hover:border-[#8CFF00] text-white hover:text-[#8CFF00] transition-colors duration-300 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.8)] focus:outline-none group"
+          className="fixed bottom-8 right-[52px] z-50 flex items-center justify-center w-12 h-12 rounded-full bg-[#020409]/80 border border-white/10 hover:border-[#8CFF00] text-white hover:text-[#8CFF00] transition-colors duration-300 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.8)] focus:outline-none group"
           aria-label="Subir a la portada"
         >
           {/* Subtle neon glow ring on hover */}
