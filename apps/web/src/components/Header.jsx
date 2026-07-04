@@ -132,6 +132,13 @@ function Header() {
     { name: 'Casos de uso', path: '/casos-de-uso' }
   ];
 
+  const handleLogoClick = (e) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <header
@@ -148,6 +155,7 @@ function Header() {
             <div className="flex items-center h-6 md:h-8 relative z-10 select-none">
               <Link 
                 to="/" 
+                onClick={handleLogoClick}
                 className="absolute left-0 top-1/2 flex items-center group whitespace-nowrap"
                 style={{ transform: 'translateY(calc(-50% + 20px))' }}
               >
