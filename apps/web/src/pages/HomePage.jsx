@@ -260,6 +260,9 @@ function HomePage() {
   const [isLogoDragging, setIsLogoDragging] = useState(false);
   const [dbUrl, setDbUrl] = useState(localStorage.getItem('quantico_supabase_url') || 'https://btkkrvztbeljpacdlpzc.supabase.co');
   const [dbKey, setDbKey] = useState(localStorage.getItem('quantico_supabase_anon_key') || '');
+  const [deployHookUrl, setDeployHookUrl] = useState(localStorage.getItem('quantico_deploy_hook_url') || '');
+  const [isDeploying, setIsDeploying] = useState(false);
+  const [deployStatus, setDeployStatus] = useState('');
   const logoFileInputRef = useRef(null);
   
   const createdBlobUrlsRef = useRef([]);
@@ -608,6 +611,7 @@ function HomePage() {
     }
     
     localStorage.setItem('quantico_config', JSON.stringify(finalFormConfig));
+    localStorage.setItem('quantico_deploy_hook_url', deployHookUrl);
     
     // Save to Supabase remote config
     try {
@@ -619,6 +623,31 @@ function HomePage() {
     setConfig(finalFormConfig);
     setShowEditModal(false);
     window.location.reload();
+  };
+
+  const handleTriggerDeploy = async () => {
+    if (!deployHookUrl) {
+      alert('Por favor, ingresa tu URL de Deploy Hook de Vercel en la sección de configuración de abajo.');
+      return;
+    }
+    
+    setIsDeploying(true);
+    setDeployStatus('Iniciando despliegue...');
+    try {
+      const res = await fetch(deployHookUrl, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        setDeployStatus('🟢 ¡Despliegue iniciado con éxito en Vercel! Tardará unos 2 minutos en completarse.');
+      } else {
+        setDeployStatus('🔴 Error al iniciar el despliegue. Verifica la URL de Deploy Hook.');
+      }
+    } catch (err) {
+      console.error('Error triggering deploy hook:', err);
+      setDeployStatus('🔴 Error de red al iniciar el despliegue.');
+    } finally {
+      setIsDeploying(false);
+    }
   };
 
   const handleReset = async () => {
@@ -1374,6 +1403,46 @@ function HomePage() {
                 <p className="text-[10px] text-[#8A8F98] leading-relaxed">
                   Para sincronizar los cambios de marca (logos, textos e imágenes) entre tu local y la web en producción, copia aquí las credenciales de tu proyecto de Supabase.
                 </p>
+              </div>
+
+              {/* Vercel Production Deployment Settings */}
+              <div className="border border-white/10 bg-white/[0.02] p-4 rounded-lg space-y-4">
+                <span className="block text-[10px] uppercase tracking-widest text-white font-bold">Despliegue de Producción (Vercel)</span>
+                
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-[#8A8F98] mb-1.5 font-bold">Vercel Deploy Hook URL</label>
+                    <input 
+                      type="text" 
+                      value={deployHookUrl}
+                      onChange={(e) => setDeployHookUrl(e.target.value)}
+                      placeholder="https://api.vercel.com/v1/deployments/hooks/xxxx"
+                      className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleTriggerDeploy}
+                    disabled={isDeploying}
+                    className="w-full py-3 bg-[#8CFF00] text-[#020409] font-title font-bold text-xs tracking-widest hover:bg-white disabled:bg-[#8CFF00]/40 transition-all uppercase rounded flex items-center justify-center gap-2"
+                  >
+                    {isDeploying ? 'Compilando en Vercel...' : '🚀 Lanzar Deploy a Producción (Vercel)'}
+                  </button>
+
+                  {deployStatus && (
+                    <p className="text-[10px] font-semibold text-center mt-2 leading-relaxed">
+                      {deployStatus}
+                    </p>
+                  )}
+                </div>
+                
+                <div className="text-[9px] text-[#8A8F98] leading-relaxed space-y-1">
+                  <p className="font-bold">¿Cómo obtener tu Deploy Hook URL?</p>
+                  <p>1. Ve al Dashboard de Vercel y abre el proyecto <code className="text-white">quantico-web</code>.</p>
+                  <p>2. Ve a la pestaña <span className="text-white">Settings</span> &gt; <span className="text-white">Git</span>.</p>
+                  <p>3. Desplázate hacia abajo hasta <span className="text-white">Deploy Hooks</span>, crea uno con el nombre <code className="text-white">main</code> y copia la URL generada aquí.</p>
+                </div>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/10">
