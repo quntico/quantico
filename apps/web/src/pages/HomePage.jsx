@@ -438,6 +438,7 @@ function HomePage() {
   const [hoveredPlatformModule, setHoveredPlatformModule] = useState(null);
   const [isDronesModalOpen, setIsDronesModalOpen] = useState(false);
   const [isRobotsModalOpen, setIsRobotsModalOpen] = useState(false);
+  const [isSensoresIotModalOpen, setIsSensoresIotModalOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [formConfig, setFormConfig] = useState(defaultConfig);
@@ -1470,6 +1471,8 @@ function HomePage() {
                         setIsDronesModalOpen(true);
                       } else if (mod.id === 'robots') {
                         setIsRobotsModalOpen(true);
+                      } else if (mod.id === 'sensores_iot') {
+                        setIsSensoresIotModalOpen(true);
                       }
                     }}
                     onMouseEnter={() => setHoveredPlatformModule(i)}
@@ -1530,6 +1533,8 @@ function HomePage() {
                           setIsDronesModalOpen(true);
                         } else if (mod.id === 'robots') {
                           setIsRobotsModalOpen(true);
+                        } else if (mod.id === 'sensores_iot') {
+                          setIsSensoresIotModalOpen(true);
                         }
                       }}
                       className={`flex items-center gap-3 px-3 py-3.5 rounded-lg border text-left transition-all duration-300 ${
@@ -2330,6 +2335,7 @@ function HomePage() {
       )}
       <DronesModal isOpen={isDronesModalOpen} onClose={() => setIsDronesModalOpen(false)} />
       <RobotsModal isOpen={isRobotsModalOpen} onClose={() => setIsRobotsModalOpen(false)} />
+      <SensoresIotModal isOpen={isSensoresIotModalOpen} onClose={() => setIsSensoresIotModalOpen(false)} />
     </>
   );
 }
@@ -2618,6 +2624,182 @@ const RobotsModal = ({ isOpen, onClose }) => {
               { title: 'Mayor precisión', desc: 'Menos variabilidad y mayor calidad en cada ciclo.', icon: CheckCircle2 },
               { title: 'Más productividad', desc: 'Operación continua y mejor rendimiento de la línea.', icon: Zap },
               { title: 'Menor riesgo operativo', desc: 'Menos exposición humana en tareas repetitivas.', icon: Shield }
+            ].map((ben, idx) => {
+              const BenIcon = ben.icon;
+              return (
+                <div key={idx} className="flex items-start gap-2">
+                  <div className="text-[#78FF00] mt-0.5 flex-shrink-0">
+                    <BenIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[11px] font-semibold text-white mb-0.5">{ben.title}</span>
+                    <span className="text-[10px] text-[#8A8F98] leading-relaxed font-light">{ben.desc}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// SensoresIotModal Dialog Component
+const SensoresIotModal = ({ isOpen, onClose }) => {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  // Custom SVGs for perfect fidelity
+  const LeafCloudIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-3.64-6.5-9-11.5-5.36 5-9 8.71-9 11.5A3.5 3.5 0 0 0 6.5 19H17.5z" />
+      <path d="M12 10a3 3 0 0 1 3 3c0 2-3 5-3 5s-3-3-3-5a3 3 0 0 1 3-3z" />
+    </svg>
+  );
+
+  const CloudEdgeIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25" />
+      <path d="M12 13v9M9 16l3-3 3 3" />
+    </svg>
+  );
+
+  const MapPathIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="6" r="2.5" />
+      <circle cx="18" cy="18" r="2.5" />
+      <path d="M6 8.5c0 3.5 3.5 6 6 6s6 2.5 6 6" strokeDasharray="2 2" />
+    </svg>
+  );
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
+      <div className="absolute inset-0" onClick={onClose}></div>
+      
+      <div className="relative w-full max-w-4xl bg-[#020409] border border-[#78FF00]/30 rounded-xl p-5 md:p-6 shadow-[0_0_50px_rgba(120,255,0,0.15)] z-10 overflow-hidden max-h-[96vh]">
+        {/* HUD corners */}
+        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#78FF00]"></div>
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#78FF00]"></div>
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#78FF00]"></div>
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#78FF00]"></div>
+
+        <div className="absolute inset-x-0 h-[1.5px] bg-[#78FF00]/10 hud-scan-line pointer-events-none"></div>
+
+        <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] bg-[#78FF00]/10 text-[#78FF00] px-2 py-0.5 rounded font-mono font-bold tracking-widest uppercase">SENSORES IOT</span>
+            <span className="text-[8px] text-[#8A8F98] font-mono tracking-widest uppercase">SYS_ACTIVE</span>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button className="text-[#8A8F98] hover:text-white transition-colors" title="Minimizar">
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </button>
+            <button className="text-[#8A8F98] hover:text-white transition-colors" title="Maximizar">
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" /></svg>
+            </button>
+            <button 
+              onClick={onClose}
+              className="text-[#8A8F98] hover:text-[#78FF00] hover:scale-110 transition-all font-mono font-bold text-sm px-1"
+              title="Cerrar (Esc)"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          <div className="md:col-span-7 flex flex-col gap-4">
+            <div>
+              <h3 className="text-2xl font-title text-white tracking-wider uppercase font-bold">SENSORES IOT</h3>
+              <p className="text-[#78FF00] text-xs font-mono tracking-wide mt-0.5">Monitoreo inteligente en tiempo real</p>
+              <p className="text-[#B8BDC7] text-xs md:text-sm leading-relaxed font-light mt-3">
+                Redes de sensores inteligentes para capturar variables críticas de operación, seguridad y desempeño en tiempo real. 
+                QUANTICO integra dispositivos IoT, analítica, conectividad y visualización centralizada para detectar eventos, 
+                generar alertas y optimizar decisiones en toda la operación.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {[
+                { label: 'Monitoreo ambiental', icon: LeafCloudIcon },
+                { label: 'Lectura en tiempo real', icon: Activity },
+                { label: 'Alertas inteligentes', icon: BellRing },
+                { label: 'Integración cloud / edge', icon: CloudEdgeIcon },
+                { label: 'Trazabilidad operativa', icon: MapPathIcon },
+                { label: 'Analítica con IA', icon: Brain }
+              ].map((feat, idx) => {
+                const Icon = feat.icon;
+                return (
+                  <div key={idx} className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/5">
+                    <div className="text-[#78FF00]">
+                      <Icon className="w-3.5 h-3.5" strokeWidth={1.5} />
+                    </div>
+                    <span className="text-[11px] text-[#B8BDC7] font-semibold">{feat.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="md:col-span-5 flex flex-col items-center justify-center relative">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(120,255,0,0.1)_0%,_transparent_60%)] pointer-events-none"></div>
+            
+            <img 
+              src="/iot_sensors_render_1783200486004.png" 
+              alt="IoT Sensors and Monitoring Nodes"
+              className="relative z-10 w-full max-w-[210px] md:max-w-[250px] drop-shadow-[0_0_25px_rgba(120,255,0,0.3)] animate-[float_4s_ease-in-out_infinite]"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-white/5 bg-[#020409]/60">
+          {[
+            { label: 'LIVE DATA', val: 'ACTIVO', color: 'text-[#78FF00]', ping: true, icon: BarChart3 },
+            { label: 'EDGE LINK', val: 'ESTABLE', color: 'text-[#78FF00]', ping: false, icon: Network },
+            { label: 'SECURE NODE', val: 'ENCRIPTADO', color: 'text-[#78FF00]', ping: false, icon: Lock },
+            { label: '24/7', val: 'OPERATIVO', color: 'text-[#78FF00]', ping: false, icon: Zap }
+          ].map((tel, idx) => {
+            const TelIcon = tel.icon;
+            return (
+              <div key={idx} className="flex flex-col items-center p-2 rounded-lg bg-[#050A12]/40 border border-white/5">
+                <div className="flex items-center gap-1 text-[#8A8F98]">
+                  <TelIcon className="w-3 h-3" />
+                  <span className="text-[8px] font-mono tracking-wider">{tel.label}</span>
+                </div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  {tel.ping && <span className="w-1.5 h-1.5 rounded-full bg-[#78FF00] animate-ping"></span>}
+                  <span className={`text-[11px] font-bold font-mono ${tel.color}`}>{tel.val}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 p-3 rounded-lg bg-[#050A12]/30 border border-white/5">
+          <span className="text-[9px] text-[#78FF00] font-mono tracking-widest uppercase block mb-2 font-bold">BENEFICIOS CLAVE</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { title: 'Mayor visibilidad', desc: 'Datos continuos para entender la operación en tiempo real.', icon: Eye },
+              { title: 'Respuesta más rápida', desc: 'Alertas inmediatas ante variaciones o eventos críticos.', icon: Zap },
+              { title: 'Mejor control operativo', desc: 'Más precisión en decisiones y menor riesgo operativo.', icon: CheckCircle2 }
             ].map((ben, idx) => {
               const BenIcon = ben.icon;
               return (
