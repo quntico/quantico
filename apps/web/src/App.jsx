@@ -3,6 +3,7 @@ import React from 'react';
 import { Route, Routes, BrowserRouter as Router } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop.jsx';
 import CustomCursor from './components/CustomCursor.jsx';
+import ScrollToTopButton from './components/ScrollToTopButton.jsx';
 import HomePage from './pages/HomePage.jsx';
 import NosotrosPage from './pages/NosotrosPage.jsx';
 import PlataformaPage from './pages/PlataformaPage.jsx';
@@ -35,6 +36,7 @@ function App() {
         {/* Placeholder catch-all for undefined routes from nav links */}
         <Route path="*" element={<HomePage />} />
       </Routes>
+      <ScrollToTopButton />
       <Toaster theme="dark" position="bottom-right" />
     </Router>
   );
