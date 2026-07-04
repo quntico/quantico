@@ -1213,12 +1213,12 @@ function HomePage() {
         {/* SECTION 4: PLATAFORMA */}
         <section id="plataforma" className="py-32">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-20">
+            <div className="text-center mb-28 md:mb-36">
               <h2 className="font-title text-3xl md:text-5xl text-white mb-6">UNA PLATAFORMA PARA CONECTAR TODA TU OPERACIÓN.</h2>
             </div>
             
             {/* Technical Hub Diagram */}
-            <div className="relative max-w-4xl mx-auto h-[500px] md:h-[600px] flex items-center justify-center">
+            <div className="relative max-w-4xl mx-auto h-[500px] md:h-[600px] flex items-center justify-center mt-12 md:mt-16">
               <div className="absolute inset-0 border border-white/5 rounded-full animate-[spin_60s_linear_infinite]"></div>
               <div className="absolute inset-16 border border-dashed border-white/10 rounded-full animate-[spin_40s_linear_infinite_reverse]"></div>
               
