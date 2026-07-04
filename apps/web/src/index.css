@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;500;600&family=Michroma&family=Rajdhani:wght@400;500;600;700&display=swap');
 
 @font-face {
-  font-family: 'Ethnocentric';
-  src: url('/fonts/ethnocentric.woff2') format('woff2'),
-       url('/fonts/ethnocentric.woff') format('woff'),
-       url('/fonts/ethnocentric.ttf') format('truetype');
+  font-family: 'Neuropol';
+  src: url('/fonts/neuropol.woff2') format('woff2'),
+       url('/fonts/neuropol.woff') format('woff'),
+       url('/fonts/neuropol.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -102,7 +102,7 @@
   }
 
   .font-logo {
-    font-family: 'Ethnocentric', 'Michroma', sans-serif;
+    font-family: 'Neuropol', 'Michroma', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.15em;
   }
