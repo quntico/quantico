@@ -436,6 +436,7 @@ function HomePage() {
   const [config, setConfig] = useState(defaultConfig);
   const [activePlatformModule, setActivePlatformModule] = useState(0);
   const [hoveredPlatformModule, setHoveredPlatformModule] = useState(null);
+  const [isDronesModalOpen, setIsDronesModalOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [formConfig, setFormConfig] = useState(defaultConfig);
@@ -1462,7 +1463,12 @@ function HomePage() {
                 return (
                   <button 
                     key={mod.id}
-                    onClick={() => setActivePlatformModule(i)}
+                    onClick={() => {
+                      setActivePlatformModule(i);
+                      if (mod.id === 'drones') {
+                        setIsDronesModalOpen(true);
+                      }
+                    }}
                     onMouseEnter={() => setHoveredPlatformModule(i)}
                     onMouseLeave={() => setHoveredPlatformModule(null)}
                     style={{
@@ -1515,7 +1521,12 @@ function HomePage() {
                   return (
                     <button
                       key={mod.id}
-                      onClick={() => setActivePlatformModule(i)}
+                      onClick={() => {
+                        setActivePlatformModule(i);
+                        if (mod.id === 'drones') {
+                          setIsDronesModalOpen(true);
+                        }
+                      }}
                       className={`flex items-center gap-3 px-3 py-3.5 rounded-lg border text-left transition-all duration-300 ${
                         isActive 
                           ? 'bg-[#78FF00]/10 border-[#78FF00] shadow-[0_0_15px_rgba(120,255,0,0.15)] text-white' 
@@ -2312,8 +2323,155 @@ function HomePage() {
           </div>
         </div>
       )}
+      <DronesModal isOpen={isDronesModalOpen} onClose={() => setIsDronesModalOpen(false)} />
     </>
   );
 }
+
+// DronesModal Dialog Component
+const DronesModal = ({ isOpen, onClose }) => {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
+      <div className="absolute inset-0" onClick={onClose}></div>
+      
+      <div className="relative w-full max-w-4xl bg-[#020409] border border-[#78FF00]/30 rounded-xl p-6 md:p-8 shadow-[0_0_50px_rgba(120,255,0,0.15)] z-10 overflow-hidden max-h-[95vh] overflow-y-auto">
+        {/* HUD corners */}
+        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#78FF00]"></div>
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#78FF00]"></div>
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#78FF00]"></div>
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#78FF00]"></div>
+
+        <div className="absolute inset-x-0 h-[1.5px] bg-[#78FF00]/10 hud-scan-line pointer-events-none"></div>
+
+        <div className="flex justify-between items-center mb-6 pb-3 border-b border-white/5">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] bg-[#78FF00]/10 text-[#78FF00] px-2 py-0.5 rounded font-mono font-bold tracking-widest uppercase">DRONES</span>
+            <span className="text-[8px] text-[#8A8F98] font-mono tracking-widest uppercase">SYS_ACTIVE</span>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button className="text-[#8A8F98] hover:text-white transition-colors" title="Minimizar">
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </button>
+            <button className="text-[#8A8F98] hover:text-white transition-colors" title="Maximizar">
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" /></svg>
+            </button>
+            <button 
+              onClick={onClose}
+              className="text-[#8A8F98] hover:text-[#78FF00] hover:scale-110 transition-all font-mono font-bold text-sm px-1"
+              title="Cerrar (Esc)"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          <div className="md:col-span-7 flex flex-col gap-6">
+            <div>
+              <h3 className="text-3xl font-title text-white tracking-wider uppercase font-bold">DRONES</h3>
+              <p className="text-[#78FF00] text-sm font-mono tracking-wide mt-1">Vigilancia aérea autónoma</p>
+              <p className="text-[#B8BDC7] text-sm leading-relaxed font-light mt-4">
+                Supervisión aérea inteligente para seguridad, inspección y respuesta operativa en tiempo real. 
+                QUANTICO integra drones autónomos con analítica, visión computacional y control centralizado para 
+                ampliar la visibilidad de toda la operación.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                { label: 'Monitoreo perimetral', icon: Shield },
+                { label: 'Inspección de activos', icon: FileText },
+                { label: 'Alertas en tiempo real', icon: BellRing },
+                { label: 'Rutas autónomas', icon: Network },
+                { label: 'Analítica con IA', icon: Brain },
+                { label: 'Integración con Q-IOS', icon: Zap }
+              ].map((feat, idx) => {
+                const Icon = feat.icon;
+                return (
+                  <div key={idx} className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white/5 border border-white/5">
+                    <div className="text-[#78FF00]">
+                      <Icon className="w-4 h-4" strokeWidth={1.5} />
+                    </div>
+                    <span className="text-xs text-[#B8BDC7] font-semibold">{feat.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="md:col-span-5 flex flex-col items-center justify-center relative">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(120,255,0,0.1)_0%,_transparent_60%)] pointer-events-none"></div>
+            
+            <img 
+              src="/futuristic_drone_render_1783199651385.png" 
+              alt="Futuristic Drone"
+              className="relative z-10 w-full max-w-[280px] md:max-w-full drop-shadow-[0_0_35px_rgba(120,255,0,0.35)] animate-[float_4s_ease-in-out_infinite]"
+            />
+
+            <style dangerouslySetInnerHTML={{__html: `
+              @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                50% { transform: translateY(-10px) rotate(1deg); }
+              }
+            `}} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-white/5 bg-[#020409]/60">
+          {[
+            { label: 'LIVE FEED', val: 'ACTIVO', color: 'text-[#78FF00]', ping: true },
+            { label: 'AI TRACKING', val: 'EN CURSO', color: 'text-[#78FF00]', ping: false },
+            { label: 'SECURE LINK', val: 'ENCRIPTADO', color: 'text-[#78FF00]', ping: false },
+            { label: '24/7', val: 'OPERATIVO', color: 'text-[#78FF00]', ping: false }
+          ].map((tel, idx) => (
+            <div key={idx} className="flex flex-col items-center p-3 rounded-lg bg-[#050A12]/40 border border-white/5">
+              <span className="text-[9px] text-[#8A8F98] font-mono tracking-wider">{tel.label}</span>
+              <div className="flex items-center gap-1.5 mt-1">
+                {tel.ping && <span className="w-1.5 h-1.5 rounded-full bg-[#78FF00] animate-ping"></span>}
+                <span className={`text-xs font-bold font-mono ${tel.color}`}>{tel.val}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 p-4 rounded-lg bg-[#050A12]/30 border border-white/5">
+          <span className="text-[10px] text-[#78FF00] font-mono tracking-widest uppercase block mb-3 font-bold">BENEFICIOS CLAVE</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { title: 'Mayor cobertura', desc: 'Supervisión aérea constante en más áreas y terrenos.' },
+              { title: 'Respuesta más rápida', desc: 'Detección y alerta inmediata ante cualquier evento.' },
+              { title: 'Menor riesgo operativo', desc: 'Menos exposición humana y decisiones más seguras.' }
+            ].map((ben, idx) => (
+              <div key={idx} className="flex flex-col">
+                <span className="text-xs font-semibold text-white mb-1">{ben.title}</span>
+                <span className="text-[11px] text-[#8A8F98] leading-relaxed font-light">{ben.desc}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
 
 export default HomePage;
