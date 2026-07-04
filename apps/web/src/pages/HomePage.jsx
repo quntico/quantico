@@ -260,7 +260,7 @@ function HomePage() {
   const [isLogoDragging, setIsLogoDragging] = useState(false);
   const [dbUrl, setDbUrl] = useState(localStorage.getItem('quantico_supabase_url') || 'https://btkkrvztbeljpacdlpzc.supabase.co');
   const [dbKey, setDbKey] = useState(localStorage.getItem('quantico_supabase_anon_key') || '');
-  const [deployHookUrl, setDeployHookUrl] = useState(localStorage.getItem('quantico_deploy_hook_url') || '');
+  const [deployHookUrl, setDeployHookUrl] = useState(localStorage.getItem('quantico_deploy_hook_url') || 'https://api.vercel.com/v1/integrations/deploy/prj_roMjQyyJaSjvi1AxdFLTBgFxqErx/IseedN5TIw');
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployStatus, setDeployStatus] = useState('');
   const logoFileInputRef = useRef(null);
