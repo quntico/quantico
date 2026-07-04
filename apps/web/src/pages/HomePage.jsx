@@ -1453,7 +1453,7 @@ function HomePage() {
                   {/* Tech grid inside core */}
                   <div className="absolute inset-0 rounded-full opacity-15 bg-[radial-gradient(#78FF00_1px,transparent_1px)] [background-size:8px_8px] z-0"></div>
                   
-                  <span className="relative z-10 font-title text-2xl md:text-3xl text-white tracking-[0.1em] font-extrabold">Q - IOS</span>
+                  <span className="relative z-10 font-title text-2xl md:text-3xl text-white tracking-[0.1em] font-extrabold">QUANTICO</span>
                 </div>
               </div>
 
@@ -1531,7 +1531,7 @@ function HomePage() {
                 }`}
               >
                 <div className="absolute inset-0.5 rounded-full bg-[#020409] z-0"></div>
-                <span className="relative z-10 font-title text-xl text-white tracking-[0.1em] font-extrabold">Q - IOS</span>
+                <span className="relative z-10 font-title text-xl text-white tracking-[0.1em] font-extrabold">QUANTICO</span>
               </div>
 
               {/* Grid cards */}
