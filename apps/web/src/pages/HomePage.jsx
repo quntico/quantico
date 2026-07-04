@@ -596,23 +596,16 @@ function HomePage() {
         console.error('Failed uploading background media to Supabase:', err);
       }
 
+      try {
+        await saveLocalMedia('hero_bg_media', pendingFile);
+      } catch (err) {
+        console.error('Failed to save media in IndexedDB:', err);
+      }
+
       if (uploadedUrl) {
         finalFormConfig.heroBgUrl = uploadedUrl;
       } else {
-        // Fallback to IndexedDB
-        try {
-          await saveLocalMedia('hero_bg_media', pendingFile);
-          finalFormConfig.heroBgUrl = 'local::hero_bg_media';
-        } catch (err) {
-          console.error('Failed to save media in IndexedDB, attempting Base64 fallback...', err);
-          try {
-            const base64 = await fileToBase64(pendingFile);
-            finalFormConfig.heroBgUrl = base64;
-          } catch (base64Err) {
-            alert('Error al guardar el archivo.');
-            return;
-          }
-        }
+        finalFormConfig.heroBgUrl = 'local::hero_bg_media';
       }
     }
 
@@ -626,23 +619,16 @@ function HomePage() {
         console.error('Failed uploading logo to Supabase:', err);
       }
 
+      try {
+        await saveLocalMedia('logo_image', pendingLogoFile);
+      } catch (err) {
+        console.error('Failed to save logo in IndexedDB:', err);
+      }
+
       if (uploadedUrl) {
         finalFormConfig.logoImage = uploadedUrl;
       } else {
-        // Fallback to IndexedDB
-        try {
-          await saveLocalMedia('logo_image', pendingLogoFile);
-          finalFormConfig.logoImage = 'local::logo_image';
-        } catch (err) {
-          console.error('Failed to save logo in IndexedDB, attempting Base64 fallback...', err);
-          try {
-            const base64 = await fileToBase64(pendingLogoFile);
-            finalFormConfig.logoImage = base64;
-          } catch (base64Err) {
-            alert('Error al guardar la imagen del logo.');
-            return;
-          }
-        }
+        finalFormConfig.logoImage = 'local::logo_image';
       }
     }
     
