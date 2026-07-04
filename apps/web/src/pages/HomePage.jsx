@@ -236,11 +236,24 @@ function HomePage() {
     logoHeight: 48,
     heroBgType: 'image',
     heroBgUrl: 'https://horizons-cdn.hostinger.com/2cbd254a-61a6-4b67-bef5-67f8a8438c87/625a92490414445dff1b57fec9bc568b.png',
+    heroBgOpacity: 25,
     heroTitle: 'QUANTICO',
     heroSubtitle: 'Inteligencia · Seguridad · Automatización · Resiliencia',
     heroDesc1: 'Plataforma tecnológica para operaciones críticas, seguridad física, ciberseguridad, automatización, inteligencia artificial y sistemas industriales complejos.',
     heroDesc2: 'Integramos software, hardware, sensores, cámaras, control de acceso, robots, drones, analítica avanzada y centros de control para proteger, automatizar y optimizar empresas e infraestructura crítica.',
-    heroFooterText: 'SOFTWARE + HARDWARE + IA + SISTEMAS DE SEGURIDAD + INTEGRACIÓN OT/IT'
+    heroFooterText: 'SOFTWARE + HARDWARE + IA + SISTEMAS DE SEGURIDAD + INTEGRACIÓN OT/IT',
+    nosotrosTitle: 'NOSOTROS',
+    nosotrosSubtitle: 'INGENIERÍA, INTELIGENCIA Y SEGURIDAD PARA OPERACIONES CRÍTICAS.',
+    nosotrosDesc: 'QUANTICO desarrolla e integra tecnología física y digital para empresas que requieren visibilidad, protección, automatización y resiliencia. Unimos software, hardware, IA y sistemas de seguridad para crear soluciones completas, escalables y operativas.',
+    nosotrosDescAlign: 'center'
+  };
+
+  const handleInlineEdit = (key, value) => {
+    const updated = { ...config, [key]: value };
+    setConfig(updated);
+    setFormConfig(updated);
+    localStorage.setItem('quantico_config', JSON.stringify(updated));
+    saveRemoteConfig(updated).catch(err => console.error('Failed to sync inline edit:', err));
   };
 
   const [config, setConfig] = useState(defaultConfig);
@@ -729,12 +742,14 @@ function HomePage() {
                 loop 
                 muted 
                 playsInline 
-                className="w-full h-full object-cover opacity-25"
+                className="w-full h-full object-cover"
+                style={{ opacity: (config.heroBgOpacity ?? 25) / 100 }}
               />
             ) : (
               <img 
                 src={resolvedBgUrl} 
-                className="w-full h-full object-cover opacity-25"
+                className="w-full h-full object-cover"
+                style={{ opacity: (config.heroBgOpacity ?? 25) / 100 }}
                 alt="Hero Background"
               />
             )}
@@ -742,14 +757,40 @@ function HomePage() {
 
           {/* Admin Floating Edit Button */}
           {isAdmin && (
-            <div className="absolute top-28 right-8 z-30">
+            <div className="absolute top-28 right-8 z-30 flex flex-col md:flex-row items-stretch md:items-center gap-3 bg-[#020409]/90 border border-white/10 p-3 rounded-lg backdrop-blur-md">
               <button
                 onClick={() => setShowEditModal(true)}
-                className="bg-[#8CFF00] text-[#020409] font-title font-bold text-xs tracking-widest px-4 py-2 hover:bg-white transition-all shadow-[0_0_15px_rgba(140,255,0,0.3)] uppercase flex items-center gap-1.5 rounded"
+                className="bg-[#8CFF00] text-[#020409] font-title font-bold text-xs tracking-widest px-4 py-2 hover:bg-white transition-all shadow-[0_0_15px_rgba(140,255,0,0.15)] uppercase flex items-center justify-center gap-1.5 rounded"
               >
                 <Settings className="w-3.5 h-3.5" />
-                Editar Portada
+                Configuración
               </button>
+              
+              <button
+                onClick={() => {
+                  if (fileInputRef.current) fileInputRef.current.click();
+                }}
+                className="bg-transparent border border-white/20 text-white font-title font-bold text-xs tracking-widest px-4 py-2 hover:border-[#8CFF00] hover:text-[#8CFF00] transition-all uppercase flex items-center justify-center gap-1.5 rounded"
+              >
+                <Video className="w-3.5 h-3.5" />
+                Subir Video/Imagen
+              </button>
+
+              <div className="flex items-center gap-3 border-l border-white/10 pl-3 min-w-[150px]">
+                <span className="text-[10px] text-white/60 uppercase font-bold tracking-wider">Fondo:</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
+                  value={config.heroBgOpacity ?? 25}
+                  onChange={(e) => handleInlineEdit('heroBgOpacity', Number(e.target.value))}
+                  className="accent-[#8CFF00] bg-white/10 h-1 rounded-lg appearance-none cursor-pointer w-24"
+                />
+                <span className="text-xs font-logo text-[#8CFF00] w-8 text-right">
+                  {config.heroBgOpacity ?? 25}%
+                </span>
+              </div>
             </div>
           )}
 
@@ -806,8 +847,11 @@ function HomePage() {
 
             {config.heroDesc1 && (
               <motion.p 
+                contentEditable={isAdmin}
+                suppressContentEditableWarning={true}
+                onBlur={(e) => handleInlineEdit('heroDesc1', e.currentTarget.innerText)}
                 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.4 }}
-                className="text-lg md:text-2xl text-[#F4F6FA] mb-6 leading-relaxed font-medium text-balance max-w-4xl mx-auto"
+                className={`text-lg md:text-2xl text-[#F4F6FA] mb-6 leading-relaxed font-medium text-balance max-w-4xl mx-auto transition-all outline-none ${isAdmin ? 'hover:bg-white/5 focus:bg-white/5 px-2 py-1 rounded cursor-text border border-dashed border-[#8CFF00]/30' : ''}`}
               >
                 {config.heroDesc1}
               </motion.p>
@@ -815,8 +859,11 @@ function HomePage() {
 
             {config.heroDesc2 && (
               <motion.p 
+                contentEditable={isAdmin}
+                suppressContentEditableWarning={true}
+                onBlur={(e) => handleInlineEdit('heroDesc2', e.currentTarget.innerText)}
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.5 }}
-                className="text-sm md:text-base text-[#B8BDC7] mb-10 leading-relaxed max-w-3xl mx-auto"
+                className={`text-sm md:text-base text-[#B8BDC7] mb-10 leading-relaxed max-w-3xl mx-auto transition-all outline-none ${isAdmin ? 'hover:bg-white/5 focus:bg-white/5 px-2 py-1 rounded cursor-text border border-dashed border-[#8CFF00]/30' : ''}`}
               >
                 {config.heroDesc2}
               </motion.p>
@@ -826,8 +873,11 @@ function HomePage() {
             
             {config.heroFooterText && (
               <motion.p 
+                contentEditable={isAdmin}
+                suppressContentEditableWarning={true}
+                onBlur={(e) => handleInlineEdit('heroFooterText', e.currentTarget.innerText)}
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.8 }}
-                className="font-title text-xs text-[#8A8F98] mt-16 tracking-widest uppercase"
+                className={`font-title text-xs text-[#8A8F98] mt-16 tracking-widest uppercase transition-all outline-none ${isAdmin ? 'hover:bg-white/5 focus:bg-white/5 px-2 py-1 rounded cursor-text border border-dashed border-[#8CFF00]/30' : ''}`}
               >
                 {config.heroFooterText}
               </motion.p>
@@ -858,11 +908,70 @@ function HomePage() {
         <section id="nosotros" className="py-32 border-y border-white/5 bg-[#050A12]/30 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#8CFF00]/5 blur-[120px] rounded-full pointer-events-none"></div>
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            <h2 className="font-title text-3xl md:text-5xl text-white mb-10 leading-tight">
-              INGENIERÍA, INTELIGENCIA Y SEGURIDAD <br className="hidden md:block"/>PARA OPERACIONES CRÍTICAS.
+            
+            {/* Title */}
+            <h3 
+              contentEditable={isAdmin}
+              suppressContentEditableWarning={true}
+              onBlur={(e) => handleInlineEdit('nosotrosTitle', e.currentTarget.innerText)}
+              className={`font-logo text-4xl md:text-6xl text-white mb-6 tracking-[0.15em] glow-text transition-all outline-none ${isAdmin ? 'hover:bg-white/5 focus:bg-white/5 px-2 py-1 rounded cursor-text border border-dashed border-[#8CFF00]/30' : ''}`}
+            >
+              {config.nosotrosTitle || 'NOSOTROS'}
+            </h3>
+
+            {/* Subtitle */}
+            <h2 
+              contentEditable={isAdmin}
+              suppressContentEditableWarning={true}
+              onBlur={(e) => handleInlineEdit('nosotrosSubtitle', e.currentTarget.innerText)}
+              className={`font-title text-2xl md:text-4xl text-white mb-10 leading-tight transition-all outline-none ${isAdmin ? 'hover:bg-white/5 focus:bg-white/5 px-2 py-1 rounded cursor-text border border-dashed border-[#8CFF00]/30' : ''}`}
+            >
+              {config.nosotrosSubtitle || 'INGENIERÍA, INTELIGENCIA Y SEGURIDAD PARA OPERACIONES CRÍTICAS.'}
             </h2>
-            <p className="text-xl md:text-2xl text-[#B8BDC7] leading-relaxed max-w-4xl mx-auto font-light">
-              QUANTICO desarrolla e integra tecnología física y digital para empresas que requieren visibilidad, protección, automatización y resiliencia. Unimos software, hardware, IA y sistemas de seguridad para crear soluciones completas, escalables y operativas.
+
+            {/* Paragraph Alignment Toolbar */}
+            {isAdmin && (
+              <div className="flex justify-center gap-2 mb-4 bg-[#020409]/80 border border-white/10 p-1.5 rounded-lg w-fit mx-auto select-none">
+                <button
+                  type="button"
+                  onClick={() => handleInlineEdit('nosotrosDescAlign', 'left')}
+                  className={`px-2 py-1 text-[10px] font-bold tracking-wider rounded uppercase transition-colors ${config.nosotrosDescAlign === 'left' ? 'bg-[#8CFF00] text-black' : 'text-white/60 hover:text-white'}`}
+                >
+                  Izquierda
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleInlineEdit('nosotrosDescAlign', 'center')}
+                  className={`px-2 py-1 text-[10px] font-bold tracking-wider rounded uppercase transition-colors ${config.nosotrosDescAlign === 'center' ? 'bg-[#8CFF00] text-black' : 'text-white/60 hover:text-white'}`}
+                >
+                  Centro
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleInlineEdit('nosotrosDescAlign', 'right')}
+                  className={`px-2 py-1 text-[10px] font-bold tracking-wider rounded uppercase transition-colors ${config.nosotrosDescAlign === 'right' ? 'bg-[#8CFF00] text-black' : 'text-white/60 hover:text-white'}`}
+                >
+                  Derecha
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleInlineEdit('nosotrosDescAlign', 'justify')}
+                  className={`px-2 py-1 text-[10px] font-bold tracking-wider rounded uppercase transition-colors ${config.nosotrosDescAlign === 'justify' ? 'bg-[#8CFF00] text-black' : 'text-white/60 hover:text-white'}`}
+                >
+                  Justificar
+                </button>
+              </div>
+            )}
+
+            {/* Description Paragraph */}
+            <p 
+              contentEditable={isAdmin}
+              suppressContentEditableWarning={true}
+              onBlur={(e) => handleInlineEdit('nosotrosDesc', e.currentTarget.innerText)}
+              style={{ textAlign: config.nosotrosDescAlign || 'center' }}
+              className={`text-xl md:text-2xl text-[#B8BDC7] leading-relaxed max-w-4xl mx-auto font-light transition-all outline-none ${isAdmin ? 'hover:bg-white/5 focus:bg-white/5 px-2 py-1 rounded cursor-text border border-dashed border-[#8CFF00]/30' : ''}`}
+            >
+              {config.nosotrosDesc || 'QUANTICO desarrolla e integra tecnología física y digital para empresas que requieren visibilidad, protección, automatización y resiliencia. Unimos software, hardware, IA y sistemas de seguridad para crear soluciones completas, escalables y operativas.'}
             </p>
           </div>
         </section>
@@ -1345,6 +1454,28 @@ function HomePage() {
                     className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all placeholder:text-white/30"
                   />
                 </div>
+
+                <div className="mt-4 border-t border-white/5 pt-4">
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="text-[10px] uppercase tracking-wider text-[#8A8F98] font-bold">
+                      Opacidad/Transparencia del Fondo
+                    </label>
+                    <span className="text-xs text-[#8CFF00] font-logo">
+                      {formConfig.heroBgOpacity ?? 25}%
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      step="5"
+                      value={formConfig.heroBgOpacity ?? 25}
+                      onChange={(e) => setFormConfig({ ...formConfig, heroBgOpacity: Number(e.target.value) })}
+                      className="w-full accent-[#8CFF00] bg-white/10 h-1.5 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Subtitle */}
@@ -1389,6 +1520,55 @@ function HomePage() {
                   onChange={(e) => setFormConfig({ ...formConfig, heroFooterText: e.target.value })}
                   className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
                 />
+              </div>
+
+              {/* Sección Nosotros Configuration */}
+              <div className="border border-white/5 bg-white/[0.01] p-4 rounded-lg space-y-4">
+                <span className="block text-[10px] uppercase tracking-widest text-[#8CFF00] font-bold">Sección Nosotros</span>
+                
+                <div>
+                  <label className="block text-[10px] uppercase tracking-wider text-[#8A8F98] mb-1.5 font-bold">Título Nosotros</label>
+                  <input 
+                    type="text" 
+                    value={formConfig.nosotrosTitle || ''}
+                    onChange={(e) => setFormConfig({ ...formConfig, nosotrosTitle: e.target.value })}
+                    className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-wider text-[#8A8F98] mb-1.5 font-bold">Subtítulo Nosotros</label>
+                  <input 
+                    type="text" 
+                    value={formConfig.nosotrosSubtitle || ''}
+                    onChange={(e) => setFormConfig({ ...formConfig, nosotrosSubtitle: e.target.value })}
+                    className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-wider text-[#8A8F98] mb-1.5 font-bold">Descripción Nosotros</label>
+                  <textarea 
+                    value={formConfig.nosotrosDesc || ''}
+                    onChange={(e) => setFormConfig({ ...formConfig, nosotrosDesc: e.target.value })}
+                    rows="3"
+                    className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all resize-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[10px] uppercase tracking-wider text-[#8A8F98] mb-1.5 font-bold font-bold">Alineación del Párrafo Nosotros</label>
+                  <select 
+                    value={formConfig.nosotrosDescAlign || 'center'}
+                    onChange={(e) => setFormConfig({ ...formConfig, nosotrosDescAlign: e.target.value })}
+                    className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
+                  >
+                    <option value="left">Izquierda</option>
+                    <option value="center">Centro</option>
+                    <option value="right">Derecha</option>
+                    <option value="justify">Justificado</option>
+                  </select>
+                </div>
               </div>
 
               {/* Cloud Database (Supabase) Settings */}
