@@ -441,6 +441,7 @@ function HomePage() {
   const [isSensoresIotModalOpen, setIsSensoresIotModalOpen] = useState(false);
   const [isControlAccesoModalOpen, setIsControlAccesoModalOpen] = useState(false);
   const [isCctvModalOpen, setIsCctvModalOpen] = useState(false);
+  const [isErpCrmModalOpen, setIsErpCrmModalOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [formConfig, setFormConfig] = useState(defaultConfig);
@@ -1479,6 +1480,8 @@ function HomePage() {
                         setIsControlAccesoModalOpen(true);
                       } else if (mod.id === 'cctv') {
                         setIsCctvModalOpen(true);
+                      } else if (mod.id === 'erp_crm') {
+                        setIsErpCrmModalOpen(true);
                       }
                     }}
                     onMouseEnter={() => setHoveredPlatformModule(i)}
@@ -1545,6 +1548,8 @@ function HomePage() {
                           setIsControlAccesoModalOpen(true);
                         } else if (mod.id === 'cctv') {
                           setIsCctvModalOpen(true);
+                        } else if (mod.id === 'erp_crm') {
+                          setIsErpCrmModalOpen(true);
                         }
                       }}
                       className={`flex items-center gap-3 px-3 py-3.5 rounded-lg border text-left transition-all duration-300 ${
@@ -2348,6 +2353,7 @@ function HomePage() {
       <SensoresIotModal isOpen={isSensoresIotModalOpen} onClose={() => setIsSensoresIotModalOpen(false)} />
       <ControlAccesoModal isOpen={isControlAccesoModalOpen} onClose={() => setIsControlAccesoModalOpen(false)} />
       <CctvModal isOpen={isCctvModalOpen} onClose={() => setIsCctvModalOpen(false)} />
+      <ErpCrmModal isOpen={isErpCrmModalOpen} onClose={() => setIsErpCrmModalOpen(false)} />
     </>
   );
 }
@@ -3185,6 +3191,209 @@ const CctvModal = ({ isOpen, onClose }) => {
               { title: 'Mayor visibilidad', desc: 'Supervisión continua de áreas críticas y eventos relevantes.', icon: Eye },
               { title: 'Respuesta más rápida', desc: 'Alertas inmediatas para actuar antes de que el riesgo escale.', icon: Zap },
               { title: 'Menor riesgo operativo', desc: 'Más control, mejor evidencia y decisiones más seguras.', icon: CheckCircle2 }
+            ].map((ben, idx) => {
+              const BenIcon = ben.icon;
+              return (
+                <div key={idx} className="flex items-start gap-2">
+                  <div className="text-[#78FF00] mt-0.5 flex-shrink-0">
+                    <BenIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[11px] font-semibold text-white mb-0.5">{ben.title}</span>
+                    <span className="text-[10px] text-[#8A8F98] leading-relaxed font-light">{ben.desc}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// ErpCrmModal Dialog Component
+const ErpCrmModal = ({ isOpen, onClose }) => {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  // Custom SVGs for perfect design fidelity
+  const PuzzleIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22v-4h3a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2h-3V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3H2v4a2 2 0 0 0 2 2h3v4a2 2 0 0 0 2 2h3z" />
+    </svg>
+  );
+
+  const PathTraceIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      <path d="M11 8v6M8 11h6" />
+    </svg>
+  );
+
+  const FlowchartIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="6" height="6" rx="1" />
+      <rect x="15" y="15" width="6" height="6" rx="1" />
+      <path d="M9 6h6v9" />
+      <rect x="15" y="3" width="6" height="6" rx="1" />
+      <path d="M15 6h-3V3" />
+    </svg>
+  );
+
+  const WirelessIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12a10 10 0 0 1 14 0" />
+      <path d="M8.5 15.5a5 5 0 0 1 7 0" />
+      <circle cx="12" cy="19" r="1" fill="currentColor" />
+    </svg>
+  );
+
+  const ExchangeIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="17 1 21 5 17 9" />
+      <line x1="3" y1="5" x2="21" y2="5" />
+      <polyline points="7 23 3 19 7 15" />
+      <line x1="21" y1="19" x2="3" y2="19" />
+    </svg>
+  );
+
+  const SecureCoreIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <circle cx="12" cy="11" r="1.5" />
+      <path d="M12 12.5V15" />
+    </svg>
+  );
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
+      <div className="absolute inset-0" onClick={onClose}></div>
+      
+      <div className="relative w-full max-w-4xl bg-[#020409] border border-[#78FF00]/30 rounded-xl p-5 md:p-6 shadow-[0_0_50px_rgba(120,255,0,0.15)] z-10 overflow-hidden max-h-[96vh]">
+        {/* HUD corners */}
+        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#78FF00]"></div>
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#78FF00]"></div>
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#78FF00]"></div>
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#78FF00]"></div>
+
+        <div className="absolute inset-x-0 h-[1.5px] bg-[#78FF00]/10 hud-scan-line pointer-events-none"></div>
+
+        <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] bg-[#78FF00]/10 text-[#78FF00] px-2 py-0.5 rounded font-mono font-bold tracking-widest uppercase">ERP/CRM</span>
+            <span className="text-[8px] text-[#8A8F98] font-mono tracking-widest uppercase">SYS_ACTIVE</span>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button className="text-[#8A8F98] hover:text-white transition-colors" title="Minimizar">
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </button>
+            <button className="text-[#8A8F98] hover:text-white transition-colors" title="Maximizar">
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" /></svg>
+            </button>
+            <button 
+              onClick={onClose}
+              className="text-[#8A8F98] hover:text-[#78FF00] hover:scale-110 transition-all font-mono font-bold text-sm px-1"
+              title="Cerrar (Esc)"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          <div className="md:col-span-7 flex flex-col gap-4">
+            <div>
+              <h3 className="text-2xl font-title text-white tracking-wider uppercase font-bold">ERP/CRM</h3>
+              <p className="text-[#78FF00] text-xs font-mono tracking-wide mt-0.5">Integración operativa y gestión centralizada</p>
+              <p className="text-[#B8BDC7] text-xs md:text-sm leading-relaxed font-light mt-3">
+                Plataforma integrada para conectar operación, administración, clientes y procesos críticos en un solo entorno. 
+                QUANTICO unifica ERP, CRM, analítica, trazabilidad y automatización para centralizar información, 
+                sincronizar áreas y acelerar decisiones con mayor control y visibilidad.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {[
+                { label: 'Integración de procesos', icon: PuzzleIcon },
+                { label: 'Trazabilidad operativa', icon: PathTraceIcon },
+                { label: 'Gestión comercial', icon: Users },
+                { label: 'Dashboards en tiempo real', icon: BarChart3 },
+                { label: 'Automatización de flujos', icon: FlowchartIcon },
+                { label: 'Analítica con IA', icon: Brain }
+              ].map((feat, idx) => {
+                const Icon = feat.icon;
+                return (
+                  <div key={idx} className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/5">
+                    <div className="text-[#78FF00]">
+                      <Icon className="w-3.5 h-3.5" strokeWidth={1.5} />
+                    </div>
+                    <span className="text-[11px] text-[#B8BDC7] font-semibold">{feat.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="md:col-span-5 flex flex-col items-center justify-center relative">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(120,255,0,0.1)_0%,_transparent_60%)] pointer-events-none"></div>
+            
+            <img 
+              src="/erp_crm_render_1783201687406.png" 
+              alt="ERP CRM Enterprise Integration Systems"
+              className="relative z-10 w-full max-w-[210px] md:max-w-[250px] drop-shadow-[0_0_25px_rgba(120,255,0,0.3)] animate-[float_4s_ease-in-out_infinite]"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-white/5 bg-[#020409]/60">
+          {[
+            { label: 'LIVE SYNC', val: 'ACTIVO', color: 'text-[#78FF00]', ping: true, icon: WirelessIcon },
+            { label: 'DATA FLOW', val: 'ESTABLE', color: 'text-[#78FF00]', ping: false, icon: ExchangeIcon },
+            { label: 'SECURE CORE', val: 'ENCRIPTADO', color: 'text-[#78FF00]', ping: false, icon: SecureCoreIcon },
+            { label: '24/7', val: 'OPERATIVO', color: 'text-[#78FF00]', ping: false, icon: Clock }
+          ].map((tel, idx) => {
+            const TelIcon = tel.icon;
+            return (
+              <div key={idx} className="flex flex-col items-center p-2 rounded-lg bg-[#050A12]/40 border border-white/5">
+                <div className="flex items-center gap-1 text-[#8A8F98]">
+                  <TelIcon className="w-3.5 h-3.5" />
+                  <span className="text-[8px] font-mono tracking-wider">{tel.label}</span>
+                </div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  {tel.ping && <span className="w-1.5 h-1.5 rounded-full bg-[#78FF00] animate-ping"></span>}
+                  <span className={`text-[11px] font-bold font-mono ${tel.color}`}>{tel.val}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 p-3 rounded-lg bg-[#050A12]/30 border border-white/5">
+          <span className="text-[9px] text-[#78FF00] font-mono tracking-widest uppercase block mb-2 font-bold">BENEFICIOS CLAVE</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { title: 'Mayor visibilidad', desc: 'Datos unificados para entender mejor toda la operación.', icon: Eye },
+              { title: 'Mejor coordinación', desc: 'Ventas, operación y gestión alineadas en tiempo real.', icon: Users },
+              { title: 'Decisiones más rápidas', desc: 'Menos fricción, más control y respuesta inmediata.', icon: Zap }
             ].map((ben, idx) => {
               const BenIcon = ben.icon;
               return (
