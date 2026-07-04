@@ -631,57 +631,65 @@ function HomePage() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="relative z-10 max-w-[1000px] mx-auto px-4 text-center mt-12"
           >
-            <motion.h1 
-              variants={titleContainerVariants}
-              initial="hidden"
-              animate="visible"
-              className="font-logo text-5xl md:text-7xl lg:text-8xl text-white mb-6 tracking-[0.15em] glow-text"
-            >
-              {titleLetters.map((char, index) => (
-                <motion.span
-                  key={index}
-                  variants={titleLetterVariants}
-                  className="inline-block"
-                >
-                  {char === ' ' ? '\u00A0' : char}
-                </motion.span>
-              ))}
-            </motion.h1>
-            
-            <motion.p 
-              variants={subtitleContainerVariants}
-              initial="hidden"
-              animate="visible"
-              className="font-title text-sm md:text-xl text-[#8A8F98] mb-12 tracking-[0.2em] md:tracking-[0.3em] uppercase flex flex-wrap items-center justify-center"
-            >
-              {subtitleParts.map((word, i) => (
-                <React.Fragment key={i}>
-                  {i > 0 && (
-                    <motion.span
-                      variants={subtitleDotVariants}
-                      className={`inline-block w-2 h-2 rounded-full mx-3 md:mx-4 shrink-0 ${dotColors[(i - 1) % dotColors.length]}`}
-                    />
-                  )}
-                  <motion.span variants={subtitleWordVariants} className="inline-block text-[#B8BDC7] hover:text-white transition-colors duration-300">
-                    {word}
+            {config.heroTitle && (
+              <motion.h1 
+                variants={titleContainerVariants}
+                initial="hidden"
+                animate="visible"
+                className="font-logo text-5xl md:text-7xl lg:text-8xl text-white mb-6 tracking-[0.15em] glow-text"
+              >
+                {titleLetters.map((char, index) => (
+                  <motion.span
+                    key={index}
+                    variants={titleLetterVariants}
+                    className="inline-block"
+                  >
+                    {char === ' ' ? '\u00A0' : char}
                   </motion.span>
-                </React.Fragment>
-              ))}
-            </motion.p>
+                ))}
+              </motion.h1>
+            )}
+            
+            {config.heroSubtitle && (
+              <motion.p 
+                variants={subtitleContainerVariants}
+                initial="hidden"
+                animate="visible"
+                className="font-title text-sm md:text-xl text-[#8A8F98] mb-12 tracking-[0.2em] md:tracking-[0.3em] uppercase flex flex-wrap items-center justify-center"
+              >
+                {subtitleParts.map((word, i) => (
+                  <React.Fragment key={i}>
+                    {i > 0 && (
+                      <motion.span
+                        variants={subtitleDotVariants}
+                        className={`inline-block w-2 h-2 rounded-full mx-3 md:mx-4 shrink-0 ${dotColors[(i - 1) % dotColors.length]}`}
+                      />
+                    )}
+                    <motion.span variants={subtitleWordVariants} className="inline-block text-[#B8BDC7] hover:text-white transition-colors duration-300">
+                      {word}
+                    </motion.span>
+                  </React.Fragment>
+                ))}
+              </motion.p>
+            )}
 
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.4 }}
-              className="text-lg md:text-2xl text-[#F4F6FA] mb-6 leading-relaxed font-medium text-balance max-w-4xl mx-auto"
-            >
-              {config.heroDesc1}
-            </motion.p>
+            {config.heroDesc1 && (
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.4 }}
+                className="text-lg md:text-2xl text-[#F4F6FA] mb-6 leading-relaxed font-medium text-balance max-w-4xl mx-auto"
+              >
+                {config.heroDesc1}
+              </motion.p>
+            )}
 
-            <motion.p 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.5 }}
-              className="text-sm md:text-base text-[#B8BDC7] mb-10 leading-relaxed max-w-3xl mx-auto"
-            >
-              {config.heroDesc2}
-            </motion.p>
+            {config.heroDesc2 && (
+              <motion.p 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.5 }}
+                className="text-sm md:text-base text-[#B8BDC7] mb-10 leading-relaxed max-w-3xl mx-auto"
+              >
+                {config.heroDesc2}
+              </motion.p>
+            )}
 
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.6 }}
@@ -695,12 +703,14 @@ function HomePage() {
               </a>
             </motion.div>
             
-            <motion.p 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.8 }}
-              className="font-title text-xs text-[#8A8F98] mt-16 tracking-widest uppercase"
-            >
-              {config.heroFooterText}
-            </motion.p>
+            {config.heroFooterText && (
+              <motion.p 
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.8 }}
+                className="font-title text-xs text-[#8A8F98] mt-16 tracking-widest uppercase"
+              >
+                {config.heroFooterText}
+              </motion.p>
+            )}
           </motion.div>
         </section>
 
@@ -973,7 +983,6 @@ function HomePage() {
                       value={formConfig.logoText}
                       onChange={(e) => setFormConfig({ ...formConfig, logoText: e.target.value })}
                       className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
-                      required
                     />
                   </div>
                   {/* Hero Title */}
@@ -984,7 +993,6 @@ function HomePage() {
                       value={formConfig.heroTitle}
                       onChange={(e) => setFormConfig({ ...formConfig, heroTitle: e.target.value })}
                       className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
-                      required
                     />
                   </div>
                 </div>
@@ -1199,7 +1207,6 @@ function HomePage() {
                   value={formConfig.heroSubtitle}
                   onChange={(e) => setFormConfig({ ...formConfig, heroSubtitle: e.target.value })}
                   className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
-                  required
                 />
               </div>
 
@@ -1211,7 +1218,6 @@ function HomePage() {
                   onChange={(e) => setFormConfig({ ...formConfig, heroDesc1: e.target.value })}
                   rows="3"
                   className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all resize-none"
-                  required
                 />
               </div>
 
@@ -1223,7 +1229,6 @@ function HomePage() {
                   onChange={(e) => setFormConfig({ ...formConfig, heroDesc2: e.target.value })}
                   rows="3"
                   className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all resize-none"
-                  required
                 />
               </div>
 
@@ -1235,7 +1240,6 @@ function HomePage() {
                   value={formConfig.heroFooterText}
                   onChange={(e) => setFormConfig({ ...formConfig, heroFooterText: e.target.value })}
                   className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
-                  required
                 />
               </div>
 
