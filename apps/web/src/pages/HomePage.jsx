@@ -233,6 +233,7 @@ function HomePage() {
     logoType: 'text',
     logoImage: '',
     logoText: 'QUANTICO',
+    logoHeight: 48,
     heroBgType: 'image',
     heroBgUrl: 'https://horizons-cdn.hostinger.com/2cbd254a-61a6-4b67-bef5-67f8a8438c87/625a92490414445dff1b57fec9bc568b.png',
     heroTitle: 'QUANTICO',
@@ -1145,6 +1146,28 @@ function HomePage() {
                         placeholder={formConfig.logoImage && (formConfig.logoImage.startsWith('blob:') || formConfig.logoImage.startsWith('local::')) ? "Usando archivo local (subido)" : "Ej. https://ejemplo.com/logo.png"}
                         className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all placeholder:text-white/30"
                       />
+                    </div>
+
+                    <div className="mt-4 border-t border-white/5 pt-4">
+                      <div className="flex justify-between items-center mb-1.5">
+                        <label className="text-[10px] uppercase tracking-wider text-[#8A8F98] font-bold">
+                          Altura del Logo (Imagen)
+                        </label>
+                        <span className="text-xs text-[#8CFF00] font-logo">
+                          {formConfig.logoHeight || 48}px
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="range"
+                          min="16"
+                          max="200"
+                          step="4"
+                          value={formConfig.logoHeight || 48}
+                          onChange={(e) => setFormConfig({ ...formConfig, logoHeight: Number(e.target.value) })}
+                          className="w-full accent-[#8CFF00] bg-white/10 h-1.5 rounded-lg appearance-none cursor-pointer"
+                        />
+                      </div>
                     </div>
                   </div>
                 )}

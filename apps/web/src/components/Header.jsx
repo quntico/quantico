@@ -46,6 +46,7 @@ function Header() {
   const [logoType, setLogoType] = useState('text');
   const [logoText, setLogoText] = useState('QUANTICO');
   const [logoImageUrl, setLogoImageUrl] = useState('');
+  const [logoHeight, setLogoHeight] = useState(48);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -74,6 +75,9 @@ function Header() {
         }
         if (parsed.logoText) {
           setLogoText(parsed.logoText);
+        }
+        if (parsed.logoHeight) {
+          setLogoHeight(Number(parsed.logoHeight));
         }
         
         const activeLogoImg = parsed.logoImage || '';
@@ -163,7 +167,8 @@ function Header() {
                   <img 
                     src={logoImageUrl} 
                     alt={logoText} 
-                    className="h-13 md:h-18 w-auto object-contain max-w-[260px] block" 
+                    style={{ height: `${logoHeight}px`, width: 'auto' }}
+                    className="object-contain max-w-[300px] block" 
                   />
                 ) : (
                   <span className="font-logo text-[1.9rem] md:text-[2.55rem] text-white tracking-[0.2em] group-hover:text-[#8CFF00] transition-colors duration-300 leading-none flex items-center">
@@ -204,7 +209,8 @@ function Header() {
                         <img 
                           src={logoImageUrl} 
                           alt={logoText} 
-                          className="h-10 w-auto object-contain max-w-[150px]" 
+                          style={{ height: `${Math.min(logoHeight, 48)}px`, width: 'auto' }}
+                          className="object-contain max-w-[200px]" 
                         />
                       ) : (
                         <span className="font-logo text-2xl text-white tracking-[0.2em] leading-none">{logoText}</span>

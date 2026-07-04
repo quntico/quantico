@@ -44,6 +44,7 @@ function Footer() {
   const [logoType, setLogoType] = useState('text');
   const [logoText, setLogoText] = useState('QUANTICO');
   const [logoImageUrl, setLogoImageUrl] = useState('');
+  const [logoHeight, setLogoHeight] = useState(40);
 
   useEffect(() => {
     let localUrl = '';
@@ -56,6 +57,9 @@ function Footer() {
         }
         if (parsed.logoText) {
           setLogoText(parsed.logoText);
+        }
+        if (parsed.logoHeight) {
+          setLogoHeight(Number(parsed.logoHeight));
         }
         
         const activeLogoImg = parsed.logoImage || '';
@@ -106,7 +110,8 @@ function Footer() {
               <img 
                 src={logoImageUrl} 
                 alt={logoText} 
-                className="h-10 w-auto object-contain max-w-[200px] mb-4" 
+                style={{ height: `${Math.min(logoHeight, 60)}px`, width: 'auto' }}
+                className="object-contain max-w-[200px] mb-4" 
               />
             ) : (
               <span className="font-logo text-2xl text-white tracking-[0.2em] block mb-4">
