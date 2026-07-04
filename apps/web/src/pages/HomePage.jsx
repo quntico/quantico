@@ -245,7 +245,10 @@ function HomePage() {
     nosotrosTitle: 'NOSOTROS',
     nosotrosSubtitle: 'INGENIERÍA, INTELIGENCIA Y SEGURIDAD PARA OPERACIONES CRÍTICAS.',
     nosotrosDesc: 'QUANTICO desarrolla e integra tecnología física y digital para empresas que requieren visibilidad, protección, automatización y resiliencia. Unimos software, hardware, IA y sistemas de seguridad para crear soluciones completas, escalables y operativas.',
-    nosotrosDescAlign: 'center'
+    nosotrosDescAlign: 'center',
+    nosotrosBgType: 'image',
+    nosotrosBgUrl: '',
+    nosotrosBgOpacity: 15
   };
 
   const handleInlineEdit = (key, value) => {
@@ -256,17 +259,60 @@ function HomePage() {
     saveRemoteConfig(updated).catch(err => console.error('Failed to sync inline edit:', err));
   };
 
+  const handleInlineMediaUpload = async (prefix, file, isVideo) => {
+    const dbKey = `${prefix}_media`;
+    try {
+      await saveLocalMedia(dbKey, file);
+    } catch (e) {
+      console.error('Failed to save inline media in IndexedDB:', e);
+    }
+
+    let remoteUrl = '';
+    try {
+      const ext = file.name.split('.').pop();
+      const fileName = `${prefix}_${Date.now()}.${ext}`;
+      remoteUrl = await uploadMedia('quantico-media', fileName, file);
+    } catch (e) {
+      console.error('Failed to upload inline media to Supabase:', e);
+    }
+
+    const mediaUrlKey = `${prefix}Url`;
+    const mediaTypeKey = `${prefix}Type`;
+    const finalUrl = remoteUrl || `local::${dbKey}`;
+    
+    const updated = {
+      ...config,
+      [mediaUrlKey]: finalUrl,
+      [mediaTypeKey]: isVideo ? 'video' : 'image'
+    };
+    
+    setConfig(updated);
+    setFormConfig(updated);
+    localStorage.setItem('quantico_config', JSON.stringify(updated));
+    try {
+      await saveRemoteConfig(updated);
+    } catch (e) {
+      console.error('Failed to sync remote config after inline upload:', e);
+    }
+  };
+
   const [config, setConfig] = useState(defaultConfig);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [formConfig, setFormConfig] = useState(defaultConfig);
 
   const [resolvedBgUrl, setResolvedBgUrl] = useState(defaultConfig.heroBgUrl);
+  const [resolvedNosotrosBgUrl, setResolvedNosotrosBgUrl] = useState('');
   const [resolvedLogoUrl, setResolvedLogoUrl] = useState('');
   const [pendingFile, setPendingFile] = useState(null);
+  const [pendingNosotrosFile, setPendingNosotrosFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isNosotrosDragging, setIsNosotrosDragging] = useState(false);
   const fileInputRef = useRef(null);
+  const inlineHeroFileInputRef = useRef(null);
+  const inlineNosotrosFileInputRef = useRef(null);
   const [previewUrl, setPreviewUrl] = useState('');
+  const [nosotrosPreviewUrl, setNosotrosPreviewUrl] = useState('');
 
   // Logo upload specific states
   const [pendingLogoFile, setPendingLogoFile] = useState(null);
@@ -369,6 +415,41 @@ function HomePage() {
     };
   }, [config.heroBgUrl]);
 
+  // Resolve Nosotros background media URL (remote or local from IndexedDB)
+  useEffect(() => {
+    let revoked = false;
+    let localUrl = '';
+
+    const loadMedia = async () => {
+      const activeUrl = config.nosotrosBgUrl;
+      if (activeUrl && activeUrl.startsWith('local::')) {
+        try {
+          const key = activeUrl.replace('local::', '');
+          const file = await getLocalMedia(key);
+          if (file && !revoked) {
+            localUrl = URL.createObjectURL(file);
+            setResolvedNosotrosBgUrl(localUrl);
+            return;
+          }
+        } catch (e) {
+          console.error('Error loading local media from IndexedDB:', e);
+        }
+      }
+      if (!revoked) {
+        setResolvedNosotrosBgUrl(activeUrl || '');
+      }
+    };
+    
+    loadMedia();
+    
+    return () => {
+      revoked = true;
+      if (localUrl) {
+        URL.revokeObjectURL(localUrl);
+      }
+    };
+  }, [config.nosotrosBgUrl]);
+
   // Resolve logo image URL (remote or local from IndexedDB)
   useEffect(() => {
     let revoked = false;
@@ -409,6 +490,7 @@ function HomePage() {
     if (showEditModal) {
       setPendingFile(null);
       setPendingLogoFile(null);
+      setPendingNosotrosFile(null);
       
       if (formConfig.heroBgUrl.startsWith('local::')) {
         const key = formConfig.heroBgUrl.replace('local::', '');
@@ -420,6 +502,18 @@ function HomePage() {
         });
       } else {
         setPreviewUrl(formConfig.heroBgUrl);
+      }
+
+      if (formConfig.nosotrosBgUrl && formConfig.nosotrosBgUrl.startsWith('local::')) {
+        const key = formConfig.nosotrosBgUrl.replace('local::', '');
+        getLocalMedia(key).then(file => {
+          if (file) {
+            const url = createBlobUrl(file);
+            setNosotrosPreviewUrl(url);
+          }
+        });
+      } else {
+        setNosotrosPreviewUrl(formConfig.nosotrosBgUrl || '');
       }
 
       if (formConfig.logoImage && formConfig.logoImage.startsWith('local::')) {
@@ -436,6 +530,7 @@ function HomePage() {
     } else {
       cleanupBlobUrls();
       setPreviewUrl('');
+      setNosotrosPreviewUrl('');
       setLogoPreviewUrl('');
     }
     return () => {
@@ -644,6 +739,29 @@ function HomePage() {
         finalFormConfig.logoImage = 'local::logo_image';
       }
     }
+
+    if (pendingNosotrosFile) {
+      let uploadedUrl = null;
+      try {
+        const ext = pendingNosotrosFile.name.split('.').pop();
+        const fileName = `nosotros_bg_${Date.now()}.${ext}`;
+        uploadedUrl = await uploadMedia('quantico-media', fileName, pendingNosotrosFile);
+      } catch (err) {
+        console.error('Failed uploading nosotros background media to Supabase:', err);
+      }
+
+      try {
+        await saveLocalMedia('nosotros_bg_media', pendingNosotrosFile);
+      } catch (err) {
+        console.error('Failed to save nosotros media in IndexedDB:', err);
+      }
+
+      if (uploadedUrl) {
+        finalFormConfig.nosotrosBgUrl = uploadedUrl;
+      } else {
+        finalFormConfig.nosotrosBgUrl = 'local::nosotros_bg_media';
+      }
+    }
     
     localStorage.setItem('quantico_config', JSON.stringify(finalFormConfig));
     localStorage.setItem('quantico_deploy_hook_url', deployHookUrl);
@@ -693,6 +811,7 @@ function HomePage() {
         const store = tx.objectStore(STORE_NAME);
         store.delete('hero_bg_media');
         store.delete('logo_image');
+        store.delete('nosotros_bg_media');
       } catch (e) {
         console.error('Error deleting local media:', e);
       }
@@ -720,6 +839,38 @@ function HomePage() {
         <title>{config.logoText} | Plataforma Tecnológica para Operaciones Críticas</title>
         <meta name="description" content={config.heroFooterText} />
       </Helmet>
+
+      {/* Hidden file inputs for direct inline media upload */}
+      {isAdmin && (
+        <>
+          <input
+            type="file"
+            ref={inlineHeroFileInputRef}
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                const isVideo = file.type.startsWith('video/');
+                handleInlineMediaUpload('heroBg', file, isVideo);
+              }
+            }}
+            accept="image/*,video/*"
+            className="hidden"
+          />
+          <input
+            type="file"
+            ref={inlineNosotrosFileInputRef}
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                const isVideo = file.type.startsWith('video/');
+                handleInlineMediaUpload('nosotrosBg', file, isVideo);
+              }
+            }}
+            accept="image/*,video/*"
+            className="hidden"
+          />
+        </>
+      )}
 
       <Header 
         logoType={config.logoType}
@@ -768,7 +919,7 @@ function HomePage() {
               
               <button
                 onClick={() => {
-                  if (fileInputRef.current) fileInputRef.current.click();
+                  if (inlineHeroFileInputRef.current) inlineHeroFileInputRef.current.click();
                 }}
                 className="bg-transparent border border-white/20 text-white font-title font-bold text-xs tracking-widest px-4 py-2 hover:border-[#8CFF00] hover:text-[#8CFF00] transition-all uppercase flex items-center justify-center gap-1.5 rounded"
               >
@@ -906,8 +1057,83 @@ function HomePage() {
 
         {/* SECTION 3: NOSOTROS */}
         <section id="nosotros" className="py-32 border-y border-white/5 bg-[#050A12]/30 relative overflow-hidden">
+          {/* Dynamic Background Media for Nosotros */}
+          <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
+            {config.nosotrosBgUrl ? (
+              config.nosotrosBgType === 'video' ? (
+                <video 
+                  src={resolvedNosotrosBgUrl} 
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline 
+                  className="w-full h-full object-cover"
+                  style={{ opacity: (config.nosotrosBgOpacity ?? 15) / 100 }}
+                />
+              ) : (
+                <img 
+                  src={resolvedNosotrosBgUrl} 
+                  className="w-full h-full object-cover"
+                  style={{ opacity: (config.nosotrosBgOpacity ?? 15) / 100 }}
+                  alt="Nosotros Background"
+                />
+              )
+            ) : null}
+          </div>
+
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#8CFF00]/5 blur-[120px] rounded-full pointer-events-none"></div>
+          
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            
+            {/* Inline Admin Bar for Nosotros */}
+            {isAdmin && (
+              <div className="flex flex-col md:flex-row items-center gap-3 bg-[#020409]/90 border border-white/10 p-3 rounded-lg backdrop-blur-md w-fit mx-auto mb-6 select-none shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (inlineNosotrosFileInputRef.current) inlineNosotrosFileInputRef.current.click();
+                  }}
+                  className="bg-transparent border border-white/20 text-white font-title font-bold text-[10px] tracking-widest px-3 py-1.5 hover:border-[#8CFF00] hover:text-[#8CFF00] transition-all uppercase flex items-center justify-center gap-1.5 rounded"
+                >
+                  <Video className="w-3.5 h-3.5" />
+                  Subir Fondo
+                </button>
+                
+                {/* Background Type Toggle */}
+                <div className="flex items-center gap-2 border-l border-white/10 pl-3">
+                  <button
+                    type="button"
+                    onClick={() => handleInlineEdit('nosotrosBgType', 'image')}
+                    className={`px-2 py-1 text-[10px] font-bold rounded uppercase transition-colors ${config.nosotrosBgType !== 'video' ? 'bg-[#8CFF00] text-black' : 'text-white/60 hover:text-white'}`}
+                  >
+                    Imagen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleInlineEdit('nosotrosBgType', 'video')}
+                    className={`px-2 py-1 text-[10px] font-bold rounded uppercase transition-colors ${config.nosotrosBgType === 'video' ? 'bg-[#8CFF00] text-black' : 'text-white/60 hover:text-white'}`}
+                  >
+                    Video
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-3 border-l border-white/10 pl-3 min-w-[130px]">
+                  <span className="text-[10px] text-white/60 uppercase font-bold tracking-wider">Filtro Opacidad:</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    value={config.nosotrosBgOpacity ?? 15}
+                    onChange={(e) => handleInlineEdit('nosotrosBgOpacity', Number(e.target.value))}
+                    className="accent-[#8CFF00] bg-white/10 h-1 rounded-lg appearance-none cursor-pointer w-20"
+                  />
+                  <span className="text-xs font-logo text-[#8CFF00] w-8 text-right">
+                    {config.nosotrosBgOpacity ?? 15}%
+                  </span>
+                </div>
+              </div>
+            )}
             
             {/* Title */}
             <h3 
@@ -1568,6 +1794,74 @@ function HomePage() {
                     <option value="right">Derecha</option>
                     <option value="justify">Justificado</option>
                   </select>
+                </div>
+
+                {/* Background Media Settings for Nosotros */}
+                <div className="border-t border-white/5 pt-4 space-y-4">
+                  <span className="block text-[10px] uppercase tracking-wider text-[#8CFF00] font-bold">Fondo de Sección Nosotros (Media)</span>
+                  
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 text-xs text-white cursor-pointer select-none">
+                      <input 
+                        type="radio" 
+                        name="nosotrosBgType" 
+                        value="image"
+                        checked={formConfig.nosotrosBgType === 'image'}
+                        onChange={() => setFormConfig({ ...formConfig, nosotrosBgType: 'image' })}
+                        className="accent-[#8CFF00]"
+                      />
+                      Imagen Estática
+                    </label>
+                    <label className="flex items-center gap-2 text-xs text-white cursor-pointer select-none">
+                      <input 
+                        type="radio" 
+                        name="nosotrosBgType" 
+                        value="video"
+                        checked={formConfig.nosotrosBgType === 'video'}
+                        onChange={() => setFormConfig({ ...formConfig, nosotrosBgType: 'video' })}
+                        className="accent-[#8CFF00]"
+                      />
+                      Video de Fondo (.mp4, etc)
+                    </label>
+                  </div>
+
+                  {/* Paste / URL Zone for Nosotros Background */}
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-[#8A8F98] mb-1.5 font-bold">URL / Ruta externa para Fondo Nosotros</label>
+                    <input 
+                      type="text" 
+                      value={formConfig.nosotrosBgUrl && (formConfig.nosotrosBgUrl.startsWith('blob:') || formConfig.nosotrosBgUrl.startsWith('local::')) ? '' : (formConfig.nosotrosBgUrl || '')}
+                      onChange={(e) => {
+                        setPendingNosotrosFile(null);
+                        setNosotrosPreviewUrl(e.target.value);
+                        setFormConfig({ ...formConfig, nosotrosBgUrl: e.target.value });
+                      }}
+                      placeholder={formConfig.nosotrosBgUrl && (formConfig.nosotrosBgUrl.startsWith('blob:') || formConfig.nosotrosBgUrl.startsWith('local::')) ? "Usando archivo local (subido)" : "Ej. https://ejemplo.com/nosotros-bg.jpg"}
+                      className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all placeholder:text-white/30"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="text-[10px] uppercase tracking-wider text-[#8A8F98] font-bold">
+                        Opacidad del Fondo Nosotros
+                      </label>
+                      <span className="text-xs text-[#8CFF00] font-logo">
+                        {formConfig.nosotrosBgOpacity ?? 15}%
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="5"
+                        value={formConfig.nosotrosBgOpacity ?? 15}
+                        onChange={(e) => setFormConfig({ ...formConfig, nosotrosBgOpacity: Number(e.target.value) })}
+                        className="w-full accent-[#8CFF00] bg-white/10 h-1.5 rounded-lg appearance-none cursor-pointer"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
