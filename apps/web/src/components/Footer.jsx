@@ -40,43 +40,62 @@ function getLocalMedia(key) {
   });
 }
 
-function Footer() {
+function Footer({ logoType: propLogoType, logoText: propLogoText, logoImageUrl: propLogoImageUrl, logoHeight: propLogoHeight }) {
   const [logoType, setLogoType] = useState('text');
   const [logoText, setLogoText] = useState('QUANTICO');
   const [logoImageUrl, setLogoImageUrl] = useState('');
   const [logoHeight, setLogoHeight] = useState(40);
 
   useEffect(() => {
+    if (propLogoType) setLogoType(propLogoType);
+  }, [propLogoType]);
+
+  useEffect(() => {
+    if (propLogoText) setLogoText(propLogoText);
+  }, [propLogoText]);
+
+  useEffect(() => {
+    if (propLogoImageUrl !== undefined) setLogoImageUrl(propLogoImageUrl);
+  }, [propLogoImageUrl]);
+
+  useEffect(() => {
+    if (propLogoHeight) setLogoHeight(Number(propLogoHeight));
+  }, [propLogoHeight]);
+
+  useEffect(() => {
     let localUrl = '';
-    try {
-      const stored = localStorage.getItem('quantico_config');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed.logoType) {
-          setLogoType(parsed.logoType);
+    
+    if (!propLogoType && !propLogoText && !propLogoImageUrl && !propLogoHeight) {
+      try {
+        const stored = localStorage.getItem('quantico_config');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed.logoType) {
+            setLogoType(parsed.logoType);
+          }
+          if (parsed.logoText) {
+            setLogoText(parsed.logoText);
+          }
+          if (parsed.logoHeight) {
+            setLogoHeight(Number(parsed.logoHeight));
+          }
+          
+          const activeLogoImg = parsed.logoImage || '';
+          if (activeLogoImg.startsWith('local::')) {
+            const key = activeLogoImg.replace('local::', '');
+            getLocalMedia(key).then(file => {
+              if (file) {
+                localUrl = URL.createObjectURL(file);
+                setLogoImageUrl(localUrl);
+              }
+            });
+          } else {
+            setLogoImageUrl(activeLogoImg);
+          }
         }
-        if (parsed.logoText) {
-          setLogoText(parsed.logoText);
-        }
-        if (parsed.logoHeight) {
-          setLogoHeight(Number(parsed.logoHeight));
-        }
-        
-        const activeLogoImg = parsed.logoImage || '';
-        if (activeLogoImg.startsWith('local::')) {
-          const key = activeLogoImg.replace('local::', '');
-          getLocalMedia(key).then(file => {
-            if (file) {
-              localUrl = URL.createObjectURL(file);
-              setLogoImageUrl(localUrl);
-            }
-          });
-        } else {
-          setLogoImageUrl(activeLogoImg);
-        }
+      } catch (e) {
+        console.error('Error loading logo config in footer:', e);
       }
-    } catch (e) {
-      console.error('Error loading logo config in footer:', e);
     }
 
     return () => {
@@ -84,7 +103,7 @@ function Footer() {
         URL.revokeObjectURL(localUrl);
       }
     };
-  }, []);
+  }, [propLogoType, propLogoText, propLogoImageUrl, propLogoHeight]);
 
   const quickLinks = [
     { name: 'Soluciones', path: '/#soluciones' },

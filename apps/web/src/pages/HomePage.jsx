@@ -249,6 +249,7 @@ function HomePage() {
   const [formConfig, setFormConfig] = useState(defaultConfig);
 
   const [resolvedBgUrl, setResolvedBgUrl] = useState(defaultConfig.heroBgUrl);
+  const [resolvedLogoUrl, setResolvedLogoUrl] = useState('');
   const [pendingFile, setPendingFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
@@ -354,6 +355,41 @@ function HomePage() {
       }
     };
   }, [config.heroBgUrl]);
+
+  // Resolve logo image URL (remote or local from IndexedDB)
+  useEffect(() => {
+    let revoked = false;
+    let localUrl = '';
+
+    const loadLogo = async () => {
+      const activeLogo = config.logoImage;
+      if (activeLogo && activeLogo.startsWith('local::')) {
+        try {
+          const key = activeLogo.replace('local::', '');
+          const file = await getLocalMedia(key);
+          if (file && !revoked) {
+            localUrl = URL.createObjectURL(file);
+            setResolvedLogoUrl(localUrl);
+            return;
+          }
+        } catch (e) {
+          console.error('Error loading local logo from IndexedDB:', e);
+        }
+      }
+      if (!revoked) {
+        setResolvedLogoUrl(activeLogo || '');
+      }
+    };
+    
+    loadLogo();
+    
+    return () => {
+      revoked = true;
+      if (localUrl) {
+        URL.revokeObjectURL(localUrl);
+      }
+    };
+  }, [config.logoImage]);
 
   // When showing/hiding edit modal
   useEffect(() => {
@@ -686,7 +722,12 @@ function HomePage() {
         <meta name="description" content={config.heroFooterText} />
       </Helmet>
 
-      <Header />
+      <Header 
+        logoType={config.logoType}
+        logoText={config.logoText}
+        logoImageUrl={resolvedLogoUrl}
+        logoHeight={config.logoHeight}
+      />
 
       <main className="bg-[#020409] text-white selection:bg-[#8CFF00] selection:text-black">
         
@@ -1030,7 +1071,12 @@ function HomePage() {
 
       </main>
 
-      <Footer />
+      <Footer 
+        logoType={config.logoType}
+        logoText={config.logoText}
+        logoImageUrl={resolvedLogoUrl}
+        logoHeight={config.logoHeight}
+      />
       <SmartIndex />
 
       {/* Admin Edit Modal */}
