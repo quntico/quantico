@@ -822,17 +822,7 @@ function HomePage() {
               </motion.p>
             )}
 
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.6 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-6"
-            >
-              <a href="#soluciones" className="w-full sm:w-auto px-8 py-4 bg-transparent border border-white/20 text-white font-title tracking-widest text-sm hover:bg-white hover:text-black transition-all duration-300">
-                EXPLORAR SOLUCIONES
-              </a>
-              <a href="#contacto" className="w-full sm:w-auto px-8 py-4 bg-[#8CFF00] text-[#020409] font-title tracking-widest font-bold text-sm hover:bg-[#9dff26] transition-all duration-300 shadow-[0_0_20px_rgba(140,255,0,0.2)]">
-                SOLICITAR DIAGNÓSTICO
-              </a>
-            </motion.div>
+
             
             {config.heroFooterText && (
               <motion.p 
