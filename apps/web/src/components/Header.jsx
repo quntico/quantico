@@ -161,6 +161,28 @@ function Header({ logoType: propLogoType, logoText: propLogoText, logoImageUrl: 
     }
   };
 
+  const handleNavLinkClick = (e, path) => {
+    const sectionIds = {
+      '/': 'inicio',
+      '/nosotros': 'nosotros',
+      '/plataforma': 'plataforma',
+      '/soluciones': 'soluciones',
+      '/tecnologia': 'tecnologia',
+      '/sistemas': 'sistemas',
+      '/equipos': 'equipos',
+      '/industrias': 'industrias',
+      '/casos-de-uso': 'casos-de-uso'
+    };
+    
+    if (location.pathname === '/' && sectionIds[path]) {
+      e.preventDefault();
+      const el = document.getElementById(sectionIds[path]);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <>
       <header
@@ -242,6 +264,7 @@ function Header({ logoType: propLogoType, logoText: propLogoText, logoImageUrl: 
                           <SheetClose asChild key={link.name}>
                             <Link
                               to={link.path}
+                              onClick={(e) => handleNavLinkClick(e, link.path)}
                               className={`text-lg uppercase tracking-wider transition-colors ${
                                 isActive ? 'font-bold text-[#8CFF00]' : 'font-medium text-[#B8BDC7] hover:text-[#8CFF00]'
                               }`}

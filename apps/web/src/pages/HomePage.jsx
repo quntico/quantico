@@ -1199,6 +1199,14 @@ function HomePage() {
             >
               {config.nosotrosDesc || 'QUANTICO desarrolla e integra tecnología física y digital para empresas que requieren visibilidad, protección, automatización y resiliencia. Unimos software, hardware, IA y sistemas de seguridad para crear soluciones completas, escalables y operativas.'}
             </p>
+
+            <div className="mt-12 flex justify-center">
+              <Link to="/nosotros">
+                <button className="bg-transparent border border-[#8CFF00]/40 text-[#8CFF00] hover:bg-[#8CFF00]/10 hover:border-[#8CFF00] px-6 py-2.5 text-xs font-bold uppercase tracking-widest transition-all duration-300">
+                  Conoce más de nosotros
+                </button>
+              </Link>
+            </div>
           </div>
         </section>
 
