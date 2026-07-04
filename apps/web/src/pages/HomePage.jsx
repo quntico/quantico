@@ -106,6 +106,143 @@ const timeline = [
   { num: '06', title: 'Operación', desc: 'Monitoreo y mantenimiento' },
 ];
 
+// Premium Custom Icons for the Space-X Platform Hub
+const RobotIcon = ({ active }) => (
+  <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M12 2v4M5 12h14" strokeLinecap="round" />
+    <rect x="7" y="6" width="10" height="12" rx="2" strokeWidth="1.5" />
+    <circle cx="10" cy="10" r="1.2" fill="currentColor" />
+    <circle cx="14" cy="10" r="1.2" fill="currentColor" />
+    <path d="M9 14h6" strokeLinecap="round" />
+    <path d="M4 16v-4a2 2 0 0 1 2-2h1M20 16v-4a2 2 0 0 0-2-2h-1" strokeLinecap="round" />
+  </svg>
+);
+
+const DroneIcon = ({ active }) => (
+  <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="12" cy="12" r="3.5" />
+    <path d="M12 2v6M12 16v6M2 12h6M16 12h6" strokeLinecap="round" />
+    <circle cx="12" cy="2" r="1.5" fill="currentColor" />
+    <circle cx="12" cy="22" r="1.5" fill="currentColor" />
+    <circle cx="2" cy="12" r="1.5" fill="currentColor" />
+    <circle cx="22" cy="12" r="1.5" fill="currentColor" />
+  </svg>
+);
+
+const NubeIcon = ({ active }) => (
+  <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-3.64-6.5-9-11.5-5.36 5-9 8.71-9 11.5A3.5 3.5 0 0 0 6.5 19H17.5z" />
+    <path d="M12 9v6M9 12l3-3 3 3" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const ErpIcon = ({ active }) => (
+  <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M3 3v18h18" strokeLinecap="round" />
+    <rect x="7" y="13" width="3" height="5" rx="0.5" />
+    <rect x="12" y="9" width="3" height="9" rx="0.5" />
+    <rect x="17" y="5" width="3" height="13" rx="0.5" />
+  </svg>
+);
+
+const ScadaIcon = ({ active }) => (
+  <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="12" cy="12" r="3.5" />
+    <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" strokeLinecap="round" />
+  </svg>
+);
+
+const CctvIcon = ({ active }) => (
+  <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M23 7l-7 5 7 5V7z" strokeLinecap="round" strokeLinejoin="round" />
+    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+    <circle cx="8" cy="12" r="2" />
+  </svg>
+);
+
+const AccesoIcon = ({ active }) => (
+  <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <rect x="5" y="11" width="14" height="10" rx="2" />
+    <path d="M8 11V7a4 4 0 0 1 8 0v4" strokeLinecap="round" />
+    <circle cx="12" cy="16" r="1.5" fill="currentColor" />
+  </svg>
+);
+
+const SensoresIcon = ({ active }) => (
+  <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" strokeDasharray="2 2" />
+    <circle cx="12" cy="12" r="4.5" />
+    <path d="M12 2v2M12 20v2M2 12h2M20 12h2" strokeLinecap="round" />
+  </svg>
+);
+
+const platformModules = [
+  {
+    id: 'robots',
+    label: 'ROBOTS',
+    icon: RobotIcon,
+    subtitle: 'Sistemas Autónomos de Patrullaje y Carga',
+    description: 'Integración de perros robóticos y AMRs para patrullaje perimetral continuo e inspección en áreas de alto riesgo, sincronizados con la central de control.',
+    stats: { status: 'ONLINE', signal: '98.5%', latency: '4ms' }
+  },
+  {
+    id: 'drones',
+    label: 'DRONES',
+    icon: DroneIcon,
+    subtitle: 'Supervisión Aérea Autónoma',
+    description: 'Sistemas aéreos no tripulados para patrullaje programado, mapeo 3D y análisis termográfico de áreas críticas sin necesidad de pilotos en sitio.',
+    stats: { status: 'STANDBY', signal: '97.2%', latency: '8ms' }
+  },
+  {
+    id: 'nube',
+    label: 'NUBE',
+    icon: NubeIcon,
+    subtitle: 'Procesamiento e IA Centralizada',
+    description: 'Infraestructura cloud redundante para almacenamiento de telemetría histórica, reentrenamiento de modelos de IA y orquestación multiplanta.',
+    stats: { status: 'ACTIVE', signal: '100%', latency: '12ms' }
+  },
+  {
+    id: 'erp_crm',
+    label: 'ERP/CRM',
+    icon: ErpIcon,
+    subtitle: 'Integración de Negocio y Finanzas',
+    description: 'Sincronización directa con sistemas corporativos para automatizar reportes de incidentes, órdenes de mantenimiento y control de inventarios.',
+    stats: { status: 'CONNECTED', signal: '99.9%', latency: '15ms' }
+  },
+  {
+    id: 'scada_plc',
+    label: 'SCADA/PLC',
+    icon: ScadaIcon,
+    subtitle: 'Control Operativo de Maquinaria',
+    description: 'Interconexión directa con controladores industriales lógicos para supervisión de procesos de manufactura, energía y líneas de producción crítica.',
+    stats: { status: 'ONLINE', signal: '99.1%', latency: '2ms' }
+  },
+  {
+    id: 'cctv',
+    label: 'CCTV',
+    icon: CctvIcon,
+    subtitle: 'Videovigilancia Inteligente',
+    description: 'Monitoreo de cámaras fijas y PTZ con análisis de visión por computadora para detección de intrusos, comportamiento anómalo y EPP.',
+    stats: { status: 'ONLINE', signal: '95.8%', latency: '6ms' }
+  },
+  {
+    id: 'control_acceso',
+    label: 'CONTROL DE ACCESO',
+    icon: AccesoIcon,
+    subtitle: 'Perímetro y Biometría Segura',
+    description: 'Gestión inteligente de torniquetes, barreras vehiculares y esclusas con autenticación facial y lectura de placas cifrada.',
+    stats: { status: 'ONLINE', signal: '99.7%', latency: '5ms' }
+  },
+  {
+    id: 'sensores_iot',
+    label: 'SENSORES IOT',
+    icon: SensoresIcon,
+    subtitle: 'Telemetría de Variables Físicas',
+    description: 'Sensores en sitio para medir temperatura, presión, vibración y gases, previniendo fallas mecánicas e incidentes de seguridad industrial.',
+    stats: { status: 'ACTIVE', signal: '96.4%', latency: '1ms' }
+  }
+];
+
 // IndexedDB Helper for storing local media files
 const DB_NAME = 'QuanticoStorage';
 const DB_VERSION = 1;
@@ -297,6 +434,8 @@ function HomePage() {
   };
 
   const [config, setConfig] = useState(defaultConfig);
+  const [activePlatformModule, setActivePlatformModule] = useState(0);
+  const [hoveredPlatformModule, setHoveredPlatformModule] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [formConfig, setFormConfig] = useState(defaultConfig);
@@ -1211,33 +1350,231 @@ function HomePage() {
         </section>
 
         {/* SECTION 4: PLATAFORMA */}
-        <section id="plataforma" className="py-32">
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-28 md:mb-36">
-              <h2 className="font-title text-3xl md:text-5xl text-white mb-6">UNA PLATAFORMA PARA CONECTAR TODA TU OPERACIÓN.</h2>
+        <section id="plataforma" className="py-32 bg-[#000000] bg-[radial-gradient(ellipse_at_center,_#050A12_0%,_#000000_100%)] relative overflow-hidden border-t border-b border-white/5">
+          <style dangerouslySetInnerHTML={{__html: `
+            @keyframes hud-scan {
+              0% { transform: translateY(-100%); opacity: 0; }
+              50% { opacity: 0.5; }
+              100% { transform: translateY(100%); opacity: 0; }
+            }
+            .hud-scan-line {
+              animation: hud-scan 4s infinite linear;
+            }
+          `}} />
+
+          {/* Grid Background details */}
+          <div className="absolute inset-0 opacity-10 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="text-center mb-16 md:mb-20">
+              <h2 className="font-title text-3xl md:text-5xl text-white mb-6 tracking-wide">UNA PLATAFORMA PARA CONECTAR TODA TU OPERACIÓN.</h2>
             </div>
             
-            {/* Technical Hub Diagram */}
-            <div className="relative max-w-4xl mx-auto h-[500px] md:h-[600px] flex items-center justify-center mt-12 md:mt-16">
-              <div className="absolute inset-0 border border-white/5 rounded-full animate-[spin_60s_linear_infinite]"></div>
-              <div className="absolute inset-16 border border-dashed border-white/10 rounded-full animate-[spin_40s_linear_infinite_reverse]"></div>
+            {/* Desktop Radial Layout (visible md and up) */}
+            <div className="hidden md:block relative max-w-5xl mx-auto h-[600px] items-center justify-center">
               
-              <div className="relative z-20 w-32 h-32 md:w-48 md:h-48 rounded-full bg-[#020409] border border-[#8CFF00] flex items-center justify-center shadow-[0_0_50px_rgba(140,255,0,0.15)]">
-                <span className="font-logo text-lg md:text-2xl text-white tracking-widest">QUANTICO</span>
+              {/* Concentric orbital rings */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] border border-white/5 rounded-full pointer-events-none animate-[spin_100s_linear_infinite]"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] border border-dashed border-[#78FF00]/10 rounded-full pointer-events-none animate-[spin_60s_linear_infinite_reverse]"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] border border-dashed border-white/5 rounded-full pointer-events-none animate-[spin_180s_linear_infinite]"></div>
+              
+              {/* Connection Lines SVG overlay */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+                {/* Node orbit line path */}
+                <ellipse cx="50" cy="50" rx="38" ry="32" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="0.1" strokeDasharray="1 2" />
+                
+                {platformModules.map((mod, i) => {
+                  const angle_deg = i * 45 - 90;
+                  const angle_rad = (angle_deg * Math.PI) / 180;
+                  const x = 38 * Math.cos(angle_rad);
+                  const y = 32 * Math.sin(angle_rad);
+                  const x2 = 50 + x;
+                  const y2 = 50 + y;
+                  const isHovered = hoveredPlatformModule === i;
+                  const isActive = activePlatformModule === i;
+                  const isHighlighted = isActive || isHovered;
+
+                  return (
+                    <g key={mod.id}>
+                      {/* Connection Line */}
+                      <line 
+                        x1="50" 
+                        y1="50" 
+                        x2={x2} 
+                        y2={y2} 
+                        stroke={isHighlighted ? '#78FF00' : 'rgba(255, 255, 255, 0.08)'} 
+                        strokeWidth={isHighlighted ? '0.35' : '0.15'}
+                        className="transition-all duration-300"
+                      />
+                      
+                      {/* Traveling light particle */}
+                      {isHighlighted && (
+                        <>
+                          <circle r="0.6" fill="#78FF00">
+                            <animateMotion 
+                              dur="1.6s" 
+                              repeatCount="indefinite" 
+                              path={`M ${x2} ${y2} L 50 50`} 
+                            />
+                          </circle>
+                          <circle r="0.4" fill="#00ffff" opacity="0.6">
+                            <animateMotion 
+                              dur="1.6s" 
+                              begin="0.5s"
+                              repeatCount="indefinite" 
+                              path={`M ${x2} ${y2} L 50 50`} 
+                            />
+                          </circle>
+                        </>
+                      )}
+                    </g>
+                  );
+                })}
+              </svg>
+
+              {/* Central Core */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+                <div 
+                  className={`relative w-40 h-40 rounded-full bg-[#000000] border flex flex-col items-center justify-center transition-all duration-500 select-none ${
+                    (activePlatformModule !== null || hoveredPlatformModule !== null) 
+                      ? 'border-[#78FF00] shadow-[0_0_50px_rgba(120,255,0,0.25)]' 
+                      : 'border-white/10 shadow-[0_0_30px_rgba(120,255,0,0.08)]'
+                  }`}
+                >
+                  <div className="absolute inset-0.5 rounded-full bg-[#020409] z-0"></div>
+                  {/* Tech grid inside core */}
+                  <div className="absolute inset-0 rounded-full opacity-15 bg-[radial-gradient(#78FF00_1px,transparent_1px)] [background-size:8px_8px] z-0"></div>
+                  
+                  <span className="relative z-10 font-logo text-2xl text-white tracking-[0.25em] leading-none mb-1">QUANTICO</span>
+                  <span className="relative z-10 text-[9px] text-[#78FF00] tracking-[0.4em] uppercase font-mono font-bold opacity-80 animate-pulse">CORE</span>
+                </div>
               </div>
-              
-              {['ERP/CRM', 'SCADA/PLC', 'CCTV', 'Control de acceso', 'Sensores IoT', 'Drones', 'Robots', 'Nube'].map((label, i) => {
-                const angle = (i * 360) / 8;
+
+              {/* Radial interactive nodes */}
+              {platformModules.map((mod, i) => {
+                const angle_deg = i * 45 - 90;
+                const angle_rad = (angle_deg * Math.PI) / 180;
+                const x = 38 * Math.cos(angle_rad);
+                const y = 32 * Math.sin(angle_rad);
+                const isHovered = hoveredPlatformModule === i;
+                const isActive = activePlatformModule === i;
+                const Icon = mod.icon;
+
                 return (
-                  <div key={label} className="absolute w-full h-full flex justify-end items-center" style={{ transform: `rotate(${angle}deg)` }}>
-                    <div className="w-1/2 h-[1px] bg-gradient-to-r from-[#8CFF00]/30 to-transparent origin-left"></div>
-                    <div className="absolute right-0 glass-card px-4 py-2 border-white/10" style={{ transform: `rotate(-${angle}deg)` }}>
-                      <span className="text-xs font-title tracking-wider text-[#B8BDC7]">{label}</span>
+                  <button 
+                    key={mod.id}
+                    onClick={() => setActivePlatformModule(i)}
+                    onMouseEnter={() => setHoveredPlatformModule(i)}
+                    onMouseLeave={() => setHoveredPlatformModule(null)}
+                    style={{
+                      left: `calc(50% + ${x}%)`,
+                      top: `calc(50% + ${y}%)`,
+                      transform: 'translate(-50%, -50%)'
+                    }}
+                    className={`absolute z-20 flex items-center gap-3.5 px-4 py-3 rounded-lg border backdrop-blur-md transition-all duration-300 min-w-[210px] ${
+                      isActive 
+                        ? 'bg-[#78FF00]/10 border-[#78FF00] shadow-[0_0_20px_rgba(120,255,0,0.2)] text-white' 
+                        : isHovered
+                          ? 'bg-[#020409]/95 border-[#78FF00]/40 shadow-[0_0_12px_rgba(120,255,0,0.1)] text-white'
+                          : 'bg-[#020409]/80 border-white/10 text-[#B8BDC7]'
+                    }`}
+                  >
+                    <div className={`p-2 rounded-md transition-colors ${isActive || isHovered ? 'bg-[#78FF00]/15 text-[#78FF00]' : 'bg-white/5'}`}>
+                      <Icon active={isActive || isHovered} />
                     </div>
-                  </div>
+                    <div className="flex flex-col items-start select-none">
+                      <span className="text-[11px] font-title tracking-wider uppercase font-bold">{mod.label}</span>
+                      <span className="text-[8px] font-mono tracking-widest text-[#8A8F98] uppercase">
+                        {isActive ? 'SELECT' : isHovered ? 'LINK' : 'SYS_OK'}
+                      </span>
+                    </div>
+                  </button>
                 );
               })}
             </div>
+
+            {/* Mobile Layout (visible below md) */}
+            <div className="flex md:hidden flex-col items-center mt-6">
+              
+              {/* Central Core mobile */}
+              <div 
+                className={`relative w-32 h-32 rounded-full bg-[#000000] border flex flex-col items-center justify-center transition-all duration-500 mb-8 ${
+                  activePlatformModule !== null 
+                    ? 'border-[#78FF00] shadow-[0_0_35px_rgba(120,255,0,0.2)]' 
+                    : 'border-white/10 shadow-[0_0_20px_rgba(120,255,0,0.05)]'
+                }`}
+              >
+                <div className="absolute inset-0.5 rounded-full bg-[#020409] z-0"></div>
+                <span className="relative z-10 font-logo text-lg text-white tracking-[0.2em] leading-none mb-1">QUANTICO</span>
+                <span className="relative z-10 text-[8px] text-[#78FF00] tracking-[0.3em] uppercase font-mono font-bold opacity-80 animate-pulse">CORE</span>
+              </div>
+
+              {/* Grid cards */}
+              <div className="grid grid-cols-2 gap-3 w-full max-w-md">
+                {platformModules.map((mod, i) => {
+                  const isActive = activePlatformModule === i;
+                  const Icon = mod.icon;
+                  return (
+                    <button
+                      key={mod.id}
+                      onClick={() => setActivePlatformModule(i)}
+                      className={`flex items-center gap-3 px-3 py-3.5 rounded-lg border text-left transition-all duration-300 ${
+                        isActive 
+                          ? 'bg-[#78FF00]/10 border-[#78FF00] shadow-[0_0_15px_rgba(120,255,0,0.15)] text-white' 
+                          : 'bg-[#020409]/60 border-white/5 text-[#B8BDC7]'
+                      }`}
+                    >
+                      <div className={`p-1.5 rounded ${isActive ? 'bg-[#78FF00]/15 text-[#78FF00]' : 'bg-white/5 text-[#B8BDC7]'}`}>
+                        <Icon active={isActive} />
+                      </div>
+                      <span className="text-[10px] font-title tracking-wider uppercase font-semibold">{mod.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Info Card Panel */}
+            <div className="mt-12 max-w-2xl mx-auto">
+              <div className="relative p-6 rounded-xl bg-[#020409]/90 border border-[#78FF00]/20 backdrop-blur-md shadow-[0_0_30px_rgba(120,255,0,0.05)] overflow-hidden">
+                {/* Tech corner details */}
+                <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#78FF00]"></div>
+                <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-[#78FF00]"></div>
+                <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-[#78FF00]"></div>
+                <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#78FF00]"></div>
+                
+                {/* Scan line effect */}
+                <div className="absolute inset-x-0 h-[1px] bg-[#78FF00]/20 hud-scan-line pointer-events-none"></div>
+
+                {activePlatformModule !== null && (
+                  <div className="relative z-10 flex flex-col md:flex-row gap-6 items-start">
+                    <div className="p-4 rounded-lg bg-[#78FF00]/5 border border-[#78FF00]/20 text-[#78FF00] flex-shrink-0">
+                      {React.createElement(platformModules[activePlatformModule].icon, { active: true })}
+                    </div>
+                    <div className="flex-grow w-full">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-2 pb-2 border-b border-white/5">
+                        <div>
+                          <span className="text-[9px] text-[#78FF00] font-mono font-bold tracking-widest uppercase block mb-0.5">SISTEMA ACTIVO</span>
+                          <h3 className="text-xl font-title text-white tracking-wider uppercase">{platformModules[activePlatformModule].label}</h3>
+                        </div>
+                        {/* Status telemetry indicators */}
+                        <div className="flex items-center gap-4 text-[9px] font-mono text-[#B8BDC7] self-start md:self-auto">
+                          <div className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#78FF00] animate-pulse"></span>
+                            <span className="text-[#78FF00] font-bold">{platformModules[activePlatformModule].stats.status}</span>
+                          </div>
+                          <div>SIG: <span className="text-white">{platformModules[activePlatformModule].stats.signal}</span></div>
+                          <div>LAT: <span className="text-white">{platformModules[activePlatformModule].stats.latency}</span></div>
+                        </div>
+                      </div>
+                      <p className="text-[#8A8F98] text-[11px] font-mono mb-3 tracking-wide">{platformModules[activePlatformModule].subtitle}</p>
+                      <p className="text-[#B8BDC7] text-sm leading-relaxed font-light">{platformModules[activePlatformModule].description}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
           </div>
         </section>
 
