@@ -259,7 +259,7 @@ function HomePage() {
   const [logoPreviewUrl, setLogoPreviewUrl] = useState('');
   const [isLogoDragging, setIsLogoDragging] = useState(false);
   const [dbUrl, setDbUrl] = useState(localStorage.getItem('quantico_supabase_url') || 'https://btkkrvztbeljpacdlpzc.supabase.co');
-  const [dbKey, setDbKey] = useState(localStorage.getItem('quantico_supabase_anon_key') || '');
+  const [dbKey, setDbKey] = useState(localStorage.getItem('quantico_supabase_anon_key') || 'sb_publishable_BMuSNdoVIluVTZJnGnik_Q_9s1SFgpp');
   const [deployHookUrl, setDeployHookUrl] = useState(localStorage.getItem('quantico_deploy_hook_url') || 'https://api.vercel.com/v1/integrations/deploy/prj_roMjQyyJaSjvi1AxdFLTBgFxqErx/IseedN5TIw');
   const [isDeploying, setIsDeploying] = useState(false);
   const [deployStatus, setDeployStatus] = useState('');
