@@ -3283,6 +3283,13 @@ const ErpCrmModal = ({ isOpen, onClose }) => {
     </svg>
   );
 
+  const ClockIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  );
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
       <div className="absolute inset-0" onClick={onClose}></div>
@@ -3369,7 +3376,7 @@ const ErpCrmModal = ({ isOpen, onClose }) => {
             { label: 'LIVE SYNC', val: 'ACTIVO', color: 'text-[#78FF00]', ping: true, icon: WirelessIcon },
             { label: 'DATA FLOW', val: 'ESTABLE', color: 'text-[#78FF00]', ping: false, icon: ExchangeIcon },
             { label: 'SECURE CORE', val: 'ENCRIPTADO', color: 'text-[#78FF00]', ping: false, icon: SecureCoreIcon },
-            { label: '24/7', val: 'OPERATIVO', color: 'text-[#78FF00]', ping: false, icon: Clock }
+            { label: '24/7', val: 'OPERATIVO', color: 'text-[#78FF00]', ping: false, icon: ClockIcon }
           ].map((tel, idx) => {
             const TelIcon = tel.icon;
             return (
