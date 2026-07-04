@@ -51,3 +51,34 @@ export async function saveRemoteConfig(config) {
     return false;
   }
 }
+
+/**
+ * Uploads a file to Supabase Storage.
+ * Returns the public URL of the uploaded asset, or null on error.
+ */
+export async function uploadMedia(bucketName, filePath, file) {
+  if (!supabase) return null;
+  try {
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: true
+      });
+
+    if (error) {
+      console.error('Supabase Storage error:', error);
+      return null;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(filePath);
+
+    return publicUrlData?.publicUrl || null;
+  } catch (err) {
+    console.error('Supabase Storage exception:', err);
+    return null;
+  }
+}
+
