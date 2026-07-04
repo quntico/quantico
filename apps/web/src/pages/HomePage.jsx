@@ -12,6 +12,7 @@ import {
 
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
+import { getRemoteConfig, saveRemoteConfig, uploadMedia } from '@/lib/supabase.js';
 import SolutionCard from '@/components/SolutionCard.jsx';
 import SystemCard from '@/components/SystemCard.jsx';
 import SmartIndex from '@/components/SmartIndex.jsx';
@@ -277,6 +278,8 @@ function HomePage() {
 
   useEffect(() => {
     setIsAdmin(sessionStorage.getItem('quantico_admin') === 'true');
+    
+    // 1. Load from localStorage for immediate display
     const stored = localStorage.getItem('quantico_config');
     let activeConfig = defaultConfig;
     if (stored) {
@@ -286,16 +289,38 @@ function HomePage() {
         setConfig(activeConfig);
         setFormConfig(activeConfig);
       } catch (e) {
-        console.error('Error loading config:', e);
+        console.error('Error parsing local config:', e);
       }
     }
 
-    // Resolve background media URL (remote or local from IndexedDB)
-    let activeUrl = activeConfig.heroBgUrl;
+    // 2. Sync from Supabase asynchronously
+    const syncRemote = async () => {
+      try {
+        const remote = await getRemoteConfig();
+        if (remote) {
+          const merged = { ...defaultConfig, ...remote };
+          // If remote config differs, update it
+          if (JSON.stringify(merged) !== JSON.stringify(activeConfig)) {
+            localStorage.setItem('quantico_config', JSON.stringify(merged));
+            setConfig(merged);
+            setFormConfig(merged);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to sync remote config:', err);
+      }
+    };
+
+    syncRemote();
+  }, []);
+
+  // Resolve background media URL (remote or local from IndexedDB)
+  useEffect(() => {
     let revoked = false;
     let localUrl = '';
 
     const loadMedia = async () => {
+      const activeUrl = config.heroBgUrl;
       if (activeUrl && activeUrl.startsWith('local::')) {
         try {
           const key = activeUrl.replace('local::', '');
@@ -310,7 +335,7 @@ function HomePage() {
         }
       }
       if (!revoked) {
-        setResolvedBgUrl(activeUrl);
+        setResolvedBgUrl(activeUrl || defaultConfig.heroBgUrl);
       }
     };
     
@@ -322,7 +347,7 @@ function HomePage() {
         URL.revokeObjectURL(localUrl);
       }
     };
-  }, []);
+  }, [config.heroBgUrl]);
 
   // When showing/hiding edit modal
   useEffect(() => {
@@ -517,38 +542,74 @@ function HomePage() {
     let finalFormConfig = { ...formConfig };
     
     if (pendingFile) {
+      let uploadedUrl = null;
       try {
-        await saveLocalMedia('hero_bg_media', pendingFile);
-        finalFormConfig.heroBgUrl = 'local::hero_bg_media';
+        const ext = pendingFile.name.split('.').pop();
+        const fileName = `hero_bg_${Date.now()}.${ext}`;
+        uploadedUrl = await uploadMedia('quantico-media', fileName, pendingFile);
       } catch (err) {
-        console.error('Failed to save media in IndexedDB, attempting Base64 fallback...', err);
+        console.error('Failed uploading background media to Supabase:', err);
+      }
+
+      if (uploadedUrl) {
+        finalFormConfig.heroBgUrl = uploadedUrl;
+      } else {
+        // Fallback to IndexedDB
         try {
-          const base64 = await fileToBase64(pendingFile);
-          finalFormConfig.heroBgUrl = base64;
-        } catch (base64Err) {
-          alert('Error al guardar el archivo.');
-          return;
+          await saveLocalMedia('hero_bg_media', pendingFile);
+          finalFormConfig.heroBgUrl = 'local::hero_bg_media';
+        } catch (err) {
+          console.error('Failed to save media in IndexedDB, attempting Base64 fallback...', err);
+          try {
+            const base64 = await fileToBase64(pendingFile);
+            finalFormConfig.heroBgUrl = base64;
+          } catch (base64Err) {
+            alert('Error al guardar el archivo.');
+            return;
+          }
         }
       }
     }
 
     if (pendingLogoFile) {
+      let uploadedUrl = null;
       try {
-        await saveLocalMedia('logo_image', pendingLogoFile);
-        finalFormConfig.logoImage = 'local::logo_image';
+        const ext = pendingLogoFile.name.split('.').pop();
+        const fileName = `logo_${Date.now()}.${ext}`;
+        uploadedUrl = await uploadMedia('quantico-media', fileName, pendingLogoFile);
       } catch (err) {
-        console.error('Failed to save logo in IndexedDB, attempting Base64 fallback...', err);
+        console.error('Failed uploading logo to Supabase:', err);
+      }
+
+      if (uploadedUrl) {
+        finalFormConfig.logoImage = uploadedUrl;
+      } else {
+        // Fallback to IndexedDB
         try {
-          const base64 = await fileToBase64(pendingLogoFile);
-          finalFormConfig.logoImage = base64;
-        } catch (base64Err) {
-          alert('Error al guardar la imagen del logo.');
-          return;
+          await saveLocalMedia('logo_image', pendingLogoFile);
+          finalFormConfig.logoImage = 'local::logo_image';
+        } catch (err) {
+          console.error('Failed to save logo in IndexedDB, attempting Base64 fallback...', err);
+          try {
+            const base64 = await fileToBase64(pendingLogoFile);
+            finalFormConfig.logoImage = base64;
+          } catch (base64Err) {
+            alert('Error al guardar la imagen del logo.');
+            return;
+          }
         }
       }
     }
     
     localStorage.setItem('quantico_config', JSON.stringify(finalFormConfig));
+    
+    // Save to Supabase remote config
+    try {
+      await saveRemoteConfig(finalFormConfig);
+    } catch (err) {
+      console.error('Failed saving config to Supabase:', err);
+    }
+
     setConfig(finalFormConfig);
     setShowEditModal(false);
     window.location.reload();
@@ -566,6 +627,14 @@ function HomePage() {
         console.error('Error deleting local media:', e);
       }
       localStorage.removeItem('quantico_config');
+
+      // Reset on Supabase remote config too!
+      try {
+        await saveRemoteConfig(defaultConfig);
+      } catch (err) {
+        console.error('Failed resetting config on Supabase:', err);
+      }
+
       setConfig(defaultConfig);
       setFormConfig(defaultConfig);
       window.location.reload();
