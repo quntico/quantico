@@ -437,6 +437,7 @@ function HomePage() {
   const [activePlatformModule, setActivePlatformModule] = useState(0);
   const [hoveredPlatformModule, setHoveredPlatformModule] = useState(null);
   const [isDronesModalOpen, setIsDronesModalOpen] = useState(false);
+  const [isRobotsModalOpen, setIsRobotsModalOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [formConfig, setFormConfig] = useState(defaultConfig);
@@ -1467,6 +1468,8 @@ function HomePage() {
                       setActivePlatformModule(i);
                       if (mod.id === 'drones') {
                         setIsDronesModalOpen(true);
+                      } else if (mod.id === 'robots') {
+                        setIsRobotsModalOpen(true);
                       }
                     }}
                     onMouseEnter={() => setHoveredPlatformModule(i)}
@@ -1525,6 +1528,8 @@ function HomePage() {
                         setActivePlatformModule(i);
                         if (mod.id === 'drones') {
                           setIsDronesModalOpen(true);
+                        } else if (mod.id === 'robots') {
+                          setIsRobotsModalOpen(true);
                         }
                       }}
                       className={`flex items-center gap-3 px-3 py-3.5 rounded-lg border text-left transition-all duration-300 ${
@@ -2324,6 +2329,7 @@ function HomePage() {
         </div>
       )}
       <DronesModal isOpen={isDronesModalOpen} onClose={() => setIsDronesModalOpen(false)} />
+      <RobotsModal isOpen={isRobotsModalOpen} onClose={() => setIsRobotsModalOpen(false)} />
     </>
   );
 }
@@ -2466,6 +2472,166 @@ const DronesModal = ({ isOpen, onClose }) => {
                 <span className="text-[10px] text-[#8A8F98] leading-relaxed font-light">{ben.desc}</span>
               </div>
             ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// RobotsModal Dialog Component
+const RobotsModal = ({ isOpen, onClose }) => {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
+      <div className="absolute inset-0" onClick={onClose}></div>
+      
+      <div className="relative w-full max-w-4xl bg-[#020409] border border-[#78FF00]/30 rounded-xl p-5 md:p-6 shadow-[0_0_50px_rgba(120,255,0,0.15)] z-10 overflow-hidden max-h-[96vh]">
+        {/* HUD corners */}
+        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#78FF00]"></div>
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#78FF00]"></div>
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#78FF00]"></div>
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#78FF00]"></div>
+
+        <div className="absolute inset-x-0 h-[1.5px] bg-[#78FF00]/10 hud-scan-line pointer-events-none"></div>
+
+        <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/5">
+          <div className="flex items-center gap-2">
+            <span className="text-[9px] bg-[#78FF00]/10 text-[#78FF00] px-2 py-0.5 rounded font-mono font-bold tracking-widest uppercase">ROBOTS</span>
+            <span className="text-[8px] text-[#8A8F98] font-mono tracking-widest uppercase">SYS_ACTIVE</span>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button className="text-[#8A8F98] hover:text-white transition-colors" title="Minimizar">
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </button>
+            <button className="text-[#8A8F98] hover:text-white transition-colors" title="Maximizar">
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" /></svg>
+            </button>
+            <button 
+              onClick={onClose}
+              className="text-[#8A8F98] hover:text-[#78FF00] hover:scale-110 transition-all font-mono font-bold text-sm px-1"
+              title="Cerrar (Esc)"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          <div className="md:col-span-7 flex flex-col gap-4">
+            <div>
+              <h3 className="text-2xl font-title text-white tracking-wider uppercase font-bold">ROBOTS</h3>
+              <p className="text-[#78FF00] text-xs font-mono tracking-wide mt-0.5">Automatización robótica inteligente</p>
+              <p className="text-[#B8BDC7] text-xs md:text-sm leading-relaxed font-light mt-3">
+                Sistemas robóticos para automatizar tareas críticas con precisión, seguridad y continuidad operativa. 
+                QUANTICO integra robots industriales y colaborativos con analítica, visión artificial y control centralizado para 
+                optimizar procesos, reducir riesgos y elevar la productividad.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {[
+                { label: 'Celdas automatizadas', icon: Factory },
+                { label: 'Manipulación de materiales', icon: Cpu },
+                { label: 'Inspección visual', icon: Eye },
+                { label: 'Integración PLC/SCADA', icon: Network },
+                { label: 'Operación colaborativa', icon: Users },
+                { label: 'Analítica con IA', icon: Brain }
+              ].map((feat, idx) => {
+                const Icon = feat.icon;
+                return (
+                  <div key={idx} className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/5">
+                    <div className="text-[#78FF00]">
+                      <Icon className="w-3.5 h-3.5" strokeWidth={1.5} />
+                    </div>
+                    <span className="text-[11px] text-[#B8BDC7] font-semibold">{feat.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="md:col-span-5 flex flex-col items-center justify-center relative">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(120,255,0,0.1)_0%,_transparent_60%)] pointer-events-none"></div>
+            
+            <img 
+              src="/industrial_robot_arm_render_1783200210588.png" 
+              alt="Industrial Robotic Arm"
+              className="relative z-10 w-full max-w-[210px] md:max-w-[250px] drop-shadow-[0_0_25px_rgba(120,255,0,0.3)] animate-[float_4s_ease-in-out_infinite]"
+            />
+
+            <style dangerouslySetInnerHTML={{__html: `
+              @keyframes float {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                50% { transform: translateY(-8px) rotate(0.5deg); }
+              }
+            `}} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-white/5 bg-[#020409]/60">
+          {[
+            { label: 'LIVE CELL', val: 'ACTIVO', color: 'text-[#78FF00]', ping: true, icon: Video },
+            { label: 'AI CONTROL', val: 'ESTABLE', color: 'text-[#78FF00]', ping: false, icon: Activity },
+            { label: 'SAFE MODE', val: 'HABILITADO', color: 'text-[#78FF00]', ping: false, icon: Lock },
+            { label: '24/7', val: 'OPERATIVO', color: 'text-[#78FF00]', ping: false, icon: Zap }
+          ].map((tel, idx) => {
+            const TelIcon = tel.icon;
+            return (
+              <div key={idx} className="flex flex-col items-center p-2 rounded-lg bg-[#050A12]/40 border border-white/5">
+                <div className="flex items-center gap-1 text-[#8A8F98]">
+                  <TelIcon className="w-3 h-3" />
+                  <span className="text-[8px] font-mono tracking-wider">{tel.label}</span>
+                </div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  {tel.ping && <span className="w-1.5 h-1.5 rounded-full bg-[#78FF00] animate-ping"></span>}
+                  <span className={`text-[11px] font-bold font-mono ${tel.color}`}>{tel.val}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 p-3 rounded-lg bg-[#050A12]/30 border border-white/5">
+          <span className="text-[9px] text-[#78FF00] font-mono tracking-widest uppercase block mb-2 font-bold">BENEFICIOS CLAVE</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { title: 'Mayor precisión', desc: 'Menos variabilidad y mayor calidad en cada ciclo.', icon: CheckCircle2 },
+              { title: 'Más productividad', desc: 'Operación continua y mejor rendimiento de la línea.', icon: Zap },
+              { title: 'Menor riesgo operativo', desc: 'Menos exposición humana en tareas repetitivas.', icon: Shield }
+            ].map((ben, idx) => {
+              const BenIcon = ben.icon;
+              return (
+                <div key={idx} className="flex items-start gap-2">
+                  <div className="text-[#78FF00] mt-0.5 flex-shrink-0">
+                    <BenIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[11px] font-semibold text-white mb-0.5">{ben.title}</span>
+                    <span className="text-[10px] text-[#8A8F98] leading-relaxed font-light">{ben.desc}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
