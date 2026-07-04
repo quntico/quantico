@@ -12,7 +12,7 @@ import {
 
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
-import { getRemoteConfig, saveRemoteConfig, uploadMedia } from '@/lib/supabase.js';
+import { getRemoteConfig, saveRemoteConfig, uploadMedia, initializeSupabase, supabase } from '@/lib/supabase.js';
 import SolutionCard from '@/components/SolutionCard.jsx';
 import SystemCard from '@/components/SystemCard.jsx';
 import SmartIndex from '@/components/SmartIndex.jsx';
@@ -258,6 +258,8 @@ function HomePage() {
   const [pendingLogoFile, setPendingLogoFile] = useState(null);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState('');
   const [isLogoDragging, setIsLogoDragging] = useState(false);
+  const [dbUrl, setDbUrl] = useState(localStorage.getItem('quantico_supabase_url') || 'https://btkkrvztbeljpacdlpzc.supabase.co');
+  const [dbKey, setDbKey] = useState(localStorage.getItem('quantico_supabase_anon_key') || '');
   const logoFileInputRef = useRef(null);
   
   const createdBlobUrlsRef = useRef([]);
@@ -540,6 +542,9 @@ function HomePage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
+    if (dbUrl || dbKey) {
+      initializeSupabase(dbUrl, dbKey);
+    }
     let finalFormConfig = { ...formConfig };
     
     if (pendingFile) {
@@ -1333,6 +1338,42 @@ function HomePage() {
                   onChange={(e) => setFormConfig({ ...formConfig, heroFooterText: e.target.value })}
                   className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
                 />
+              </div>
+
+              {/* Cloud Database (Supabase) Settings */}
+              <div className="border border-[#8CFF00]/20 bg-[#8CFF00]/5 p-4 rounded-lg space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="block text-[10px] uppercase tracking-widest text-[#8CFF00] font-bold">Base de Datos en la Nube (Supabase)</span>
+                  <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded font-bold ${supabase ? 'bg-[#8CFF00]/20 text-[#8CFF00] border border-[#8CFF00]/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
+                    {supabase ? 'Conectado' : 'Desconectado'}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-[#8A8F98] mb-1.5 font-bold">Supabase Project URL</label>
+                    <input 
+                      type="text" 
+                      value={dbUrl}
+                      onChange={(e) => setDbUrl(e.target.value)}
+                      placeholder="https://xxxx.supabase.co"
+                      className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-wider text-[#8A8F98] mb-1.5 font-bold">Supabase Anon Key (Public Key)</label>
+                    <input 
+                      type="password" 
+                      value={dbKey}
+                      onChange={(e) => setDbKey(e.target.value)}
+                      placeholder="eyJ..."
+                      className="w-full bg-[#020409]/60 border border-white/10 focus:border-[#8CFF00] text-white px-3 py-2 text-xs focus:outline-none rounded transition-all"
+                    />
+                  </div>
+                </div>
+                <p className="text-[10px] text-[#8A8F98] leading-relaxed">
+                  Para sincronizar los cambios de marca (logos, textos e imágenes) entre tu local y la web en producción, copia aquí las credenciales de tu proyecto de Supabase.
+                </p>
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/10">

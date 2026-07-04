@@ -1,11 +1,34 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const getSupabaseCredentials = () => {
+  const localUrl = localStorage.getItem('quantico_supabase_url');
+  const localKey = localStorage.getItem('quantico_supabase_anon_key');
+  
+  return {
+    url: localUrl || import.meta.env.VITE_SUPABASE_URL || 'https://btkkrvztbeljpacdlpzc.supabase.co',
+    key: localKey || import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+  };
+};
 
-export const supabase = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey) 
+const creds = getSupabaseCredentials();
+const isValidKey = (k) => k && k.trim() !== '' && !k.includes('YOUR_SUPABASE_ANON_KEY') && !k.includes('your_supabase_anon_key');
+
+export let supabase = creds.url && isValidKey(creds.key)
+  ? createClient(creds.url, creds.key) 
   : null;
+
+/**
+ * Dynamically re-initializes Supabase client from Admin Modal.
+ */
+export function initializeSupabase(url, key) {
+  if (url && isValidKey(key)) {
+    localStorage.setItem('quantico_supabase_url', url);
+    localStorage.setItem('quantico_supabase_anon_key', key);
+    supabase = createClient(url, key);
+    return true;
+  }
+  return false;
+}
 
 /**
  * Loads the active config from the 'quantico_config' table.
