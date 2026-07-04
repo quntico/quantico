@@ -3524,6 +3524,12 @@ const NubeModal = ({ isOpen, onClose }) => {
     </svg>
   );
 
+  const CloudIcon = () => (
+    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+    </svg>
+  );
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn">
       <div className="absolute inset-0" onClick={onClose}></div>
@@ -3608,7 +3614,7 @@ const NubeModal = ({ isOpen, onClose }) => {
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-white/5 bg-[#020409]/60">
           {[
-            { label: 'LIVE CLOUD', val: 'ACTIVO', color: 'text-[#78FF00]', ping: true, icon: Cloud },
+            { label: 'LIVE CLOUD', val: 'ACTIVO', color: 'text-[#78FF00]', ping: true, icon: CloudIcon },
             { label: 'EDGE LINK', val: 'ESTABLE', color: 'text-[#78FF00]', ping: false, icon: EdgeLinkIcon },
             { label: 'SECURE CORE', val: 'ENCRIPTADO', color: 'text-[#78FF00]', ping: false, icon: SecureCoreIcon },
             { label: '24/7', val: 'OPERATIVO', color: 'text-[#78FF00]', ping: false, icon: ClockIcon }
