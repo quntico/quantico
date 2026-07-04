@@ -38,3 +38,5 @@ lerna-debug.log*
 tmp/
 .tempmediaStorage/
 app.tar.gz
+.vercel/
+
