@@ -2282,7 +2282,7 @@ function HomePage() {
         </section>
 
         {/* SECTION 6: SISTEMAS */}
-        <section id="sistemas" className="py-8 lg:py-10">
+        <section id="sistemas" className="py-8 lg:py-10 scroll-mt-28">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-6 lg:mb-8 text-center">
               <h2 className="font-title text-3xl md:text-4xl text-white mb-2">SISTEMAS COMPLEJOS LLAVE EN MANO.</h2>
