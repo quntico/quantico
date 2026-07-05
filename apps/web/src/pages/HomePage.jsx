@@ -1459,7 +1459,69 @@ function HomePage() {
                   {/* Tech grid inside core */}
                   <div className="absolute inset-0 rounded-full opacity-15 bg-[radial-gradient(#78FF00_1px,transparent_1px)] [background-size:8px_8px] z-0"></div>
                   
-                  <span className="relative z-10 font-logo text-xs md:text-sm text-white tracking-[0.2em] font-bold drop-shadow-[0_0_10px_rgba(120,255,0,0.7)]">QUANTICO</span>
+                  {/* Swirling Particle Vortex */}
+                  <div className="absolute inset-2 rounded-full overflow-hidden z-10 opacity-70 mix-blend-screen pointer-events-none">
+                    <svg className="w-full h-full animate-[spin_16s_linear_infinite]" viewBox="0 0 100 100">
+                      <defs>
+                        <linearGradient id="vortex-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#78FF00" stopOpacity="0.8" />
+                          <stop offset="50%" stopColor="#78FF00" stopOpacity="0.3" />
+                          <stop offset="100%" stopColor="#78FF00" stopOpacity="0" />
+                        </linearGradient>
+                        <linearGradient id="vortex-grad-2" x1="100%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#78FF00" stopOpacity="0.6" />
+                          <stop offset="70%" stopColor="#78FF00" stopOpacity="0.15" />
+                          <stop offset="100%" stopColor="#78FF00" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      
+                      {/* Outer vortex swirl */}
+                      <path 
+                        d="M 50 12 A 38 38 0 1 1 20 78" 
+                        fill="none" 
+                        stroke="url(#vortex-grad-1)" 
+                        strokeWidth="2.2" 
+                        strokeLinecap="round"
+                        strokeDasharray="180 40"
+                        className="animate-[spin_5s_linear_infinite]"
+                        style={{ transformOrigin: '50px 50px' }}
+                      />
+                      
+                      {/* Inner vortex swirl */}
+                      <path 
+                        d="M 50 20 A 30 30 0 1 0 25 70" 
+                        fill="none" 
+                        stroke="url(#vortex-grad-2)" 
+                        strokeWidth="1.8" 
+                        strokeLinecap="round"
+                        strokeDasharray="120 60"
+                        className="animate-[spin_8s_linear_infinite_reverse]"
+                        style={{ transformOrigin: '50px 50px' }}
+                      />
+
+                      {/* Secondary thin swirl */}
+                      <path 
+                        d="M 50 26 A 24 24 0 1 1 30 68" 
+                        fill="none" 
+                        stroke="#78FF00" 
+                        strokeWidth="0.75" 
+                        opacity="0.4"
+                        strokeDasharray="80 120"
+                        className="animate-[spin_3s_linear_infinite]"
+                        style={{ transformOrigin: '50px 50px' }}
+                      />
+
+                      {/* Floating Particle Dots */}
+                      <g className="animate-[spin_6s_linear_infinite]" style={{ transformOrigin: '50px 50px' }}>
+                        <circle cx="50" cy="18" r="0.8" fill="#78FF00" />
+                        <circle cx="24" cy="30" r="1.1" fill="#78FF00" />
+                        <circle cx="76" cy="65" r="0.6" fill="#78FF00" />
+                        <circle cx="32" cy="74" r="0.9" fill="#78FF00" />
+                      </g>
+                    </svg>
+                  </div>
+                  
+                  <span className="relative z-20 font-logo text-xs md:text-sm text-white tracking-[0.2em] font-bold drop-shadow-[0_0_10px_rgba(120,255,0,0.7)]">QUANTICO</span>
                 </div>
               </div>
 
@@ -1540,7 +1602,70 @@ function HomePage() {
                 }`}
               >
                 <div className="absolute inset-0.5 rounded-full bg-[#020409] z-0"></div>
-                <span className="relative z-10 font-logo text-[10px] text-white tracking-[0.15em] font-bold drop-shadow-[0_0_8px_rgba(120,255,0,0.6)]">QUANTICO</span>
+                
+                {/* Swirling Particle Vortex (Mobile) */}
+                <div className="absolute inset-1 rounded-full overflow-hidden z-10 opacity-70 mix-blend-screen pointer-events-none">
+                  <svg className="w-full h-full animate-[spin_16s_linear_infinite]" viewBox="0 0 100 100">
+                    <defs>
+                      <linearGradient id="vortex-grad-1-mob" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#78FF00" stopOpacity="0.8" />
+                        <stop offset="50%" stopColor="#78FF00" stopOpacity="0.3" />
+                        <stop offset="100%" stopColor="#78FF00" stopOpacity="0" />
+                      </linearGradient>
+                      <linearGradient id="vortex-grad-2-mob" x1="100%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#78FF00" stopOpacity="0.6" />
+                        <stop offset="70%" stopColor="#78FF00" stopOpacity="0.15" />
+                        <stop offset="100%" stopColor="#78FF00" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                    
+                    {/* Outer vortex swirl */}
+                    <path 
+                      d="M 50 12 A 38 38 0 1 1 20 78" 
+                      fill="none" 
+                      stroke="url(#vortex-grad-1-mob)" 
+                      strokeWidth="2.2" 
+                      strokeLinecap="round"
+                      strokeDasharray="180 40"
+                      className="animate-[spin_5s_linear_infinite]"
+                      style={{ transformOrigin: '50px 50px' }}
+                    />
+                    
+                    {/* Inner vortex swirl */}
+                    <path 
+                      d="M 50 20 A 30 30 0 1 0 25 70" 
+                      fill="none" 
+                      stroke="url(#vortex-grad-2-mob)" 
+                      strokeWidth="1.8" 
+                      strokeLinecap="round"
+                      strokeDasharray="120 60"
+                      className="animate-[spin_8s_linear_infinite_reverse]"
+                      style={{ transformOrigin: '50px 50px' }}
+                    />
+
+                    {/* Secondary thin swirl */}
+                    <path 
+                      d="M 50 26 A 24 24 0 1 1 30 68" 
+                      fill="none" 
+                      stroke="#78FF00" 
+                      strokeWidth="0.75" 
+                      opacity="0.4"
+                      strokeDasharray="80 120"
+                      className="animate-[spin_3s_linear_infinite]"
+                      style={{ transformOrigin: '50px 50px' }}
+                    />
+
+                    {/* Floating Particle Dots */}
+                    <g className="animate-[spin_6s_linear_infinite]" style={{ transformOrigin: '50px 50px' }}>
+                      <circle cx="50" cy="18" r="0.8" fill="#78FF00" />
+                      <circle cx="24" cy="30" r="1.1" fill="#78FF00" />
+                      <circle cx="76" cy="65" r="0.6" fill="#78FF00" />
+                      <circle cx="32" cy="74" r="0.9" fill="#78FF00" />
+                    </g>
+                  </svg>
+                </div>
+                
+                <span className="relative z-20 font-logo text-[10px] text-white tracking-[0.15em] font-bold drop-shadow-[0_0_8px_rgba(120,255,0,0.6)]">QUANTICO</span>
               </div>
 
               {/* Grid cards */}
