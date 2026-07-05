@@ -461,8 +461,8 @@ function HomePage() {
     const angle = - (i * 45);
     const rad = ((angle + carouselRotation) * Math.PI) / 180;
     
-    const Rx = 265;
-    const Ry = 165;
+    const Rx = 260;
+    const Ry = 175;
     
     const x = Rx * Math.cos(rad);
     const y = - Ry * Math.sin(rad);
@@ -483,8 +483,8 @@ function HomePage() {
     let zIndex = Math.round(10 + 20 * t);
     if (isActive) zIndex = 45;
     
-    // Tilted perspective rotation & depth translation
-    const rotateY = -28 * Math.cos(rad);
+    // Tilted perspective rotation & depth translation (gentle tilt to avoid chueca look)
+    const rotateY = -12 * Math.cos(rad);
     const z = 80 * (t - 0.5);
     
     return { x, y, z, scale, opacity, rotateY, zIndex };
@@ -1509,33 +1509,53 @@ function HomePage() {
                 transformStyle: 'preserve-3d'
               }}
             >
-              {/* Concentric 3D Orbital Rings SVG overlay (Static base rings) */}
+              {/* Concentric 3D Orbital Rings SVG overlay (Technical HUD guides) */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 1000 520">
-                {/* Outer Dashed Ellipse */}
+                {/* Outer HUD Ring (Solid very faint) */}
                 <ellipse 
                   cx="500" 
                   cy="260" 
-                  rx="265" 
-                  ry="165" 
+                  rx="315" 
+                  ry="212" 
                   fill="none" 
-                  stroke="rgba(120, 255, 0, 0.18)" 
+                  stroke="rgba(120, 255, 0, 0.04)" 
                   strokeWidth="1" 
-                  strokeDasharray="4 6" 
-                  className="opacity-30"
                 />
                 
-                {/* Inner Dashed Ellipse */}
+                {/* Main Trajectory Guide (Dashed HUD green, slowly rotating) */}
+                <ellipse 
+                  cx="500" 
+                  cy="260" 
+                  rx="260" 
+                  ry="175" 
+                  fill="none" 
+                  stroke="rgba(120, 255, 0, 0.22)" 
+                  strokeWidth="1.2" 
+                  strokeDasharray="5 8" 
+                  style={{ 
+                    transformOrigin: '500px 260px',
+                    animation: 'core-spin-clockwise 100s linear infinite'
+                  }}
+                />
+                
+                {/* Inner HUD Ring (Dashed very sutil) */}
                 <ellipse 
                   cx="500" 
                   cy="260" 
                   rx="205" 
-                  ry="127" 
+                  ry="138" 
                   fill="none" 
-                  stroke="rgba(120, 255, 0, 0.1)" 
+                  stroke="rgba(120, 255, 0, 0.12)" 
                   strokeWidth="0.8" 
-                  strokeDasharray="3 5" 
-                  className="opacity-15"
+                  strokeDasharray="2 6" 
+                  className="opacity-60"
                 />
+
+                {/* Technical crosshair ticks */}
+                <line x1="500" y1="55" x2="500" y2="70" stroke="rgba(120, 255, 0, 0.25)" strokeWidth="1" />
+                <line x1="500" y1="450" x2="500" y2="465" stroke="rgba(120, 255, 0, 0.25)" strokeWidth="1" />
+                <line x1="210" y1="260" x2="225" y2="260" stroke="rgba(120, 255, 0, 0.25)" strokeWidth="1" />
+                <line x1="775" y1="260" x2="790" y2="260" stroke="rgba(120, 255, 0, 0.25)" strokeWidth="1" />
               </svg>
 
               {/* Dynamic Connection Lines (GPU-accelerated React divs) */}
