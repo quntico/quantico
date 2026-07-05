@@ -8,7 +8,7 @@ const sections = [
   { id: 'nosotros', label: 'Nosotros', num: '03' },
   { id: 'plataforma', label: 'Plataforma', num: '04' },
   { id: 'soluciones', label: 'Soluciones', num: '05' },
-  { id: 'sistemas', label: 'Sistemas', num: '06' },
+  { id: 'sistemas', label: 'Sistemas Complejos', num: '06' },
   { id: 'equipos', label: 'Equipos', num: '07' },
   { id: 'tecnologia', label: 'Tecnología', num: '08' },
   { id: 'industrias', label: 'Industrias', num: '09' },

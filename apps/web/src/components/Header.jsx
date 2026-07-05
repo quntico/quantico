@@ -148,7 +148,7 @@ function Header({ logoType: propLogoType, logoText: propLogoText, logoImageUrl: 
     { name: 'Plataforma', path: '/plataforma' },
     { name: 'Soluciones', path: '/soluciones' },
     { name: 'Tecnología', path: '/tecnologia' },
-    { name: 'Sistemas', path: '/sistemas' },
+    { name: 'Sistemas Complejos', path: '/sistemas' },
     { name: 'Equipos', path: '/equipos' },
     { name: 'Industrias', path: '/industrias' },
     { name: 'Casos de uso', path: '/casos-de-uso' }
