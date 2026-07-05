@@ -2282,11 +2282,11 @@ function HomePage() {
         </section>
 
         {/* SECTION 6: SISTEMAS */}
-        <section id="sistemas" className="py-24">
+        <section id="sistemas" className="py-10 lg:py-16">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mb-16 text-center">
-              <h2 className="font-title text-4xl md:text-5xl text-white mb-4">SISTEMAS COMPLEJOS LLAVE EN MANO.</h2>
-              <p className="text-[#8A8F98] text-lg">Soluciones integradas de hardware y software para operaciones críticas.</p>
+            <div className="mb-8 lg:mb-12 text-center">
+              <h2 className="font-title text-3xl md:text-4xl text-white mb-2">SISTEMAS COMPLEJOS LLAVE EN MANO.</h2>
+              <p className="text-[#8A8F98] text-base md:text-lg">Soluciones integradas de hardware y software para operaciones críticas.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
