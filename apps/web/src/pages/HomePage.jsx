@@ -109,70 +109,76 @@ const timeline = [
 // Premium Custom Icons for the Space-X Platform Hub
 const RobotIcon = ({ active }) => (
   <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M12 2v4M5 12h14" strokeLinecap="round" />
-    <rect x="7" y="6" width="10" height="12" rx="2" strokeWidth="1.5" />
-    <circle cx="10" cy="10" r="1.2" fill="currentColor" />
-    <circle cx="14" cy="10" r="1.2" fill="currentColor" />
-    <path d="M9 14h6" strokeLinecap="round" />
-    <path d="M4 16v-4a2 2 0 0 1 2-2h1M20 16v-4a2 2 0 0 0-2-2h-1" strokeLinecap="round" />
+    <rect x="2" y="10" width="2" height="4" rx="1" />
+    <rect x="20" y="10" width="2" height="4" rx="1" />
+    <rect x="5" y="6" width="14" height="12" rx="3" />
+    <circle cx="9" cy="11" r="1.5" />
+    <circle cx="15" cy="11" r="1.5" />
+    <path d="M9 15h6" strokeLinecap="round" />
+    <path d="M12 6V3" />
+    <circle cx="12" cy="2.5" r="1" fill="currentColor" />
   </svg>
 );
 
 const DroneIcon = ({ active }) => (
   <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <circle cx="12" cy="12" r="3.5" />
-    <path d="M12 2v6M12 16v6M2 12h6M16 12h6" strokeLinecap="round" />
-    <circle cx="12" cy="2" r="1.5" fill="currentColor" />
-    <circle cx="12" cy="22" r="1.5" fill="currentColor" />
-    <circle cx="2" cy="12" r="1.5" fill="currentColor" />
-    <circle cx="22" cy="12" r="1.5" fill="currentColor" />
+    <path d="M6 6l12 12" />
+    <path d="M18 6l-12 12" />
+    <circle cx="12" cy="12" r="3" fill="none" />
+    <circle cx="12" cy="12" r="1" fill="currentColor" />
+    <circle cx="5" cy="5" r="2.5" />
+    <circle cx="19" cy="5" r="2.5" />
+    <circle cx="5" cy="19" r="2.5" />
+    <circle cx="19" cy="19" r="2.5" />
   </svg>
 );
 
 const NubeIcon = ({ active }) => (
   <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-3.64-6.5-9-11.5-5.36 5-9 8.71-9 11.5A3.5 3.5 0 0 0 6.5 19H17.5z" />
-    <path d="M12 9v6M9 12l3-3 3 3" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
+    <path d="M12 12v5M9 14l3-3 3 3" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 const ErpIcon = ({ active }) => (
   <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M3 3v18h18" strokeLinecap="round" />
-    <rect x="7" y="13" width="3" height="5" rx="0.5" />
-    <rect x="12" y="9" width="3" height="9" rx="0.5" />
-    <rect x="17" y="5" width="3" height="13" rx="0.5" />
+    <rect x="4" y="12" width="3" height="8" rx="0.5" />
+    <rect x="10" y="8" width="3" height="12" rx="0.5" />
+    <rect x="16" y="4" width="3" height="16" rx="0.5" />
   </svg>
 );
 
 const ScadaIcon = ({ active }) => (
   <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <circle cx="12" cy="12" r="3.5" />
-    <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" strokeLinecap="round" />
+    <path d="M3 20h18V12l-4 3V10l-4 3V8l-6 4v8z" strokeLinecap="round" strokeLinejoin="round" />
+    <line x1="15" y1="4" x2="15" y2="8" />
+    <line x1="18" y1="4" x2="18" y2="10" />
   </svg>
 );
 
 const CctvIcon = ({ active }) => (
   <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M23 7l-7 5 7 5V7z" strokeLinecap="round" strokeLinejoin="round" />
-    <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-    <circle cx="8" cy="12" r="2" />
+    <rect x="8" y="7" width="11" height="6" rx="1" transform="rotate(-20 13.5 10)" />
+    <path d="M5 8.5l3.5 1.3M5 8.5l1.3 3.5" />
+    <path d="M16 11.5v4.5M13 16h6" strokeLinecap="round" />
   </svg>
 );
 
 const AccesoIcon = ({ active }) => (
   <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <rect x="5" y="11" width="14" height="10" rx="2" />
-    <path d="M8 11V7a4 4 0 0 1 8 0v4" strokeLinecap="round" />
-    <circle cx="12" cy="16" r="1.5" fill="currentColor" />
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <rect x="9.5" y="11" width="5" height="4" rx="1" />
+    <path d="M11 11V9.5a1 1 0 0 1 2 0V11" />
   </svg>
 );
 
 const SensoresIcon = ({ active }) => (
   <svg className={`w-6 h-6 transition-colors duration-300 ${active ? 'text-[#78FF00]' : 'text-[#B8BDC7]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" strokeDasharray="2 2" />
-    <circle cx="12" cy="12" r="4.5" />
-    <path d="M12 2v2M12 20v2M2 12h2M20 12h2" strokeLinecap="round" />
+    <circle cx="12" cy="12" r="3" />
+    <path d="M7.5 8.5a5 5 0 0 0 0 7" strokeLinecap="round" />
+    <path d="M4.5 5.5a10 10 0 0 0 0 13" strokeLinecap="round" />
+    <path d="M16.5 8.5a5 5 0 0 1 0 7" strokeLinecap="round" />
+    <path d="M19.5 5.5a10 10 0 0 1 0 13" strokeLinecap="round" />
   </svg>
 );
 
@@ -1509,10 +1515,13 @@ function HomePage() {
                       <Icon active={isActive || isHovered} />
                     </div>
                     <div className="flex flex-col items-start select-none">
-                      <span className="text-[11px] font-title tracking-wider uppercase font-bold">{mod.label}</span>
+                      <span className="text-[9px] font-logo tracking-wider uppercase font-bold">{mod.label}</span>
                       <span className="text-[8px] font-mono tracking-widest text-[#8A8F98] uppercase">
                         {isActive ? 'SELECT' : isHovered ? 'LINK' : 'SYS_OK'}
                       </span>
+                      <div className="w-10 h-[1.5px] bg-white/10 mt-1.5 rounded-full overflow-hidden">
+                        <div className={`h-full transition-all duration-500 ${isActive ? 'w-full bg-[#78FF00]' : isHovered ? 'w-2/3 bg-[#78FF00]/70' : 'w-1/3 bg-white/20'}`}></div>
+                      </div>
                     </div>
                   </button>
                 );
@@ -1571,7 +1580,15 @@ function HomePage() {
                       <div className={`p-1.5 rounded ${isActive ? 'bg-[#78FF00]/15 text-[#78FF00]' : 'bg-white/5 text-[#B8BDC7]'}`}>
                         <Icon active={isActive} />
                       </div>
-                      <span className="text-[10px] font-title tracking-wider uppercase font-semibold">{mod.label}</span>
+                      <div className="flex flex-col select-none">
+                        <span className="text-[9px] font-logo tracking-wider uppercase font-bold">{mod.label}</span>
+                        <span className="text-[8px] font-mono tracking-widest text-[#8A8F98]">
+                          {isActive ? 'SELECT' : 'SYS_OK'}
+                        </span>
+                        <div className="w-10 h-[1.5px] bg-white/10 mt-1 rounded-full overflow-hidden">
+                          <div className={`h-full transition-all duration-500 ${isActive ? 'w-full bg-[#78FF00]' : 'w-1/3 bg-white/20'}`}></div>
+                        </div>
+                      </div>
                     </button>
                   );
                 })}
