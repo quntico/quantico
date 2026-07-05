@@ -452,6 +452,7 @@ function HomePage() {
 
   const [config, setConfig] = useState(defaultConfig);
   const [activePlatformModule, setActivePlatformModule] = useState(0);
+  const [carouselTargetModule, setCarouselTargetModule] = useState(0);
   const [carouselRotation, setCarouselRotation] = useState(90);
   const [isCoreAnimating, setIsCoreAnimating] = useState(false);
   const [isInfiniteMode, setIsInfiniteMode] = useState(false);
@@ -554,12 +555,40 @@ function HomePage() {
   };
 
   useEffect(() => {
-    const target = activePlatformModule * 45;
+    const target = carouselTargetModule * 45;
     let diff = (target - carouselRotation) % 360;
     if (diff > 180) diff -= 360;
     if (diff < -180) diff += 360;
     setCarouselRotation(prev => prev + diff);
-  }, [activePlatformModule]);
+  }, [carouselTargetModule]);
+
+  const handleModuleSelect = (i, mod) => {
+    if (carouselTargetModule === i) {
+      if (mod.id === 'drones') setIsDronesModalOpen(true);
+      else if (mod.id === 'robots') setIsRobotsModalOpen(true);
+      else if (mod.id === 'sensores_iot') setIsSensoresIotModalOpen(true);
+      else if (mod.id === 'control_acceso') setIsControlAccesoModalOpen(true);
+      else if (mod.id === 'cctv') setIsCctvModalOpen(true);
+      else if (mod.id === 'erp_crm') setIsErpCrmModalOpen(true);
+      else if (mod.id === 'nube') setIsNubeModalOpen(true);
+      else if (mod.id === 'scada_plc') setIsScadaModalOpen(true);
+    } else {
+      setCarouselTargetModule(i);
+      setTimeout(() => {
+        setActivePlatformModule(i);
+        setTimeout(() => {
+          if (mod.id === 'drones') setIsDronesModalOpen(true);
+          else if (mod.id === 'robots') setIsRobotsModalOpen(true);
+          else if (mod.id === 'sensores_iot') setIsSensoresIotModalOpen(true);
+          else if (mod.id === 'control_acceso') setIsControlAccesoModalOpen(true);
+          else if (mod.id === 'cctv') setIsCctvModalOpen(true);
+          else if (mod.id === 'erp_crm') setIsErpCrmModalOpen(true);
+          else if (mod.id === 'nube') setIsNubeModalOpen(true);
+          else if (mod.id === 'scada_plc') setIsScadaModalOpen(true);
+        }, 150);
+      }, 1200);
+    }
+  };
 
   useEffect(() => {
     setIsAdmin(sessionStorage.getItem('quantico_admin') === 'true');
@@ -1515,9 +1544,24 @@ function HomePage() {
                 const L = Math.sqrt(x * x + y * y);
                 const angleRad = Math.atan2(y, x);
                 
-                const isActive = activePlatformModule === i;
+                // Calculate distance D to card border along angleRad to prevent line from penetrating the card
+                const cosVal = Math.abs(Math.cos(angleRad));
+                const sinVal = Math.abs(Math.sin(angleRad));
+                const D = Math.min(
+                  cosVal > 0.001 ? (105 / cosVal) : Infinity,
+                  sinVal > 0.001 ? (27.5 / sinVal) : Infinity
+                ) + 4; // 4px safety padding before border
+                const lineLength = Math.max(0, L - D);
+                
+                const isActiveLine = carouselTargetModule === i;
+                const isActiveCard = activePlatformModule === i;
                 const isHovered = hoveredPlatformModule === i;
-                const isHighlighted = isActive || isHovered;
+                const isHighlighted = isActiveLine || isHovered;
+
+                // Midpoint percentage for visible line segment (from core border at 80px to card border)
+                const midpointPercent = lineLength > 80 
+                  ? ((80 + lineLength) / 2) / lineLength * 100 
+                  : 55;
 
                 return (
                   <div 
@@ -1526,33 +1570,34 @@ function HomePage() {
                       position: 'absolute',
                       left: '50%',
                       top: '50%',
-                      width: `${L}px`,
-                      height: isActive ? '1.5px' : '0.5px',
+                      width: `${lineLength}px`,
+                      height: isActiveLine ? '1.5px' : '0.5px',
                       transformOrigin: 'left center',
                       transform: `rotate(${angleRad}rad)`,
-                      backgroundColor: isActive ? '#78FF00' : isHovered ? 'rgba(120, 255, 0, 0.5)' : 'rgba(255, 255, 255, 0.05)',
-                      opacity: isActive ? 0.9 : isHighlighted ? 0.6 : 0.15,
+                      backgroundColor: isActiveLine ? '#78FF00' : isHovered ? 'rgba(120, 255, 0, 0.5)' : 'rgba(255, 255, 255, 0.05)',
+                      opacity: isActiveLine ? 0.9 : isHighlighted ? 0.6 : 0.15,
                       zIndex: 15,
                       transition: 'transform 1200ms cubic-bezier(0.22, 1, 0.36, 1), width 1200ms cubic-bezier(0.22, 1, 0.36, 1), opacity 1200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 1200ms cubic-bezier(0.22, 1, 0.36, 1)'
                     }}
                     className="pointer-events-none"
                   >
-                    {/* Connection Node Dot on Ellipse */}
+                    {/* Connection Node Dot right at the edge of the card */}
                     <div 
                       className={`absolute top-1/2 -translate-y-1/2 -right-1 rounded-full transition-all duration-300 ${
-                        isActive 
+                        isActiveLine 
                           ? 'w-2 h-2 bg-[#78FF00] shadow-[0_0_8px_#78FF00]' 
                           : isHovered 
                             ? 'w-1.5 h-1.5 bg-[#78FF00]/70' 
                             : 'w-1 h-1 bg-[#78FF00]/35'
                       }`}
+                      style={{ transform: 'translate(0, -50%)' }}
                     />
 
-                    {/* Active Connection Midpoint Dot */}
-                    {isActive && (
+                    {/* Active Connection Midpoint Dot (centered in visible area) */}
+                    {isActiveLine && (
                       <div 
                         className="absolute top-1/2 -translate-y-1/2 rounded-full w-2.5 h-2.5 bg-[#78FF00] shadow-[0_0_12px_#78FF00]"
-                        style={{ left: '55%', transform: 'translate(-50%, -50%)' }}
+                        style={{ left: `${midpointPercent}%`, transform: 'translate(-50%, -50%)' }}
                       />
                     )}
 
@@ -1581,36 +1626,7 @@ function HomePage() {
                 return (
                   <button 
                     key={mod.id}
-                    onClick={() => {
-                      const isAlreadyActive = activePlatformModule === i;
-                      setActivePlatformModule(i);
-                      
-                      const openModal = () => {
-                        if (mod.id === 'drones') {
-                          setIsDronesModalOpen(true);
-                        } else if (mod.id === 'robots') {
-                          setIsRobotsModalOpen(true);
-                        } else if (mod.id === 'sensores_iot') {
-                          setIsSensoresIotModalOpen(true);
-                        } else if (mod.id === 'control_acceso') {
-                          setIsControlAccesoModalOpen(true);
-                        } else if (mod.id === 'cctv') {
-                          setIsCctvModalOpen(true);
-                        } else if (mod.id === 'erp_crm') {
-                          setIsErpCrmModalOpen(true);
-                        } else if (mod.id === 'nube') {
-                          setIsNubeModalOpen(true);
-                        } else if (mod.id === 'scada_plc') {
-                          setIsScadaModalOpen(true);
-                        }
-                      };
-
-                      if (isAlreadyActive) {
-                        openModal();
-                      } else {
-                        setTimeout(openModal, 1250);
-                      }
-                    }}
+                    onClick={() => handleModuleSelect(i, mod)}
                     onMouseEnter={() => setHoveredPlatformModule(i)}
                     onMouseLeave={() => setHoveredPlatformModule(null)}
                     style={{
@@ -2000,6 +2016,7 @@ function HomePage() {
                     <button
                       key={mod.id}
                       onClick={() => {
+                        setCarouselTargetModule(i);
                         setActivePlatformModule(i);
                         if (mod.id === 'drones') {
                           setIsDronesModalOpen(true);
