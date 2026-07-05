@@ -7,7 +7,7 @@ import {
   TrendingUp, Truck, BarChart3, Database, Server, Cpu, Video, 
   BellRing, Network, Radar, Fingerprint, Factory, ArrowRight,
   MonitorPlay, ShieldAlert, FileText, CheckCircle2, ChevronRight, Map, Settings,
-  Upload, Image
+  Upload, Image, Box, PlusSquare, Recycle
 } from 'lucide-react';
 
 import Header from '@/components/Header.jsx';
@@ -42,14 +42,12 @@ const solutions = [
 ];
 
 const systems = [
-  { icon: MonitorPlay, title: 'Centros de control', desc: 'Videowalls, consolas y software NOC/SOC integrado.' },
-  { icon: Radar, title: 'Seguridad perimetral', desc: 'Radares, sensores sísmicos y barreras físicas activas.' },
-  { icon: Lock, title: 'Ciberseguridad industrial', desc: 'Protección de redes SCADA, PLC y aislamiento OT/IT.' },
-  { icon: Zap, title: 'Automatización OT/IT', desc: 'Puentes seguros entre tecnología operativa y de información.' },
-  { icon: Activity, title: 'Monitoreo ambiental', desc: 'Sensores de gas, temperatura, humedad y calidad de aire.' },
-  { icon: Eye, title: 'Videovigilancia inteligente', desc: 'CCTV con analítica IA en borde para detección de anomalías.' },
-  { icon: ShieldAlert, title: 'Respuesta y contingencia', desc: 'Sistemas de alarma temprana y supresión de incidentes.' },
-  { icon: Database, title: 'Integración de datos', desc: 'Data lakes industriales para telemetría y logs operacionales.' },
+  { num: '01', color: '#78FF00', icon: Shield, title: 'GOV\nCOMMAND', desc: 'Comando integral para seguridad pública, movilidad y emergencias.' },
+  { num: '02', color: '#3b82f6', icon: Factory, title: 'INDUSTRIAL\nGRID', desc: 'Red inteligente para automatización y monitoreo industrial.' },
+  { num: '03', color: '#a855f7', icon: Box, title: 'LOGISTICS\nGRID', desc: 'Infraestructura conectada para patios, almacenes y flotillas.' },
+  { num: '04', color: '#ef4444', icon: PlusSquare, title: 'BIO\nSAFE', desc: 'Trazabilidad y control ambiental para alimentos y salud.' },
+  { num: '05', color: '#f97316', icon: Recycle, title: 'CIRCULAR\nGRID', desc: 'Automatización y trazabilidad para reciclaje y conversión plástica.' },
+  { num: '06', color: '#06b6d4', icon: Network, title: 'CRITICAL\nCORE', desc: 'Núcleo de inteligencia para operación, riesgo y continuidad crítica.' },
 ];
 
 const equipment = [
@@ -2291,7 +2289,7 @@ function HomePage() {
               <p className="text-[#8A8F98] text-lg">Soluciones integradas de hardware y software para operaciones críticas.</p>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {systems.map((sys) => (
                 <SystemCard key={sys.title} {...sys} />
               ))}

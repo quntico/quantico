@@ -1,14 +1,79 @@
 import React from 'react';
 
-function SystemCard({ icon: Icon, title, description, desc }) {
+function SystemCard({ num, title, description, desc, icon: Icon, color = '#78FF00' }) {
   const displayDesc = description || desc;
+  const formattedTitle = title.split('\n').map((line, i) => (
+    <React.Fragment key={i}>
+      {line}
+      {i < title.split('\n').length - 1 && <br />}
+    </React.Fragment>
+  ));
+
   return (
-    <div className="glass-card p-6 flex flex-col items-center text-center group">
-      <div className="w-12 h-12 rounded bg-white/5 flex items-center justify-center mb-6 border border-white/5 group-hover:border-[#8CFF00]/30 transition-colors">
-        <Icon className="w-6 h-6 text-[#8CFF00]" strokeWidth={1.5} />
+    <div 
+      className="relative p-6 sm:p-8 flex flex-col group overflow-hidden border transition-all duration-500 min-h-[320px] sm:min-h-[360px]"
+      style={{
+        backgroundColor: '#020409',
+        borderColor: 'rgba(255, 255, 255, 0.05)',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = color;
+        e.currentTarget.style.boxShadow = `0 10px 40px -10px ${color}30, inset 0 0 20px -5px ${color}15`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+        e.currentTarget.style.boxShadow = 'none';
+      }}
+    >
+      {/* Background Graphic / Glow */}
+      <div 
+        className="absolute bottom-0 right-0 w-64 h-64 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-700 blur-[80px] pointer-events-none"
+        style={{ backgroundColor: color }}
+      />
+      
+      {/* Background Grid Pattern (subtle) */}
+      <div className="absolute inset-0 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-500 pointer-events-none mix-blend-overlay bg-[linear-gradient(rgba(255,255,255,1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,1)_1px,transparent_1px)] bg-[size:20px_20px]" />
+      
+      {/* Large faint icon as background on the right */}
+      {Icon && (
+        <div className="absolute -right-6 -bottom-6 opacity-[0.02] group-hover:opacity-[0.06] transition-all duration-700 pointer-events-none transform group-hover:scale-110 group-hover:-rotate-6">
+          <Icon size={220} style={{ color: color }} strokeWidth={1} />
+        </div>
+      )}
+
+      {/* Top Left Number & Line */}
+      <div className="mb-6 relative z-10 flex flex-col items-start gap-1.5">
+        <span className="font-mono text-sm tracking-widest font-bold" style={{ color: color }}>
+          {num}
+        </span>
+        <div className="h-[2px] w-6 transition-all duration-500 group-hover:w-10" style={{ backgroundColor: color }} />
       </div>
-      <h4 className="font-title text-xl text-white mb-3 tracking-wide">{title}</h4>
-      {displayDesc && <p className="text-sm text-[#8A8F98] leading-relaxed">{displayDesc}</p>}
+
+      {/* Title */}
+      <h3 className="font-title text-2xl sm:text-3xl text-white mb-4 tracking-wide leading-[1.15] relative z-10 uppercase">
+        {formattedTitle}
+      </h3>
+
+      {/* Description */}
+      <p className="text-xs sm:text-sm text-[#8A8F98] max-w-[90%] sm:max-w-[80%] leading-relaxed relative z-10 mb-12">
+        {displayDesc}
+      </p>
+
+      {/* Bottom Layout - Icon, Quantico, Line */}
+      <div className="mt-auto relative z-10 flex flex-col gap-5">
+        {/* Icon outline */}
+        {Icon && (
+          <div className="flex items-center justify-start transition-transform duration-500 group-hover:-translate-y-1">
+            <Icon size={32} style={{ color: color }} strokeWidth={1.5} />
+          </div>
+        )}
+        
+        {/* Footer line */}
+        <div className="flex items-center justify-between w-full mt-2 pt-4 border-t border-white/5">
+          <span className="font-logo text-[8px] sm:text-[9px] tracking-[0.3em] text-white/30 font-bold uppercase transition-colors duration-300 group-hover:text-white/50">QUANTICO</span>
+          <div className="h-[2px] w-6 opacity-30 transition-all duration-500 group-hover:opacity-100 group-hover:w-8" style={{ backgroundColor: color }} />
+        </div>
+      </div>
     </div>
   );
 }
