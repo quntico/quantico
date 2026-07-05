@@ -456,6 +456,7 @@ function HomePage() {
   const [carouselRotation, setCarouselRotation] = useState(90);
   const [isCoreAnimating, setIsCoreAnimating] = useState(false);
   const [isInfiniteMode, setIsInfiniteMode] = useState(false);
+  const [isCarouselActive, setIsCarouselActive] = useState(false);
 
   const getCardStyle = (i, activeIdx) => {
     const angle = - (i * 45);
@@ -491,6 +492,15 @@ function HomePage() {
   };
 
   const handleCoreClick = () => {
+    if (!isCarouselActive) {
+      setIsCarouselActive(true);
+      setIsCoreAnimating(true);
+      setTimeout(() => {
+        setIsCoreAnimating(false);
+      }, 1400);
+      return;
+    }
+
     if (isCoreAnimating) return;
     setIsCoreAnimating(true);
     setTimeout(() => {
@@ -1491,6 +1501,16 @@ function HomePage() {
               stroke-dasharray: 240;
               animation: draw-infinity 3s linear infinite;
             }
+            @keyframes core-pulse-glow {
+              0%, 100% {
+                border-color: rgba(120, 255, 0, 0.25);
+                box-shadow: 0 0 25px rgba(120, 255, 0, 0.08);
+              }
+              50% {
+                border-color: rgba(120, 255, 0, 0.75);
+                box-shadow: 0 0 50px rgba(120, 255, 0, 0.35);
+              }
+            }
           `}} />
 
           {/* Grid Background details */}
@@ -1510,7 +1530,7 @@ function HomePage() {
               }}
             >
               {/* Concentric 3D Orbital Rings SVG overlay (Technical HUD guides) */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 1000 520">
+              <svg className={`absolute inset-0 w-full h-full pointer-events-none z-10 transition-opacity duration-1000 ${isCarouselActive ? 'opacity-100' : 'opacity-0'}`} viewBox="0 0 1000 520">
                 {/* Outer HUD Ring (Solid very faint) */}
                 <ellipse 
                   cx="500" 
@@ -1594,14 +1614,14 @@ function HomePage() {
                       position: 'absolute',
                       left: '50%',
                       top: '50%',
-                      width: `${lineLength}px`,
+                      width: `${isCarouselActive ? lineLength : 0}px`,
                       height: isActiveLine ? '1.5px' : '0.5px',
                       transformOrigin: 'left center',
                       transform: `rotate(${angleRad}rad)`,
                       // Fades connection line segment out to transparent if not active or hovered
-                      backgroundColor: isActiveLine 
+                      backgroundColor: isCarouselActive && isActiveLine 
                         ? '#78FF00' 
-                        : isHovered 
+                        : isCarouselActive && isHovered 
                           ? 'rgba(120, 255, 0, 0.35)' 
                           : 'rgba(120, 255, 0, 0)',
                       zIndex: 15,
@@ -1611,18 +1631,20 @@ function HomePage() {
                   >
                     {/* Connection Node Dot right at the edge of the card (always visible as a sutil guide) */}
                     <div 
-                      className={`absolute top-1/2 -translate-y-1/2 -right-1 rounded-full transition-all duration-300 ${
-                        isActiveLine 
-                          ? 'w-2 h-2 bg-[#78FF00] shadow-[0_0_8px_#78FF00] opacity-100' 
-                          : isHovered 
-                            ? 'w-1.5 h-1.5 bg-[#78FF00] opacity-80' 
-                            : 'w-1.5 h-1.5 bg-[#78FF00]/50 opacity-40'
+                      className={`absolute top-1/2 -translate-y-1/2 -right-1 rounded-full transition-all duration-500 ${
+                        isCarouselActive
+                          ? isActiveLine 
+                            ? 'w-2 h-2 bg-[#78FF00] shadow-[0_0_8px_#78FF00] opacity-100' 
+                            : isHovered 
+                              ? 'w-1.5 h-1.5 bg-[#78FF00] opacity-80' 
+                              : 'w-1.5 h-1.5 bg-[#78FF00]/50 opacity-40'
+                          : 'w-0 h-0 opacity-0'
                       }`}
                       style={{ transform: 'translate(0, -50%)' }}
                     />
 
                     {/* Active Connection Midpoint Dot (centered in visible area) */}
-                    {isActiveLine && (
+                    {isCarouselActive && isActiveLine && (
                       <div 
                         className="absolute top-1/2 -translate-y-1/2 rounded-full w-2.5 h-2.5 bg-[#78FF00] shadow-[0_0_12px_#78FF00]"
                         style={{ left: `${midpointPercent}%`, transform: 'translate(-50%, -50%)' }}
@@ -1630,7 +1652,7 @@ function HomePage() {
                     )}
 
                     {/* Traveling light particle */}
-                    {isActiveLine && (
+                    {isCarouselActive && isActiveLine && (
                       <div 
                         className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#78FF00] shadow-[0_0_6px_#78FF00]"
                         style={{
@@ -1661,10 +1683,11 @@ function HomePage() {
                       position: 'absolute',
                       left: '50%',
                       top: '50%',
-                      transform: `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), ${z}px) rotateY(${rotateY}deg) scale(${scale})`,
-                      opacity: opacity,
+                      transform: `translate3d(calc(-50% + ${isCarouselActive ? x : 0}px), calc(-50% + ${isCarouselActive ? y : 0}px), ${isCarouselActive ? z : -150}px) rotateY(${rotateY}deg) scale(${isCarouselActive ? scale : 0})`,
+                      opacity: isCarouselActive ? opacity : 0,
                       zIndex: zIndex,
                       transformStyle: 'preserve-3d',
+                      pointerEvents: isCarouselActive ? 'auto' : 'none',
                       transition: 'transform 1200ms cubic-bezier(0.22, 1, 0.36, 1), opacity 1200ms cubic-bezier(0.22, 1, 0.36, 1), z-index 1200ms cubic-bezier(0.22, 1, 0.36, 1)'
                     }}
                     className="focus:outline-none cursor-pointer z-20"
@@ -1726,6 +1749,23 @@ function HomePage() {
                 );
               })}
 
+              {/* Call to Action Text for Desktop */}
+              <div 
+                className={`absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 transition-all duration-700 pointer-events-none z-[60] ${
+                  isCarouselActive 
+                    ? 'opacity-0 scale-95 pointer-events-none translate-y-4' 
+                    : 'opacity-100 scale-100 translate-y-0'
+                }`}
+                style={{
+                  top: '372px', // perfectly below core bottom edge
+                }}
+              >
+                <span className="text-[10px] font-mono tracking-[0.3em] text-[#78FF00]/80 uppercase font-bold drop-shadow-[0_0_6px_rgba(120,255,0,0.4)]">
+                  HAZ CLIC EN EL NÚCLEO PARA EXPLORAR
+                </span>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#78FF00] shadow-[0_0_8px_#78FF00] animate-ping" />
+              </div>
+
               {/* Central Core (2D positioned, perfectly circular, centered, not tilted, z-index 50 to prevent overlap) */}
               <div 
                 className="absolute top-1/2 left-1/2 z-50 pointer-events-auto"
@@ -1736,10 +1776,15 @@ function HomePage() {
                 <button 
                   onClick={handleCoreClick}
                   className={`relative w-40 h-40 rounded-full bg-[#000000] border flex flex-col items-center justify-center transition-all duration-500 select-none cursor-pointer focus:outline-none active:scale-95 ${
-                    (activePlatformModule !== null || hoveredPlatformModule !== null) 
-                      ? 'border-[#78FF00] shadow-[0_0_50px_rgba(120,255,0,0.25)]' 
-                      : 'border-white/10 shadow-[0_0_30px_rgba(120,255,0,0.08)]'
+                    !isCarouselActive
+                      ? 'border-[#78FF00]/40 shadow-[0_0_30px_rgba(120,255,0,0.15)] hover:border-[#78FF00] hover:shadow-[0_0_45px_rgba(120,255,0,0.35)]'
+                      : (activePlatformModule !== null || hoveredPlatformModule !== null) 
+                        ? 'border-[#78FF00] shadow-[0_0_50px_rgba(120,255,0,0.25)]' 
+                        : 'border-white/10 shadow-[0_0_30px_rgba(120,255,0,0.08)]'
                   }`}
+                  style={{
+                    animation: !isCarouselActive ? 'core-pulse-glow 2.5s ease-in-out infinite' : 'none'
+                  }}
                 >
                   <div className="absolute inset-0.5 rounded-full bg-[#020409] z-0"></div>
                   
@@ -1874,7 +1919,7 @@ function HomePage() {
                           className="opacity-40 blur-[3px]"
                         />
                         <path 
-                          d="M 50,25 C 35,10 25,20 25,25 C 25,30 35,40 50,25 C 65,10 75,20 75,25 C 75,30 65,40 50,25 Z" 
+                      d="M 50,25 C 35,10 25,20 25,25 C 25,30 35,40 50,25 C 65,10 75,20 75,25 C 75,30 65,40 50,25 Z" 
                           stroke="#78FF00" 
                           strokeWidth="3.5" 
                           strokeLinecap="round"
@@ -1894,10 +1939,15 @@ function HomePage() {
               <button 
                 onClick={handleCoreClick}
                 className={`relative w-32 h-32 rounded-full bg-[#000000] border flex flex-col items-center justify-center transition-all duration-500 mb-8 cursor-pointer focus:outline-none active:scale-95 ${
-                  activePlatformModule !== null 
-                    ? 'border-[#78FF00] shadow-[0_0_35px_rgba(120,255,0,0.2)]' 
-                    : 'border-white/10 shadow-[0_0_20px_rgba(120,255,0,0.05)]'
+                  !isCarouselActive
+                    ? 'border-[#78FF00]/40 shadow-[0_0_20px_rgba(120,255,0,0.15)] hover:border-[#78FF00] hover:shadow-[0_0_35px_rgba(120,255,0,0.25)]'
+                    : activePlatformModule !== null 
+                      ? 'border-[#78FF00] shadow-[0_0_35px_rgba(120,255,0,0.2)]' 
+                      : 'border-white/10 shadow-[0_0_20px_rgba(120,255,0,0.05)]'
                 }`}
+                style={{
+                  animation: !isCarouselActive ? 'core-pulse-glow 2.5s ease-in-out infinite' : 'none'
+                }}
               >
                 <div className="absolute inset-0.5 rounded-full bg-[#020409] z-0"></div>
                 
@@ -2035,8 +2085,28 @@ function HomePage() {
                 )}
               </button>
 
+              {/* Mobile Call to Action */}
+              <div 
+                className={`flex flex-col items-center gap-1.5 transition-all duration-700 pointer-events-none mb-8 ${
+                  isCarouselActive 
+                    ? 'opacity-0 scale-95 pointer-events-none h-0 overflow-hidden mb-0' 
+                    : 'opacity-100 scale-100 h-auto'
+                }`}
+              >
+                <span className="text-[9.5px] font-mono tracking-[0.25em] text-[#78FF00]/80 uppercase font-bold drop-shadow-[0_0_6px_rgba(120,255,0,0.4)]">
+                  HAZ CLIC PARA EXPLORAR
+                </span>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#78FF00] shadow-[0_0_8px_#78FF00] animate-ping" />
+              </div>
+
               {/* Grid cards */}
-              <div className="grid grid-cols-2 gap-3 w-full max-w-md">
+              <div 
+                className={`grid grid-cols-2 gap-3 w-full max-w-md transition-all duration-1000 ${
+                  isCarouselActive 
+                    ? 'opacity-100 max-h-[1000px] mt-0 translate-y-0 scale-100' 
+                    : 'opacity-0 max-h-0 overflow-hidden mt-0 translate-y-4 scale-95 pointer-events-none'
+                }`}
+              >
                 {platformModules.map((mod, i) => {
                   const isActive = activePlatformModule === i;
                   const Icon = mod.icon;
@@ -2089,7 +2159,13 @@ function HomePage() {
             </div>
 
             {/* Info Card Panel */}
-            <div className="mt-12 max-w-2xl mx-auto">
+            <div 
+              className={`mt-12 max-w-2xl mx-auto transition-all duration-1000 ${
+                isCarouselActive 
+                  ? 'opacity-100 translate-y-0 scale-100' 
+                  : 'opacity-0 translate-y-8 scale-95 pointer-events-none'
+              }`}
+            >
               <div className="relative p-6 rounded-xl bg-[#020409]/90 border border-[#78FF00]/20 backdrop-blur-md shadow-[0_0_30px_rgba(120,255,0,0.05)] overflow-hidden">
                 {/* Tech corner details */}
                 <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#78FF00]"></div>
