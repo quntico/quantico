@@ -470,68 +470,68 @@ function HomePage() {
     let zIndex = 10;
 
     if (diff === 0) {
-      x = 310;
-      y = 15;
+      x = 285;
+      y = 10;
       z = 180;
-      scale = 1.15;
+      scale = 1.12;
       opacity = 1.0;
       rotateY = 0;
       zIndex = 45;
     } else if (diff === 1) {
-      x = 420;
+      x = 385;
       y = -15;
       z = 60;
-      scale = 0.90;
-      opacity = 0.75;
+      scale = 0.82;
+      opacity = 0.55;
       rotateY = -35;
       zIndex = 30;
     } else if (diff === 2) {
-      x = 520;
-      y = -50;
+      x = 475;
+      y = -45;
       z = -40;
-      scale = 0.70;
+      scale = 0.68;
       opacity = 0.35;
-      rotateY = -55;
+      rotateY = -50;
       zIndex = 20;
     } else if (diff === 3) {
-      x = 610;
-      y = -80;
+      x = 555;
+      y = -70;
       z = -120;
       scale = 0.55;
-      opacity = 0.15;
-      rotateY = -65;
+      opacity = 0.22;
+      rotateY = -60;
       zIndex = 10;
     } else if (diff === 4) {
-      x = 690;
-      y = -105;
+      x = -520;
+      y = -95;
       z = -190;
-      scale = 0.45;
-      opacity = 0.08;
-      rotateY = -70;
+      scale = 0.50;
+      opacity = 0.18;
+      rotateY = -65;
       zIndex = 5;
     } else if (diff === -1) {
-      x = -310;
+      x = -285;
       y = -15;
       z = 70;
-      scale = 0.90;
-      opacity = 0.75;
+      scale = 0.82;
+      opacity = 0.55;
       rotateY = 35;
       zIndex = 35;
     } else if (diff === -2) {
-      x = -420;
-      y = -50;
+      x = -375;
+      y = -45;
       z = -30;
-      scale = 0.70;
+      scale = 0.68;
       opacity = 0.35;
-      rotateY = 55;
+      rotateY = 50;
       zIndex = 22;
     } else if (diff === -3) {
-      x = -520;
-      y = -80;
+      x = -455;
+      y = -70;
       z = -110;
       scale = 0.55;
-      opacity = 0.15;
-      rotateY = 65;
+      opacity = 0.22;
+      rotateY = 60;
       zIndex = 12;
     }
 
@@ -1739,7 +1739,7 @@ function HomePage() {
                   
                   {/* Layer for QUANTICO text or Infinity Symbol (completely flat, horizontal, centered, independent z-index above HUD) */}
                   {!isInfiniteMode ? (
-                    <span className="absolute z-20 font-logo text-xs md:text-sm text-white font-bold drop-shadow-[0_0_10px_rgba(120,255,0,0.7)] flex select-none pointer-events-none">
+                    <span className="absolute inset-0 z-20 font-logo text-xs md:text-sm text-white font-bold drop-shadow-[0_0_10px_rgba(120,255,0,0.7)] flex items-center justify-center select-none pointer-events-none">
                       {"QUANTICO".split("").map((char, idx) => {
                         const offset = letterOffsets[idx];
                         return (
