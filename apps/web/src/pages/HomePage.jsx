@@ -456,6 +456,88 @@ function HomePage() {
   const [isCoreAnimating, setIsCoreAnimating] = useState(false);
   const [isInfiniteMode, setIsInfiniteMode] = useState(false);
 
+  const getCardStyle = (i, activeIdx) => {
+    let diff = (i - activeIdx) % 8;
+    if (diff > 4) diff -= 8;
+    if (diff <= -4) diff += 8;
+
+    let x = 0;
+    let y = 0;
+    let z = 0;
+    let scale = 1;
+    let opacity = 1;
+    let rotateY = 0;
+    let zIndex = 10;
+
+    if (diff === 0) {
+      x = 310;
+      y = 15;
+      z = 180;
+      scale = 1.15;
+      opacity = 1.0;
+      rotateY = 0;
+      zIndex = 45;
+    } else if (diff === 1) {
+      x = 420;
+      y = -15;
+      z = 60;
+      scale = 0.90;
+      opacity = 0.75;
+      rotateY = -35;
+      zIndex = 30;
+    } else if (diff === 2) {
+      x = 520;
+      y = -50;
+      z = -40;
+      scale = 0.70;
+      opacity = 0.35;
+      rotateY = -55;
+      zIndex = 20;
+    } else if (diff === 3) {
+      x = 610;
+      y = -80;
+      z = -120;
+      scale = 0.55;
+      opacity = 0.15;
+      rotateY = -65;
+      zIndex = 10;
+    } else if (diff === 4) {
+      x = 690;
+      y = -105;
+      z = -190;
+      scale = 0.45;
+      opacity = 0.08;
+      rotateY = -70;
+      zIndex = 5;
+    } else if (diff === -1) {
+      x = -310;
+      y = -15;
+      z = 70;
+      scale = 0.90;
+      opacity = 0.75;
+      rotateY = 35;
+      zIndex = 35;
+    } else if (diff === -2) {
+      x = -420;
+      y = -50;
+      z = -30;
+      scale = 0.70;
+      opacity = 0.35;
+      rotateY = 55;
+      zIndex = 22;
+    } else if (diff === -3) {
+      x = -520;
+      y = -80;
+      z = -110;
+      scale = 0.55;
+      opacity = 0.15;
+      rotateY = 65;
+      zIndex = 12;
+    }
+
+    return { x, y, z, scale, opacity, rotateY, zIndex };
+  };
+
   const handleCoreClick = () => {
     if (isCoreAnimating) return;
     setIsCoreAnimating(true);
@@ -1433,7 +1515,7 @@ function HomePage() {
               <h2 className="font-title text-3xl md:text-5xl text-white mb-6 tracking-wide">UNA PLATAFORMA PARA CONECTAR TODA TU OPERACIÓN.</h2>
             </div>
             
-            {/* Desktop Radial Layout (visible md and up) */}
+            {/* Desktop Cover Flow Layout (visible md and up) */}
             <div 
               className="hidden md:block relative w-[1000px] h-[520px] mx-auto select-none"
               style={{
@@ -1441,50 +1523,12 @@ function HomePage() {
                 transformStyle: 'preserve-3d'
               }}
             >
-              {/* Connection Lines & 3D Orbital Ring SVG overlay */}
+              {/* Connection Lines SVG overlay */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 1000 520">
-                {/* 3D orbital ring path */}
-                {(() => {
-                  const points = [];
-                  for (let angle = 0; angle <= 360; angle += 4) {
-                    const rad = (angle * Math.PI) / 180;
-                    const px = 500 + 350 * Math.cos(rad);
-                    const py = 260 + 155 * Math.sin(rad) + 25 * Math.cos(rad);
-                    points.push(`${px},${py}`);
-                  }
-                  return (
-                    <>
-                      {/* Background soft glow path */}
-                      <polyline
-                        points={points.join(" ")}
-                        fill="none"
-                        stroke="rgba(120, 255, 0, 0.2)"
-                        strokeWidth="3"
-                        className="opacity-15 blur-[2px]"
-                      />
-                      {/* Fine dash line */}
-                      <polyline
-                        points={points.join(" ")}
-                        fill="none"
-                        stroke="rgba(120, 255, 0, 0.35)"
-                        strokeWidth="0.8"
-                        strokeDasharray="4 6"
-                        className="opacity-35"
-                      />
-                    </>
-                  );
-                })()}
-
                 {platformModules.map((mod, i) => {
-                  const angle = i * 45;
-                  const rad = ((angle + carouselRotation) * Math.PI) / 180;
-                  
-                  const cosVal = Math.cos(rad);
-                  const sinVal = Math.sin(rad);
-
-                  // Coordinate targets matching the cards exactly
-                  const x2 = 500 + 350 * cosVal;
-                  const y2 = 260 + 155 * sinVal + 25 * cosVal;
+                  const { x, y } = getCardStyle(i, activePlatformModule);
+                  const x2 = 500 + x;
+                  const y2 = 260 + y;
                   
                   const isActive = activePlatformModule === i;
                   const isHovered = hoveredPlatformModule === i;
@@ -1498,11 +1542,11 @@ function HomePage() {
                         y1="260" 
                         x2={x2} 
                         y2={y2} 
-                        stroke={isHighlighted ? '#78FF00' : 'rgba(255, 255, 255, 0.06)'} 
-                        strokeWidth={isHighlighted ? '0.75' : '0.3'}
-                        className="transition-all duration-300"
+                        stroke={isHighlighted ? '#78FF00' : 'rgba(255, 255, 255, 0.05)'} 
+                        strokeWidth={isHighlighted ? '0.75' : '0.25'}
+                        className="transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
                         style={{
-                          opacity: isHighlighted ? 0.8 : 0.25
+                          opacity: isHighlighted ? 0.75 : 0.15
                         }}
                       />
                       
@@ -1521,26 +1565,9 @@ function HomePage() {
                 })}
               </svg>
 
-              {/* 3D Carousel Cards positioned dynamically in a real 3D space */}
+              {/* 3D Carousel Cards positioned dynamically as a Cover Flow */}
               {platformModules.map((mod, i) => {
-                const angle = i * 45;
-                const rad = ((angle + carouselRotation) * Math.PI) / 180;
-                
-                const cosVal = Math.cos(rad);
-                const sinVal = Math.sin(rad);
-
-                // Coordinates relative to center
-                const x = 350 * cosVal;
-                const y = 155 * sinVal + 25 * cosVal;
-
-                // Closeness factor t based on X position (right is front, left is back)
-                const t = (cosVal + 1) / 2; // 0 at left/back, 1 at right/front
-
-                const z = -150 + 260 * t; // translateZ ranges from -150px to 110px
-                const scale = 0.72 + 0.3 * t; // scale from 0.72 to 1.02
-                const opacity = 0.42 + 0.58 * t; // opacity from 0.42 to 1.0
-                const zIndex = Math.round(10 + 20 * t); // z-index from 10 to 30 (always below core's 50)
-                const rotateY = -40 * sinVal; // rotateY card angle to point towards camera/core
+                const { x, y, z, scale, opacity, rotateY, zIndex } = getCardStyle(i, activePlatformModule);
 
                 const isHovered = hoveredPlatformModule === i;
                 const isActive = activePlatformModule === i;
@@ -1580,7 +1607,7 @@ function HomePage() {
                       marginTop: `${y}px`,
                       opacity: opacity,
                       zIndex: zIndex,
-                      transition: 'transform 0.8s cubic-bezier(0.2, 1, 0.2, 1), opacity 0.8s, margin 0.8s, z-index 0.8s'
+                      transition: 'transform 1000ms cubic-bezier(0.22, 1, 0.36, 1), opacity 1000ms cubic-bezier(0.22, 1, 0.36, 1), margin 1000ms cubic-bezier(0.22, 1, 0.36, 1), z-index 1000ms cubic-bezier(0.22, 1, 0.36, 1)'
                     }}
                     className={`z-20 flex items-center gap-3.5 px-4 py-3 rounded-lg border backdrop-blur-md min-w-[210px] h-[50px] text-left focus:outline-none transition-all duration-300 ${
                       isActive 
