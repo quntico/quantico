@@ -452,6 +452,7 @@ function HomePage() {
 
   const [config, setConfig] = useState(defaultConfig);
   const [activePlatformModule, setActivePlatformModule] = useState(0);
+  const [carouselRotation, setCarouselRotation] = useState(90);
   const [isCoreAnimating, setIsCoreAnimating] = useState(false);
 
   const handleCoreClick = () => {
@@ -514,6 +515,14 @@ function HomePage() {
     });
     createdBlobUrlsRef.current = [];
   };
+
+  useEffect(() => {
+    const target = 90 - (activePlatformModule * 45);
+    let diff = (target - carouselRotation) % 360;
+    if (diff > 180) diff -= 360;
+    if (diff < -180) diff += 360;
+    setCarouselRotation(prev => prev + diff);
+  }, [activePlatformModule]);
 
   useEffect(() => {
     setIsAdmin(sessionStorage.getItem('quantico_admin') === 'true');
@@ -1413,27 +1422,25 @@ function HomePage() {
             </div>
             
             {/* Desktop Radial Layout (visible md and up) */}
-            <div className="hidden md:block relative max-w-5xl mx-auto h-[600px] items-center justify-center">
-              
-              {/* Concentric orbital rings */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] h-[340px] border border-white/5 rounded-full pointer-events-none animate-[spin_100s_linear_infinite]"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] border border-dashed border-[#78FF00]/10 rounded-full pointer-events-none animate-[spin_60s_linear_infinite_reverse]"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] border border-dashed border-white/5 rounded-full pointer-events-none animate-[spin_180s_linear_infinite]"></div>
-              
-              {/* Connection Lines SVG overlay */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
-                {/* Node orbit line path */}
-                <ellipse cx="50" cy="50" rx="38" ry="32" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="0.1" strokeDasharray="1 2" />
-                
+            <div 
+              className="hidden md:block relative max-w-5xl mx-auto h-[600px] select-none"
+            >
+              {/* Elliptical orbital path rings (2D, centered, matching module positions) */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[400px] border border-white/5 rounded-full pointer-events-none"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[350px] border border-dashed border-[#78FF00]/10 rounded-full pointer-events-none animate-[spin_100s_linear_infinite]"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[450px] border border-dashed border-white/5 rounded-full pointer-events-none animate-[spin_180s_linear_infinite]"></div>
+
+              {/* Connection Lines SVG overlay (2D, centered) */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 100 100">
                 {platformModules.map((mod, i) => {
-                  const angle_deg = i * 45 - 90;
-                  const angle_rad = (angle_deg * Math.PI) / 180;
-                  const x = 38 * Math.cos(angle_rad);
-                  const y = 32 * Math.sin(angle_rad);
-                  const x2 = 50 + x;
-                  const y2 = 50 + y;
-                  const isHovered = hoveredPlatformModule === i;
+                  const angle = i * 45;
+                  const rad = ((angle + carouselRotation) * Math.PI) / 180;
+                  // Center is 50, 50. rx is 36, ry is 33.33 (360px out of 1000px, 200px out of 600px)
+                  const x2 = 50 + 36 * Math.cos(rad);
+                  const y2 = 50 + 33.33 * Math.sin(rad);
+                  
                   const isActive = activePlatformModule === i;
+                  const isHovered = hoveredPlatformModule === i;
                   const isHighlighted = isActive || isHovered;
 
                   return (
@@ -1451,31 +1458,109 @@ function HomePage() {
                       
                       {/* Traveling light particle */}
                       {isHighlighted && (
-                        <>
-                          <circle r="0.6" fill="#78FF00">
-                            <animateMotion 
-                              dur="1.6s" 
-                              repeatCount="indefinite" 
-                              path={`M ${x2} ${y2} L 50 50`} 
-                            />
-                          </circle>
-                          <circle r="0.4" fill="#00ffff" opacity="0.6">
-                            <animateMotion 
-                              dur="1.6s" 
-                              begin="0.5s"
-                              repeatCount="indefinite" 
-                              path={`M ${x2} ${y2} L 50 50`} 
-                            />
-                          </circle>
-                        </>
+                        <circle r="0.6" fill="#78FF00">
+                          <animateMotion 
+                            dur="1.6s" 
+                            repeatCount="indefinite" 
+                            path={`M 50 50 L ${x2} ${y2}`} 
+                          />
+                        </circle>
                       )}
                     </g>
                   );
                 })}
               </svg>
 
-              {/* Central Core */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+              {/* 3D Carousel Cards positioned dynamically on a 2D ellipse */}
+              {platformModules.map((mod, i) => {
+                const angle = i * 45;
+                const rad = ((angle + carouselRotation) * Math.PI) / 180;
+                
+                // Coordinates relative to center
+                const x = 360 * Math.cos(rad);
+                const y = 200 * Math.sin(rad);
+
+                // Closeness factor t based on X position (right is front, left is back)
+                const cosVal = Math.cos(rad);
+                const t = (cosVal + 1) / 2; // 0 at left, 1 at right
+
+                const scale = 0.78 + 0.3 * t;
+                const opacity = 0.35 + 0.65 * t;
+                const zIndex = Math.round(10 + 30 * t);
+                const rotateY = -35 * Math.sin(rad);
+
+                const isHovered = hoveredPlatformModule === i;
+                const isActive = activePlatformModule === i;
+                const Icon = mod.icon;
+
+                return (
+                  <button 
+                    key={mod.id}
+                    onClick={() => {
+                      setActivePlatformModule(i);
+                      if (mod.id === 'drones') {
+                        setIsDronesModalOpen(true);
+                      } else if (mod.id === 'robots') {
+                        setIsRobotsModalOpen(true);
+                      } else if (mod.id === 'sensores_iot') {
+                        setIsSensoresIotModalOpen(true);
+                      } else if (mod.id === 'control_acceso') {
+                        setIsControlAccesoModalOpen(true);
+                      } else if (mod.id === 'cctv') {
+                        setIsCctvModalOpen(true);
+                      } else if (mod.id === 'erp_crm') {
+                        setIsErpCrmModalOpen(true);
+                      } else if (mod.id === 'nube') {
+                        setIsNubeModalOpen(true);
+                      } else if (mod.id === 'scada_plc') {
+                        setIsScadaModalOpen(true);
+                      }
+                    }}
+                    onMouseEnter={() => setHoveredPlatformModule(i)}
+                    onMouseLeave={() => setHoveredPlatformModule(null)}
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: '50%',
+                      // Transform contains 3D perspective and Y-rotation ONLY for cards, not layout
+                      transform: `translate(-50%, -50%) perspective(600px) rotateY(${rotateY}deg) scale(${scale})`,
+                      marginLeft: `${x}px`,
+                      marginTop: `${y}px`,
+                      opacity: opacity,
+                      zIndex: zIndex,
+                      transition: 'transform 0.8s cubic-bezier(0.2, 1, 0.2, 1), opacity 0.8s, margin 0.8s'
+                    }}
+                    className={`z-20 flex items-center gap-3.5 px-4 py-3 rounded-lg border backdrop-blur-md min-w-[210px] h-[50px] text-left focus:outline-none transition-all duration-300 ${
+                      isActive 
+                        ? 'bg-[#78FF00]/15 border-[#78FF00] shadow-[0_0_30px_rgba(120,255,0,0.3)] text-white' 
+                        : isHovered
+                          ? 'bg-[#020409]/95 border-[#78FF00]/40 shadow-[0_0_15px_rgba(120,255,0,0.1)] text-white'
+                          : 'bg-[#020409]/85 border-white/10 text-[#B8BDC7]'
+                    }`}
+                  >
+                    <div className={`p-2 rounded-md transition-colors ${isActive || isHovered ? 'bg-[#78FF00]/15 text-[#78FF00]' : 'bg-white/5'}`}>
+                      <Icon active={isActive || isHovered} />
+                    </div>
+                    <div className="flex flex-col items-start select-none">
+                      <span className="text-[9px] font-logo tracking-wider uppercase font-bold">{mod.label}</span>
+                      <span className="text-[8px] font-mono tracking-widest text-[#8A8F98] uppercase">
+                        {isActive ? 'SELECT' : isHovered ? 'LINK' : 'SYS_OK'}
+                      </span>
+                      <div className="w-10 h-[1.5px] bg-white/10 mt-1.5 rounded-full overflow-hidden">
+                        <div className={`h-full transition-all duration-500 ${isActive ? 'w-full bg-[#78FF00]' : isHovered ? 'w-2/3 bg-[#78FF00]/70' : 'w-1/3 bg-white/20'}`}></div>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+
+              {/* Central Core (2D positioned, perfectly circular, centered, not tilted) */}
+              <div 
+                className="absolute top-1/2 left-1/2 z-30 pointer-events-auto"
+                style={{
+                  transform: 'translate(-50%, -50%)'
+                }}
+              >
                 <button 
                   onClick={handleCoreClick}
                   className={`relative w-40 h-40 rounded-full bg-[#000000] border flex flex-col items-center justify-center transition-all duration-500 select-none cursor-pointer focus:outline-none active:scale-95 ${
@@ -1485,6 +1570,7 @@ function HomePage() {
                   }`}
                 >
                   <div className="absolute inset-0.5 rounded-full bg-[#020409] z-0"></div>
+                  
                   {/* Tech grid inside core */}
                   <div 
                     className="absolute inset-0 rounded-full bg-[radial-gradient(#78FF00_1px,transparent_1px)] [background-size:8px_8px] z-0"
@@ -1572,7 +1658,8 @@ function HomePage() {
                     </svg>
                   </div>
                   
-                  <span className="relative z-20 font-logo text-xs md:text-sm text-white font-bold drop-shadow-[0_0_10px_rgba(120,255,0,0.7)] flex select-none">
+                  {/* Layer for QUANTICO text (completely flat, horizontal, centered, independent z-index above HUD) */}
+                  <span className="absolute z-20 font-logo text-xs md:text-sm text-white font-bold drop-shadow-[0_0_10px_rgba(120,255,0,0.7)] flex select-none pointer-events-none">
                     {"QUANTICO".split("").map((char, idx) => {
                       const offset = letterOffsets[idx];
                       return (
@@ -1581,8 +1668,8 @@ function HomePage() {
                           className="inline-block transition-all duration-700 ease-out"
                           style={{
                             transform: isCoreAnimating 
-                              ? `translate(${offset.x}px, ${offset.y}px) rotate(${offset.r}deg) scale(${offset.s})`
-                              : 'translate(0, 0) rotate(0) scale(1)',
+                              ? `translate(${offset.x}px, ${offset.y}px)`
+                              : 'translate(0, 0)',
                             opacity: isCoreAnimating ? 0 : 1,
                             marginRight: idx < 7 ? '0.2em' : '0',
                             transitionDelay: isCoreAnimating 
@@ -1597,70 +1684,6 @@ function HomePage() {
                   </span>
                 </button>
               </div>
-
-              {/* Radial interactive nodes */}
-              {platformModules.map((mod, i) => {
-                const angle_deg = i * 45 - 90;
-                const angle_rad = (angle_deg * Math.PI) / 180;
-                const x = 38 * Math.cos(angle_rad);
-                const y = 32 * Math.sin(angle_rad);
-                const isHovered = hoveredPlatformModule === i;
-                const isActive = activePlatformModule === i;
-                const Icon = mod.icon;
-
-                return (
-                  <button 
-                    key={mod.id}
-                    onClick={() => {
-                      setActivePlatformModule(i);
-                      if (mod.id === 'drones') {
-                        setIsDronesModalOpen(true);
-                      } else if (mod.id === 'robots') {
-                        setIsRobotsModalOpen(true);
-                      } else if (mod.id === 'sensores_iot') {
-                        setIsSensoresIotModalOpen(true);
-                      } else if (mod.id === 'control_acceso') {
-                        setIsControlAccesoModalOpen(true);
-                      } else if (mod.id === 'cctv') {
-                        setIsCctvModalOpen(true);
-                      } else if (mod.id === 'erp_crm') {
-                        setIsErpCrmModalOpen(true);
-                      } else if (mod.id === 'nube') {
-                        setIsNubeModalOpen(true);
-                      } else if (mod.id === 'scada_plc') {
-                        setIsScadaModalOpen(true);
-                      }
-                    }}
-                    onMouseEnter={() => setHoveredPlatformModule(i)}
-                    onMouseLeave={() => setHoveredPlatformModule(null)}
-                    style={{
-                      left: `calc(50% + ${x}%)`,
-                      top: `calc(50% + ${y}%)`,
-                      transform: 'translate(-50%, -50%)'
-                    }}
-                    className={`absolute z-20 flex items-center gap-3.5 px-4 py-3 rounded-lg border backdrop-blur-md transition-all duration-300 min-w-[210px] ${
-                      isActive 
-                        ? 'bg-[#78FF00]/10 border-[#78FF00] shadow-[0_0_20px_rgba(120,255,0,0.2)] text-white' 
-                        : isHovered
-                          ? 'bg-[#020409]/95 border-[#78FF00]/40 shadow-[0_0_12px_rgba(120,255,0,0.1)] text-white'
-                          : 'bg-[#020409]/80 border-white/10 text-[#B8BDC7]'
-                    }`}
-                  >
-                    <div className={`p-2 rounded-md transition-colors ${isActive || isHovered ? 'bg-[#78FF00]/15 text-[#78FF00]' : 'bg-white/5'}`}>
-                      <Icon active={isActive || isHovered} />
-                    </div>
-                    <div className="flex flex-col items-start select-none">
-                      <span className="text-[9px] font-logo tracking-wider uppercase font-bold">{mod.label}</span>
-                      <span className="text-[8px] font-mono tracking-widest text-[#8A8F98] uppercase">
-                        {isActive ? 'SELECT' : isHovered ? 'LINK' : 'SYS_OK'}
-                      </span>
-                      <div className="w-10 h-[1.5px] bg-white/10 mt-1.5 rounded-full overflow-hidden">
-                        <div className={`h-full transition-all duration-500 ${isActive ? 'w-full bg-[#78FF00]' : isHovered ? 'w-2/3 bg-[#78FF00]/70' : 'w-1/3 bg-white/20'}`}></div>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
             </div>
 
             {/* Mobile Layout (visible below md) */}
