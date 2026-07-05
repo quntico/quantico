@@ -454,10 +454,14 @@ function HomePage() {
   const [activePlatformModule, setActivePlatformModule] = useState(0);
   const [carouselRotation, setCarouselRotation] = useState(90);
   const [isCoreAnimating, setIsCoreAnimating] = useState(false);
+  const [isInfiniteMode, setIsInfiniteMode] = useState(false);
 
   const handleCoreClick = () => {
     if (isCoreAnimating) return;
     setIsCoreAnimating(true);
+    setTimeout(() => {
+      setIsInfiniteMode(prev => !prev);
+    }, 700);
     setTimeout(() => {
       setIsCoreAnimating(false);
     }, 1400);
@@ -1411,6 +1415,14 @@ function HomePage() {
               0%, 100% { opacity: 0.08; }
               50% { opacity: 0.22; }
             }
+            @keyframes draw-infinity {
+              from { stroke-dashoffset: 240; }
+              to { stroke-dashoffset: 0; }
+            }
+            .animate-draw-infinity {
+              stroke-dasharray: 240;
+              animation: draw-infinity 3s linear infinite;
+            }
           `}} />
 
           {/* Grid Background details */}
@@ -1658,30 +1670,59 @@ function HomePage() {
                     </svg>
                   </div>
                   
-                  {/* Layer for QUANTICO text (completely flat, horizontal, centered, independent z-index above HUD) */}
-                  <span className="absolute z-20 font-logo text-xs md:text-sm text-white font-bold drop-shadow-[0_0_10px_rgba(120,255,0,0.7)] flex select-none pointer-events-none">
-                    {"QUANTICO".split("").map((char, idx) => {
-                      const offset = letterOffsets[idx];
-                      return (
-                        <span
-                          key={idx}
-                          className="inline-block transition-all duration-700 ease-out"
-                          style={{
-                            transform: isCoreAnimating 
-                              ? `translate(${offset.x}px, ${offset.y}px)`
-                              : 'translate(0, 0)',
-                            opacity: isCoreAnimating ? 0 : 1,
-                            marginRight: idx < 7 ? '0.2em' : '0',
-                            transitionDelay: isCoreAnimating 
-                              ? `${idx * 40}ms` 
-                              : `${(7 - idx) * 30}ms`
-                          }}
-                        >
-                          {char}
-                        </span>
-                      );
-                    })}
-                  </span>
+                  {/* Layer for QUANTICO text or Infinity Symbol (completely flat, horizontal, centered, independent z-index above HUD) */}
+                  {!isInfiniteMode ? (
+                    <span className="absolute z-20 font-logo text-xs md:text-sm text-white font-bold drop-shadow-[0_0_10px_rgba(120,255,0,0.7)] flex select-none pointer-events-none">
+                      {"QUANTICO".split("").map((char, idx) => {
+                        const offset = letterOffsets[idx];
+                        return (
+                          <span
+                            key={idx}
+                            className="inline-block transition-all duration-700 ease-out"
+                            style={{
+                              transform: isCoreAnimating 
+                                ? `translate(${offset.x}px, ${offset.y}px)`
+                                : 'translate(0, 0)',
+                              opacity: isCoreAnimating ? 0 : 1,
+                              marginRight: idx < 7 ? '0.2em' : '0',
+                              transitionDelay: isCoreAnimating 
+                                ? `${idx * 40}ms` 
+                                : `${(7 - idx) * 30}ms`
+                            }}
+                          >
+                            {char}
+                          </span>
+                        );
+                      })}
+                    </span>
+                  ) : (
+                    <div 
+                      className="absolute z-20 flex items-center justify-center transition-all duration-700 ease-out pointer-events-none"
+                      style={{
+                        transform: isCoreAnimating 
+                          ? 'scale(0.3) rotate(180deg)' 
+                          : 'scale(1) rotate(0deg)',
+                        opacity: isCoreAnimating ? 0 : 1
+                      }}
+                    >
+                      <svg className="w-16 h-8 text-[#78FF00] drop-shadow-[0_0_12px_rgba(120,255,0,0.95)]" viewBox="0 0 100 50" fill="none">
+                        <path 
+                          d="M 50,25 C 35,10 25,20 25,25 C 25,30 35,40 50,25 C 65,10 75,20 75,25 C 75,30 65,40 50,25 Z" 
+                          stroke="#78FF00" 
+                          strokeWidth="6" 
+                          strokeLinecap="round"
+                          className="opacity-40 blur-[3px]"
+                        />
+                        <path 
+                          d="M 50,25 C 35,10 25,20 25,25 C 25,30 35,40 50,25 C 65,10 75,20 75,25 C 75,30 65,40 50,25 Z" 
+                          stroke="#78FF00" 
+                          strokeWidth="3.5" 
+                          strokeLinecap="round"
+                          className="animate-draw-infinity"
+                        />
+                      </svg>
+                    </div>
+                  )}
                 </button>
               </div>
             </div>
@@ -1779,29 +1820,59 @@ function HomePage() {
                   </svg>
                 </div>
                 
-                <span className="relative z-20 font-logo text-[10px] text-white font-bold drop-shadow-[0_0_8px_rgba(120,255,0,0.6)] flex select-none">
-                  {"QUANTICO".split("").map((char, idx) => {
-                    const offset = letterOffsets[idx];
-                    return (
-                      <span
-                        key={idx}
-                        className="inline-block transition-all duration-700 ease-out"
-                        style={{
-                          transform: isCoreAnimating 
-                            ? `translate(${offset.x * 0.8}px, ${offset.y * 0.8}px) rotate(${offset.r}deg) scale(${offset.s})`
-                            : 'translate(0, 0) rotate(0) scale(1)',
-                          opacity: isCoreAnimating ? 0 : 1,
-                          marginRight: idx < 7 ? '0.15em' : '0',
-                          transitionDelay: isCoreAnimating 
-                            ? `${idx * 40}ms` 
-                            : `${(7 - idx) * 30}ms`
-                        }}
-                      >
-                        {char}
-                      </span>
-                    );
-                  })}
-                </span>
+                {/* Layer for QUANTICO text or Infinity Symbol - Mobile */}
+                {!isInfiniteMode ? (
+                  <span className="relative z-20 font-logo text-[10px] text-white font-bold drop-shadow-[0_0_8px_rgba(120,255,0,0.6)] flex select-none pointer-events-none">
+                    {"QUANTICO".split("").map((char, idx) => {
+                      const offset = letterOffsets[idx];
+                      return (
+                        <span
+                          key={idx}
+                          className="inline-block transition-all duration-700 ease-out"
+                          style={{
+                            transform: isCoreAnimating 
+                              ? `translate(${offset.x * 0.8}px, ${offset.y * 0.8}px)`
+                              : 'translate(0, 0)',
+                            opacity: isCoreAnimating ? 0 : 1,
+                            marginRight: idx < 7 ? '0.15em' : '0',
+                            transitionDelay: isCoreAnimating 
+                              ? `${idx * 40}ms` 
+                              : `${(7 - idx) * 30}ms`
+                          }}
+                        >
+                          {char}
+                        </span>
+                      );
+                    })}
+                  </span>
+                ) : (
+                  <div 
+                    className="absolute z-20 flex items-center justify-center transition-all duration-700 ease-out pointer-events-none"
+                    style={{
+                      transform: isCoreAnimating 
+                        ? 'scale(0.3) rotate(180deg)' 
+                        : 'scale(1) rotate(0deg)',
+                      opacity: isCoreAnimating ? 0 : 1
+                    }}
+                  >
+                    <svg className="w-12 h-6 text-[#78FF00] drop-shadow-[0_0_10px_rgba(120,255,0,0.95)]" viewBox="0 0 100 50" fill="none">
+                      <path 
+                        d="M 50,25 C 35,10 25,20 25,25 C 25,30 35,40 50,25 C 65,10 75,20 75,25 C 75,30 65,40 50,25 Z" 
+                        stroke="#78FF00" 
+                        strokeWidth="6" 
+                        strokeLinecap="round"
+                        className="opacity-40 blur-[3px]"
+                      />
+                      <path 
+                        d="M 50,25 C 35,10 25,20 25,25 C 25,30 35,40 50,25 C 65,10 75,20 75,25 C 75,30 65,40 50,25 Z" 
+                        stroke="#78FF00" 
+                        strokeWidth="3.5" 
+                        strokeLinecap="round"
+                        className="animate-draw-infinity"
+                      />
+                    </svg>
+                  </div>
+                )}
               </button>
 
               {/* Grid cards */}
