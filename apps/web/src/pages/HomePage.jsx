@@ -457,6 +457,38 @@ function HomePage() {
   const [isCoreAnimating, setIsCoreAnimating] = useState(false);
   const [isInfiniteMode, setIsInfiniteMode] = useState(false);
   const [isCarouselActive, setIsCarouselActive] = useState(false);
+  const platformSectionRef = useRef(null);
+  const lastEscPressTime = useRef(0);
+
+  useEffect(() => {
+    if (!isCarouselActive) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        const now = Date.now();
+        if (now - lastEscPressTime.current < 500) {
+          setIsCarouselActive(false);
+          lastEscPressTime.current = 0;
+        } else {
+          lastEscPressTime.current = now;
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isCarouselActive]);
+
+  useEffect(() => {
+    if (!isCarouselActive) return;
+    const handleScroll = () => {
+      if (!platformSectionRef.current) return;
+      const rect = platformSectionRef.current.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > window.innerHeight) {
+        setIsCarouselActive(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isCarouselActive]);
 
   const getCardStyle = (i, activeIdx) => {
     const angle = - (i * 45);
@@ -1469,7 +1501,7 @@ function HomePage() {
         </section>
 
         {/* SECTION 4: PLATAFORMA */}
-        <section id="plataforma" className="py-32 bg-[#000000] bg-[radial-gradient(ellipse_at_center,_#050A12_0%,_#000000_100%)] relative overflow-hidden border-t border-b border-white/5">
+        <section id="plataforma" ref={platformSectionRef} className="py-32 bg-[#000000] bg-[radial-gradient(ellipse_at_center,_#050A12_0%,_#000000_100%)] relative overflow-hidden border-t border-b border-white/5">
           <style dangerouslySetInnerHTML={{__html: `
             @keyframes line-particle-travel {
               0% { left: 0%; opacity: 0; }
@@ -1529,6 +1561,18 @@ function HomePage() {
                 transformStyle: 'preserve-3d'
               }}
             >
+              {/* Close Button ("X") for Desktop */}
+              <button 
+                onClick={() => setIsCarouselActive(false)}
+                className={`absolute top-0 right-4 z-[70] flex items-center justify-center w-8 h-8 rounded border border-white/10 hover:border-[#78FF00] hover:text-[#78FF00] bg-black/60 backdrop-blur-sm text-[#8A8F98] transition-all duration-300 cursor-pointer ${
+                  isCarouselActive ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+                }`}
+                title="Cerrar Explorador (Doble ESC)"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
               {/* Concentric 3D Orbital Rings SVG overlay (Technical HUD guides) */}
               <svg className={`absolute inset-0 w-full h-full pointer-events-none z-10 transition-opacity duration-1000 ${isCarouselActive ? 'opacity-100' : 'opacity-0'}`} viewBox="0 0 1000 520">
                 {/* Outer HUD Ring (Solid very faint) */}
@@ -1933,7 +1977,20 @@ function HomePage() {
             </div>
 
             {/* Mobile Layout (visible below md) */}
-            <div className="flex md:hidden flex-col items-center mt-6">
+            <div className="flex md:hidden flex-col items-center mt-6 relative w-full">
+              
+              {/* Close Button ("X") for Mobile */}
+              <button 
+                onClick={() => setIsCarouselActive(false)}
+                className={`absolute -top-4 right-2 z-[70] flex items-center justify-center w-8 h-8 rounded border border-white/10 hover:border-[#78FF00] hover:text-[#78FF00] bg-black/60 backdrop-blur-sm text-[#8A8F98] transition-all duration-300 cursor-pointer ${
+                  isCarouselActive ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+                }`}
+                title="Cerrar Explorador"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
               
               {/* Central Core mobile */}
               <button 
