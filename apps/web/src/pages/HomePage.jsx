@@ -460,8 +460,8 @@ function HomePage() {
     const angle = - (i * 45);
     const rad = ((angle + carouselRotation) * Math.PI) / 180;
     
-    const Rx = 350;
-    const Ry = 155;
+    const Rx = 265;
+    const Ry = 165;
     
     const x = Rx * Math.cos(rad);
     const y = - Ry * Math.sin(rad);
@@ -1432,6 +1432,12 @@ function HomePage() {
         {/* SECTION 4: PLATAFORMA */}
         <section id="plataforma" className="py-32 bg-[#000000] bg-[radial-gradient(ellipse_at_center,_#050A12_0%,_#000000_100%)] relative overflow-hidden border-t border-b border-white/5">
           <style dangerouslySetInnerHTML={{__html: `
+            @keyframes line-particle-travel {
+              0% { left: 0%; opacity: 0; }
+              15% { opacity: 1; }
+              85% { opacity: 1; }
+              100% { left: 100%; opacity: 0; }
+            }
             @keyframes hud-scan {
               0% { transform: translateY(-100%); opacity: 0; }
               50% { opacity: 0.5; }
@@ -1474,93 +1480,95 @@ function HomePage() {
                 transformStyle: 'preserve-3d'
               }}
             >
-              {/* Connection Lines & 3D Orbital Ring SVG overlay */}
+              {/* Concentric 3D Orbital Rings SVG overlay (Static base rings) */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 1000 520">
                 {/* Outer Dashed Ellipse */}
                 <ellipse 
                   cx="500" 
                   cy="260" 
-                  rx="350" 
-                  ry="155" 
+                  rx="265" 
+                  ry="165" 
                   fill="none" 
-                  stroke="rgba(120, 255, 0, 0.22)" 
+                  stroke="rgba(120, 255, 0, 0.18)" 
                   strokeWidth="1" 
                   strokeDasharray="4 6" 
-                  className="opacity-35"
+                  className="opacity-30"
                 />
                 
                 {/* Inner Dashed Ellipse */}
                 <ellipse 
                   cx="500" 
                   cy="260" 
-                  rx="270" 
-                  ry="120" 
+                  rx="205" 
+                  ry="127" 
                   fill="none" 
-                  stroke="rgba(120, 255, 0, 0.12)" 
+                  stroke="rgba(120, 255, 0, 0.1)" 
                   strokeWidth="0.8" 
                   strokeDasharray="3 5" 
-                  className="opacity-20"
+                  className="opacity-15"
                 />
+              </svg>
 
-                {platformModules.map((mod, i) => {
-                  const { x, y } = getCardStyle(i, activePlatformModule);
-                  const x2 = 500 + x;
-                  const y2 = 260 + y;
-                  
-                  const isActive = activePlatformModule === i;
-                  const isHovered = hoveredPlatformModule === i;
-                  const isHighlighted = isActive || isHovered;
+              {/* Dynamic Connection Lines (GPU-accelerated React divs) */}
+              {platformModules.map((mod, i) => {
+                const { x, y } = getCardStyle(i, activePlatformModule);
+                const L = Math.sqrt(x * x + y * y);
+                const angleRad = Math.atan2(y, x);
+                
+                const isActive = activePlatformModule === i;
+                const isHovered = hoveredPlatformModule === i;
+                const isHighlighted = isActive || isHovered;
 
-                  return (
-                    <g key={mod.id}>
-                      {/* Connection Line */}
-                      <line 
-                        x1="500" 
-                        y1="260" 
-                        x2={x2} 
-                        y2={y2} 
-                        stroke={isActive ? '#78FF00' : isHovered ? 'rgba(120, 255, 0, 0.5)' : 'rgba(255, 255, 255, 0.05)'} 
-                        strokeWidth={isActive ? '1.5' : isHighlighted ? '0.75' : '0.25'}
-                        className="transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                return (
+                  <div 
+                    key={`line-${mod.id}`}
+                    style={{
+                      position: 'absolute',
+                      left: '50%',
+                      top: '50%',
+                      width: `${L}px`,
+                      height: isActive ? '1.5px' : '0.5px',
+                      transformOrigin: 'left center',
+                      transform: `rotate(${angleRad}rad)`,
+                      backgroundColor: isActive ? '#78FF00' : isHovered ? 'rgba(120, 255, 0, 0.5)' : 'rgba(255, 255, 255, 0.05)',
+                      opacity: isActive ? 0.9 : isHighlighted ? 0.6 : 0.15,
+                      zIndex: 15,
+                      transition: 'transform 1200ms cubic-bezier(0.22, 1, 0.36, 1), width 1200ms cubic-bezier(0.22, 1, 0.36, 1), opacity 1200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 1200ms cubic-bezier(0.22, 1, 0.36, 1)'
+                    }}
+                    className="pointer-events-none"
+                  >
+                    {/* Connection Node Dot on Ellipse */}
+                    <div 
+                      className={`absolute top-1/2 -translate-y-1/2 -right-1 rounded-full transition-all duration-300 ${
+                        isActive 
+                          ? 'w-2 h-2 bg-[#78FF00] shadow-[0_0_8px_#78FF00]' 
+                          : isHovered 
+                            ? 'w-1.5 h-1.5 bg-[#78FF00]/70' 
+                            : 'w-1 h-1 bg-[#78FF00]/35'
+                      }`}
+                    />
+
+                    {/* Active Connection Midpoint Dot */}
+                    {isActive && (
+                      <div 
+                        className="absolute top-1/2 -translate-y-1/2 rounded-full w-2.5 h-2.5 bg-[#78FF00] shadow-[0_0_12px_#78FF00]"
+                        style={{ left: '55%', transform: 'translate(-50%, -50%)' }}
+                      />
+                    )}
+
+                    {/* Traveling light particle */}
+                    {isHighlighted && (
+                      <div 
+                        className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#78FF00] shadow-[0_0_6px_#78FF00]"
                         style={{
-                          opacity: isActive ? 0.9 : isHighlighted ? 0.6 : 0.15
+                          transform: 'translateY(-50%)',
+                          animation: 'line-particle-travel 1.6s linear infinite'
                         }}
                       />
-
-                      {/* Connection Node Dot on Ellipse */}
-                      <circle 
-                        cx={x2} 
-                        cy={y2} 
-                        r={isActive ? "4" : "2.5"} 
-                        fill={isActive ? "#78FF00" : isHovered ? "rgba(120, 255, 0, 0.7)" : "rgba(120, 255, 0, 0.35)"} 
-                        className={isActive ? "shadow-[0_0_10px_#78FF00]" : ""}
-                      />
-                      
-                      {/* Active Connection Midpoint Dot (as in mockup) */}
-                      {isActive && (
-                        <circle 
-                          cx={500 + x * 0.55} 
-                          cy={260 + y * 0.55} 
-                          r="4.5" 
-                          fill="#78FF00" 
-                          className="shadow-[0_0_12px_#78FF00]"
-                        />
-                      )}
-                      
-                      {/* Traveling light particle */}
-                      {isHighlighted && (
-                        <circle r="2" fill="#78FF00">
-                          <animateMotion 
-                            dur="1.6s" 
-                            repeatCount="indefinite" 
-                            path={`M 500 260 L ${x2} ${y2}`} 
-                          />
-                        </circle>
-                      )}
-                    </g>
-                  );
-                })}
-              </svg>
+                    )}
+                  </div>
+                );
+              })}
 
               {/* 3D Carousel Cards positioned dynamically as a Cover Flow */}
               {platformModules.map((mod, i) => {
@@ -1574,23 +1582,33 @@ function HomePage() {
                   <button 
                     key={mod.id}
                     onClick={() => {
+                      const isAlreadyActive = activePlatformModule === i;
                       setActivePlatformModule(i);
-                      if (mod.id === 'drones') {
-                        setIsDronesModalOpen(true);
-                      } else if (mod.id === 'robots') {
-                        setIsRobotsModalOpen(true);
-                      } else if (mod.id === 'sensores_iot') {
-                        setIsSensoresIotModalOpen(true);
-                      } else if (mod.id === 'control_acceso') {
-                        setIsControlAccesoModalOpen(true);
-                      } else if (mod.id === 'cctv') {
-                        setIsCctvModalOpen(true);
-                      } else if (mod.id === 'erp_crm') {
-                        setIsErpCrmModalOpen(true);
-                      } else if (mod.id === 'nube') {
-                        setIsNubeModalOpen(true);
-                      } else if (mod.id === 'scada_plc') {
-                        setIsScadaModalOpen(true);
+                      
+                      const openModal = () => {
+                        if (mod.id === 'drones') {
+                          setIsDronesModalOpen(true);
+                        } else if (mod.id === 'robots') {
+                          setIsRobotsModalOpen(true);
+                        } else if (mod.id === 'sensores_iot') {
+                          setIsSensoresIotModalOpen(true);
+                        } else if (mod.id === 'control_acceso') {
+                          setIsControlAccesoModalOpen(true);
+                        } else if (mod.id === 'cctv') {
+                          setIsCctvModalOpen(true);
+                        } else if (mod.id === 'erp_crm') {
+                          setIsErpCrmModalOpen(true);
+                        } else if (mod.id === 'nube') {
+                          setIsNubeModalOpen(true);
+                        } else if (mod.id === 'scada_plc') {
+                          setIsScadaModalOpen(true);
+                        }
+                      };
+
+                      if (isAlreadyActive) {
+                        openModal();
+                      } else {
+                        setTimeout(openModal, 1250);
                       }
                     }}
                     onMouseEnter={() => setHoveredPlatformModule(i)}
@@ -1599,15 +1617,13 @@ function HomePage() {
                       position: 'absolute',
                       left: '50%',
                       top: '50%',
-                      transform: `translate3d(-50%, -50%, ${z}px) rotateY(${rotateY}deg) scale(${scale})`,
-                      marginLeft: `${x}px`,
-                      marginTop: `${y}px`,
+                      transform: `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), ${z}px) rotateY(${rotateY}deg) scale(${scale})`,
                       opacity: opacity,
                       zIndex: zIndex,
                       transformStyle: 'preserve-3d',
-                      transition: 'transform 1000ms cubic-bezier(0.22, 1, 0.36, 1), opacity 1000ms cubic-bezier(0.22, 1, 0.36, 1), margin 1000ms cubic-bezier(0.22, 1, 0.36, 1), z-index 1000ms cubic-bezier(0.22, 1, 0.36, 1)'
+                      transition: 'transform 1200ms cubic-bezier(0.22, 1, 0.36, 1), opacity 1200ms cubic-bezier(0.22, 1, 0.36, 1), z-index 1200ms cubic-bezier(0.22, 1, 0.36, 1)'
                     }}
-                    className="focus:outline-none cursor-pointer"
+                    className="focus:outline-none cursor-pointer z-20"
                   >
                     {/* Backplate / Depth effect (shifted behind in 3D space) */}
                     <div 
