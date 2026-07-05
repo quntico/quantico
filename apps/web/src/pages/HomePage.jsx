@@ -1435,21 +1435,21 @@ function HomePage() {
             
             {/* Desktop Radial Layout (visible md and up) */}
             <div 
-              className="hidden md:block relative w-[1000px] h-[600px] mx-auto select-none"
+              className="hidden md:block relative w-[1000px] h-[520px] mx-auto select-none"
               style={{
                 perspective: '1400px',
                 transformStyle: 'preserve-3d'
               }}
             >
               {/* Connection Lines & 3D Orbital Ring SVG overlay */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 1000 600">
+              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 1000 520">
                 {/* 3D orbital ring path */}
                 {(() => {
                   const points = [];
                   for (let angle = 0; angle <= 360; angle += 4) {
                     const rad = (angle * Math.PI) / 180;
-                    const px = 500 + 395 * Math.cos(rad);
-                    const py = 300 + 90 * Math.sin(rad) + 35 * Math.cos(rad);
+                    const px = 500 + 350 * Math.cos(rad);
+                    const py = 260 + 155 * Math.sin(rad) + 25 * Math.cos(rad);
                     points.push(`${px},${py}`);
                   }
                   return (
@@ -1483,8 +1483,8 @@ function HomePage() {
                   const sinVal = Math.sin(rad);
 
                   // Coordinate targets matching the cards exactly
-                  const x2 = 500 + 395 * cosVal;
-                  const y2 = 300 + 90 * sinVal + 35 * cosVal;
+                  const x2 = 500 + 350 * cosVal;
+                  const y2 = 260 + 155 * sinVal + 25 * cosVal;
                   
                   const isActive = activePlatformModule === i;
                   const isHovered = hoveredPlatformModule === i;
@@ -1495,7 +1495,7 @@ function HomePage() {
                       {/* Connection Line */}
                       <line 
                         x1="500" 
-                        y1="300" 
+                        y1="260" 
                         x2={x2} 
                         y2={y2} 
                         stroke={isHighlighted ? '#78FF00' : 'rgba(255, 255, 255, 0.06)'} 
@@ -1512,7 +1512,7 @@ function HomePage() {
                           <animateMotion 
                             dur="1.6s" 
                             repeatCount="indefinite" 
-                            path={`M 500 300 L ${x2} ${y2}`} 
+                            path={`M 500 260 L ${x2} ${y2}`} 
                           />
                         </circle>
                       )}
@@ -1530,16 +1530,16 @@ function HomePage() {
                 const sinVal = Math.sin(rad);
 
                 // Coordinates relative to center
-                const x = 395 * cosVal;
-                const y = 90 * sinVal + 35 * cosVal;
+                const x = 350 * cosVal;
+                const y = 155 * sinVal + 25 * cosVal;
 
                 // Closeness factor t based on X position (right is front, left is back)
                 const t = (cosVal + 1) / 2; // 0 at left/back, 1 at right/front
 
-                const z = -250 + 430 * t; // translateZ ranges from -250px to 180px
-                const scale = 0.7 + 0.45 * t; // scale from 0.7 to 1.15
-                const opacity = 0.3 + 0.7 * t; // opacity from 0.3 to 1.0
-                const zIndex = Math.round(10 + 40 * t); // z-index from 10 to 50
+                const z = -150 + 260 * t; // translateZ ranges from -150px to 110px
+                const scale = 0.72 + 0.3 * t; // scale from 0.72 to 1.02
+                const opacity = 0.42 + 0.58 * t; // opacity from 0.42 to 1.0
+                const zIndex = Math.round(10 + 20 * t); // z-index from 10 to 30 (always below core's 50)
                 const rotateY = -40 * sinVal; // rotateY card angle to point towards camera/core
 
                 const isHovered = hoveredPlatformModule === i;
@@ -1606,9 +1606,9 @@ function HomePage() {
                 );
               })}
 
-              {/* Central Core (2D positioned, perfectly circular, centered, not tilted) */}
+              {/* Central Core (2D positioned, perfectly circular, centered, not tilted, z-index 50 to prevent overlap) */}
               <div 
-                className="absolute top-1/2 left-1/2 z-30 pointer-events-auto"
+                className="absolute top-1/2 left-1/2 z-50 pointer-events-auto"
                 style={{
                   transform: 'translate3d(-50%, -50%, 0px)'
                 }}
