@@ -1515,47 +1515,52 @@ function HomePage() {
                 <ellipse 
                   cx="500" 
                   cy="260" 
-                  rx="315" 
-                  ry="212" 
+                  rx="320" 
+                  ry="215" 
                   fill="none" 
                   stroke="rgba(120, 255, 0, 0.04)" 
-                  strokeWidth="1" 
+                  strokeWidth="0.75" 
                 />
                 
-                {/* Main Trajectory Guide (Dashed HUD green, slowly rotating) */}
+                {/* Main Trajectory Guide (Solid very thin green) */}
                 <ellipse 
                   cx="500" 
                   cy="260" 
                   rx="260" 
                   ry="175" 
                   fill="none" 
-                  stroke="rgba(120, 255, 0, 0.22)" 
-                  strokeWidth="1.2" 
-                  strokeDasharray="5 8" 
-                  style={{ 
-                    transformOrigin: '500px 260px',
-                    animation: 'core-spin-clockwise 100s linear infinite'
-                  }}
+                  stroke="rgba(120, 255, 0, 0.15)" 
+                  strokeWidth="1" 
                 />
                 
-                {/* Inner HUD Ring (Dashed very sutil) */}
+                {/* Inner HUD Ring (Solid very sutil) */}
                 <ellipse 
                   cx="500" 
                   cy="260" 
-                  rx="205" 
-                  ry="138" 
+                  rx="200" 
+                  ry="135" 
                   fill="none" 
-                  stroke="rgba(120, 255, 0, 0.12)" 
-                  strokeWidth="0.8" 
-                  strokeDasharray="2 6" 
-                  className="opacity-60"
+                  stroke="rgba(120, 255, 0, 0.07)" 
+                  strokeWidth="0.75" 
                 />
 
-                {/* Technical crosshair ticks */}
-                <line x1="500" y1="55" x2="500" y2="70" stroke="rgba(120, 255, 0, 0.25)" strokeWidth="1" />
-                <line x1="500" y1="450" x2="500" y2="465" stroke="rgba(120, 255, 0, 0.25)" strokeWidth="1" />
-                <line x1="210" y1="260" x2="225" y2="260" stroke="rgba(120, 255, 0, 0.25)" strokeWidth="1" />
-                <line x1="775" y1="260" x2="790" y2="260" stroke="rgba(120, 255, 0, 0.25)" strokeWidth="1" />
+                {/* Static Radial grid lines connecting center to all card angles */}
+                {/* 0 deg (right) */}
+                <line x1="500" y1="260" x2="820" y2="260" stroke="rgba(120, 255, 0, 0.06)" strokeWidth="0.75" />
+                {/* 180 deg (left) */}
+                <line x1="500" y1="260" x2="180" y2="260" stroke="rgba(120, 255, 0, 0.06)" strokeWidth="0.75" />
+                {/* 90 deg (bottom) */}
+                <line x1="500" y1="260" x2="500" y2="475" stroke="rgba(120, 255, 0, 0.06)" strokeWidth="0.75" />
+                {/* 270 deg (top) */}
+                <line x1="500" y1="260" x2="500" y2="45" stroke="rgba(120, 255, 0, 0.06)" strokeWidth="0.75" />
+                {/* 45 deg (bottom-right) */}
+                <line x1="500" y1="260" x2="726" y2="412" stroke="rgba(120, 255, 0, 0.06)" strokeWidth="0.75" />
+                {/* 135 deg (bottom-left) */}
+                <line x1="500" y1="260" x2="274" y2="412" stroke="rgba(120, 255, 0, 0.06)" strokeWidth="0.75" />
+                {/* 225 deg (top-left) */}
+                <line x1="500" y1="260" x2="274" y2="108" stroke="rgba(120, 255, 0, 0.06)" strokeWidth="0.75" />
+                {/* 315 deg (top-right) */}
+                <line x1="500" y1="260" x2="726" y2="108" stroke="rgba(120, 255, 0, 0.06)" strokeWidth="0.75" />
               </svg>
 
               {/* Dynamic Connection Lines (GPU-accelerated React divs) */}
@@ -1574,7 +1579,6 @@ function HomePage() {
                 const lineLength = Math.max(0, L - D);
                 
                 const isActiveLine = carouselTargetModule === i;
-                const isActiveCard = activePlatformModule === i;
                 const isHovered = hoveredPlatformModule === i;
                 const isHighlighted = isActiveLine || isHovered;
 
@@ -1594,21 +1598,25 @@ function HomePage() {
                       height: isActiveLine ? '1.5px' : '0.5px',
                       transformOrigin: 'left center',
                       transform: `rotate(${angleRad}rad)`,
-                      backgroundColor: isActiveLine ? '#78FF00' : isHovered ? 'rgba(120, 255, 0, 0.5)' : 'rgba(255, 255, 255, 0.05)',
-                      opacity: isActiveLine ? 0.9 : isHighlighted ? 0.6 : 0.15,
+                      // Fades connection line segment out to transparent if not active or hovered
+                      backgroundColor: isActiveLine 
+                        ? '#78FF00' 
+                        : isHovered 
+                          ? 'rgba(120, 255, 0, 0.35)' 
+                          : 'rgba(120, 255, 0, 0)',
                       zIndex: 15,
-                      transition: 'transform 1200ms cubic-bezier(0.22, 1, 0.36, 1), width 1200ms cubic-bezier(0.22, 1, 0.36, 1), opacity 1200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 1200ms cubic-bezier(0.22, 1, 0.36, 1)'
+                      transition: 'transform 1200ms cubic-bezier(0.22, 1, 0.36, 1), width 1200ms cubic-bezier(0.22, 1, 0.36, 1), background-color 1200ms cubic-bezier(0.22, 1, 0.36, 1)'
                     }}
                     className="pointer-events-none"
                   >
-                    {/* Connection Node Dot right at the edge of the card */}
+                    {/* Connection Node Dot right at the edge of the card (always visible as a sutil guide) */}
                     <div 
                       className={`absolute top-1/2 -translate-y-1/2 -right-1 rounded-full transition-all duration-300 ${
                         isActiveLine 
-                          ? 'w-2 h-2 bg-[#78FF00] shadow-[0_0_8px_#78FF00]' 
+                          ? 'w-2 h-2 bg-[#78FF00] shadow-[0_0_8px_#78FF00] opacity-100' 
                           : isHovered 
-                            ? 'w-1.5 h-1.5 bg-[#78FF00]/70' 
-                            : 'w-1 h-1 bg-[#78FF00]/35'
+                            ? 'w-1.5 h-1.5 bg-[#78FF00] opacity-80' 
+                            : 'w-1.5 h-1.5 bg-[#78FF00]/50 opacity-40'
                       }`}
                       style={{ transform: 'translate(0, -50%)' }}
                     />
@@ -1622,7 +1630,7 @@ function HomePage() {
                     )}
 
                     {/* Traveling light particle */}
-                    {isHighlighted && (
+                    {isActiveLine && (
                       <div 
                         className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#78FF00] shadow-[0_0_6px_#78FF00]"
                         style={{
