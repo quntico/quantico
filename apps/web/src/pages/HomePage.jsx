@@ -182,6 +182,17 @@ const SensoresIcon = ({ active }) => (
   </svg>
 );
 
+const letterOffsets = [
+  { x: -50, y: -40, r: -60, s: 0.1 },  // Q
+  { x: -20, y: -65, r: 35,  s: 0.1 },  // U
+  { x: 25,  y: -60, r: -45, s: 0.1 },  // A
+  { x: -65, y: -10, r: 75,  s: 0.1 },  // N
+  { x: 65,  y: 10,  r: -75, s: 0.1 },  // T
+  { x: -35, y: 60,  r: -35, s: 0.1 },  // I
+  { x: 20,  y: 65,  r: 55,  s: 0.1 },  // C
+  { x: 50,  y: 40,  r: -60, s: 0.1 },  // O
+];
+
 const platformModules = [
   {
     id: 'robots',
@@ -441,6 +452,15 @@ function HomePage() {
 
   const [config, setConfig] = useState(defaultConfig);
   const [activePlatformModule, setActivePlatformModule] = useState(0);
+  const [isCoreAnimating, setIsCoreAnimating] = useState(false);
+
+  const handleCoreClick = () => {
+    if (isCoreAnimating) return;
+    setIsCoreAnimating(true);
+    setTimeout(() => {
+      setIsCoreAnimating(false);
+    }, 1400);
+  };
   const [hoveredPlatformModule, setHoveredPlatformModule] = useState(null);
   const [isDronesModalOpen, setIsDronesModalOpen] = useState(false);
   const [isRobotsModalOpen, setIsRobotsModalOpen] = useState(false);
@@ -1456,8 +1476,9 @@ function HomePage() {
 
               {/* Central Core */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
-                <div 
-                  className={`relative w-40 h-40 rounded-full bg-[#000000] border flex flex-col items-center justify-center transition-all duration-500 select-none ${
+                <button 
+                  onClick={handleCoreClick}
+                  className={`relative w-40 h-40 rounded-full bg-[#000000] border flex flex-col items-center justify-center transition-all duration-500 select-none cursor-pointer focus:outline-none active:scale-95 ${
                     (activePlatformModule !== null || hoveredPlatformModule !== null) 
                       ? 'border-[#78FF00] shadow-[0_0_50px_rgba(120,255,0,0.25)]' 
                       : 'border-white/10 shadow-[0_0_30px_rgba(120,255,0,0.08)]'
@@ -1551,8 +1572,30 @@ function HomePage() {
                     </svg>
                   </div>
                   
-                  <span className="relative z-20 font-logo text-xs md:text-sm text-white tracking-[0.2em] font-bold drop-shadow-[0_0_10px_rgba(120,255,0,0.7)]">QUANTICO</span>
-                </div>
+                  <span className="relative z-20 font-logo text-xs md:text-sm text-white font-bold drop-shadow-[0_0_10px_rgba(120,255,0,0.7)] flex select-none">
+                    {"QUANTICO".split("").map((char, idx) => {
+                      const offset = letterOffsets[idx];
+                      return (
+                        <span
+                          key={idx}
+                          className="inline-block transition-all duration-700 ease-out"
+                          style={{
+                            transform: isCoreAnimating 
+                              ? `translate(${offset.x}px, ${offset.y}px) rotate(${offset.r}deg) scale(${offset.s})`
+                              : 'translate(0, 0) rotate(0) scale(1)',
+                            opacity: isCoreAnimating ? 0 : 1,
+                            marginRight: idx < 7 ? '0.2em' : '0',
+                            transitionDelay: isCoreAnimating 
+                              ? `${idx * 40}ms` 
+                              : `${(7 - idx) * 30}ms`
+                          }}
+                        >
+                          {char}
+                        </span>
+                      );
+                    })}
+                  </span>
+                </button>
               </div>
 
               {/* Radial interactive nodes */}
@@ -1624,8 +1667,9 @@ function HomePage() {
             <div className="flex md:hidden flex-col items-center mt-6">
               
               {/* Central Core mobile */}
-              <div 
-                className={`relative w-32 h-32 rounded-full bg-[#000000] border flex flex-col items-center justify-center transition-all duration-500 mb-8 ${
+              <button 
+                onClick={handleCoreClick}
+                className={`relative w-32 h-32 rounded-full bg-[#000000] border flex flex-col items-center justify-center transition-all duration-500 mb-8 cursor-pointer focus:outline-none active:scale-95 ${
                   activePlatformModule !== null 
                     ? 'border-[#78FF00] shadow-[0_0_35px_rgba(120,255,0,0.2)]' 
                     : 'border-white/10 shadow-[0_0_20px_rgba(120,255,0,0.05)]'
@@ -1712,8 +1756,30 @@ function HomePage() {
                   </svg>
                 </div>
                 
-                <span className="relative z-20 font-logo text-[10px] text-white tracking-[0.15em] font-bold drop-shadow-[0_0_8px_rgba(120,255,0,0.6)]">QUANTICO</span>
-              </div>
+                <span className="relative z-20 font-logo text-[10px] text-white font-bold drop-shadow-[0_0_8px_rgba(120,255,0,0.6)] flex select-none">
+                  {"QUANTICO".split("").map((char, idx) => {
+                    const offset = letterOffsets[idx];
+                    return (
+                      <span
+                        key={idx}
+                        className="inline-block transition-all duration-700 ease-out"
+                        style={{
+                          transform: isCoreAnimating 
+                            ? `translate(${offset.x * 0.8}px, ${offset.y * 0.8}px) rotate(${offset.r}deg) scale(${offset.s})`
+                            : 'translate(0, 0) rotate(0) scale(1)',
+                          opacity: isCoreAnimating ? 0 : 1,
+                          marginRight: idx < 7 ? '0.15em' : '0',
+                          transitionDelay: isCoreAnimating 
+                            ? `${idx * 40}ms` 
+                            : `${(7 - idx) * 30}ms`
+                        }}
+                      >
+                        {char}
+                      </span>
+                    );
+                  })}
+                </span>
+              </button>
 
               {/* Grid cards */}
               <div className="grid grid-cols-2 gap-3 w-full max-w-md">
