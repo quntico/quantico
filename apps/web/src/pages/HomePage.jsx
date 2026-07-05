@@ -482,9 +482,9 @@ function HomePage() {
     let zIndex = Math.round(10 + 20 * t);
     if (isActive) zIndex = 45;
     
-    // Flat facing the camera as in mockup (rotateY = 0)
-    const rotateY = 0;
-    const z = 0;
+    // Tilted perspective rotation & depth translation
+    const rotateY = -28 * Math.cos(rad);
+    const z = 80 * (t - 0.5);
     
     return { x, y, z, scale, opacity, rotateY, zIndex };
   };
@@ -1604,26 +1604,62 @@ function HomePage() {
                       marginTop: `${y}px`,
                       opacity: opacity,
                       zIndex: zIndex,
+                      transformStyle: 'preserve-3d',
                       transition: 'transform 1000ms cubic-bezier(0.22, 1, 0.36, 1), opacity 1000ms cubic-bezier(0.22, 1, 0.36, 1), margin 1000ms cubic-bezier(0.22, 1, 0.36, 1), z-index 1000ms cubic-bezier(0.22, 1, 0.36, 1)'
                     }}
-                    className={`z-20 flex items-center gap-3.5 px-4 py-3 rounded-lg border backdrop-blur-md min-w-[210px] h-[50px] text-left focus:outline-none transition-all duration-300 ${
-                      isActive 
-                        ? 'bg-[#78FF00]/20 border-[#78FF00] shadow-[0_0_35px_rgba(120,255,0,0.45)] text-white' 
-                        : isHovered
-                          ? 'bg-[#020409]/95 border-[#78FF00]/45 shadow-[0_0_20px_rgba(120,255,0,0.15)] text-white'
-                          : 'bg-[#020409]/90 border-white/5 text-[#B8BDC7]'
-                    }`}
+                    className="focus:outline-none cursor-pointer"
                   >
-                    <div className={`p-2 rounded-md transition-colors ${isActive || isHovered ? 'bg-[#78FF00]/15 text-[#78FF00]' : 'bg-white/5'}`}>
-                      <Icon active={isActive || isHovered} />
-                    </div>
-                    <div className="flex flex-col items-start select-none">
-                      <span className="text-[9px] font-logo tracking-wider uppercase font-bold">{mod.label}</span>
-                      <span className="text-[8px] font-mono tracking-widest text-[#8A8F98] uppercase">
-                        {isActive ? 'SELECT' : isHovered ? 'LINK' : 'SYS_OK'}
-                      </span>
-                      <div className="w-10 h-[1.5px] bg-white/10 mt-1.5 rounded-full overflow-hidden">
-                        <div className={`h-full transition-all duration-500 ${isActive ? 'w-full bg-[#78FF00]' : isHovered ? 'w-2/3 bg-[#78FF00]/70' : 'w-1/3 bg-white/20'}`}></div>
+                    {/* Backplate / Depth effect (shifted behind in 3D space) */}
+                    <div 
+                      className={`absolute inset-0 rounded-xl border transition-all duration-300 ${
+                        isActive 
+                          ? 'bg-[#78FF00]/5 border-[#78FF00]/40 shadow-[0_0_20px_rgba(120,255,0,0.2)]' 
+                          : isHovered
+                            ? 'bg-black/60 border-[#78FF00]/20 shadow-[0_0_12px_rgba(120,255,0,0.05)]'
+                            : 'bg-black/80 border-white/5 shadow-[0_4px_12px_rgba(0,0,0,0.5)]'
+                      }`}
+                      style={{
+                        transform: 'translate3d(0, 0, -5px)'
+                      }}
+                    />
+
+                    {/* Frontplate (Main Glass Face with glossy reflections and chiseled edges) */}
+                    <div 
+                      className={`relative flex items-center gap-3.5 px-4.5 py-3 rounded-xl border backdrop-blur-md min-w-[210px] h-[55px] text-left transition-all duration-300 overflow-hidden ${
+                        isActive 
+                          ? 'bg-gradient-to-br from-[#0e1c08]/98 to-[#020409]/98 border-[#78FF00] shadow-[inset_0_0_12px_rgba(120,255,0,0.25),inset_0_1.5px_0_0_rgba(255,255,255,0.25),0_0_35px_rgba(120,255,0,0.45),0_12px_24px_rgba(0,0,0,0.6)] text-white' 
+                          : isHovered
+                            ? 'bg-gradient-to-br from-[#080d16]/95 to-[#020409]/98 border-[#78FF00]/45 shadow-[inset_0_1.5px_0_0_rgba(255,255,255,0.15),0_0_20px_rgba(120,255,0,0.15),0_12px_24px_rgba(0,0,0,0.5)] text-white'
+                            : 'bg-gradient-to-br from-[#121620]/95 to-[#020409]/98 border-white/12 shadow-[inset_0_1.5px_0_0_rgba(255,255,255,0.12),inset_0_-1px_0_0_rgba(0,0,0,0.4),0_12px_24px_rgba(0,0,0,0.6)] text-[#B8BDC7]'
+                      }`}
+                      style={{
+                        transform: 'translate3d(0, 0, 0px)'
+                      }}
+                    >
+                      {/* Glossy reflection overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.03] to-white/[0.12] pointer-events-none z-10" />
+                      <div className="absolute top-0 left-0 right-0 h-[50%] bg-gradient-to-b from-white/[0.08] to-transparent pointer-events-none z-10" />
+                      
+                      {/* Recessed Icon Container */}
+                      <div 
+                        className={`p-2 rounded-lg transition-colors border ${
+                          isActive || isHovered 
+                            ? 'bg-[#78FF00]/10 border-[#78FF00]/35 text-[#78FF00] shadow-[inset_0_1px_2px_rgba(120,255,0,0.15)]' 
+                            : 'bg-black/40 border-white/5 shadow-[inset_0_1px_2px_rgba(0,0,0,0.6)]'
+                        }`}
+                      >
+                        <Icon active={isActive || isHovered} />
+                      </div>
+
+                      {/* Text details */}
+                      <div className="flex flex-col items-start select-none z-20">
+                        <span className="text-[9.5px] font-logo tracking-wider uppercase font-bold">{mod.label}</span>
+                        <span className={`text-[8px] font-mono tracking-widest uppercase transition-colors ${isActive ? 'text-[#78FF00]' : 'text-[#8A8F98]'}`}>
+                          {isActive ? 'SELECT' : isHovered ? 'LINK' : 'SYS_OK'}
+                        </span>
+                        <div className="w-12 h-[1.5px] bg-white/10 mt-1.5 rounded-full overflow-hidden">
+                          <div className={`h-full transition-all duration-500 ${isActive ? 'w-full bg-[#78FF00]' : isHovered ? 'w-2/3 bg-[#78FF00]/70' : 'w-1/3 bg-white/20'}`}></div>
+                        </div>
                       </div>
                     </div>
                   </button>
