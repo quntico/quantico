@@ -457,84 +457,35 @@ function HomePage() {
   const [isInfiniteMode, setIsInfiniteMode] = useState(false);
 
   const getCardStyle = (i, activeIdx) => {
-    let diff = (i - activeIdx) % 8;
-    if (diff > 4) diff -= 8;
-    if (diff <= -4) diff += 8;
-
-    let x = 0;
-    let y = 0;
-    let z = 0;
-    let scale = 1;
-    let opacity = 1;
-    let rotateY = 0;
-    let zIndex = 10;
-
-    if (diff === 0) {
-      x = 285;
-      y = 10;
-      z = 180;
-      scale = 1.12;
-      opacity = 1.0;
-      rotateY = 0;
-      zIndex = 45;
-    } else if (diff === 1) {
-      x = 385;
-      y = -15;
-      z = 60;
-      scale = 0.82;
-      opacity = 0.55;
-      rotateY = -35;
-      zIndex = 30;
-    } else if (diff === 2) {
-      x = 475;
-      y = -45;
-      z = -40;
-      scale = 0.68;
-      opacity = 0.35;
-      rotateY = -50;
-      zIndex = 20;
-    } else if (diff === 3) {
-      x = 555;
-      y = -70;
-      z = -120;
-      scale = 0.55;
-      opacity = 0.22;
-      rotateY = -60;
-      zIndex = 10;
-    } else if (diff === 4) {
-      x = -520;
-      y = -95;
-      z = -190;
-      scale = 0.50;
-      opacity = 0.18;
-      rotateY = -65;
-      zIndex = 5;
-    } else if (diff === -1) {
-      x = -285;
-      y = -15;
-      z = 70;
-      scale = 0.82;
-      opacity = 0.55;
-      rotateY = 35;
-      zIndex = 35;
-    } else if (diff === -2) {
-      x = -375;
-      y = -45;
-      z = -30;
-      scale = 0.68;
-      opacity = 0.35;
-      rotateY = 50;
-      zIndex = 22;
-    } else if (diff === -3) {
-      x = -455;
-      y = -70;
-      z = -110;
-      scale = 0.55;
-      opacity = 0.22;
-      rotateY = 60;
-      zIndex = 12;
-    }
-
+    const angle = - (i * 45);
+    const rad = ((angle + carouselRotation) * Math.PI) / 180;
+    
+    const Rx = 350;
+    const Ry = 155;
+    
+    const x = Rx * Math.cos(rad);
+    const y = - Ry * Math.sin(rad);
+    
+    const t = (y + Ry) / (2 * Ry); // 0 (back) to 1 (front)
+    
+    const isActive = activeIdx === i;
+    
+    // Scale: matching mockup proportions
+    let scale = 0.70 + 0.32 * t;
+    if (isActive) scale = scale * 1.10;
+    
+    // Opacity: matching mockup visibility
+    let opacity = 0.45 + 0.55 * t;
+    if (isActive) opacity = 1.0;
+    
+    // Z-index: layered correctly, active sits at 45 (below core 50)
+    let zIndex = Math.round(10 + 20 * t);
+    if (isActive) zIndex = 45;
+    
+    // Flat facing the camera as in mockup (rotateY = 0)
+    const rotateY = 0;
+    const z = 0;
+    
     return { x, y, z, scale, opacity, rotateY, zIndex };
   };
 
@@ -603,7 +554,7 @@ function HomePage() {
   };
 
   useEffect(() => {
-    const target = 90 - (activePlatformModule * 45);
+    const target = activePlatformModule * 45;
     let diff = (target - carouselRotation) % 360;
     if (diff > 180) diff -= 360;
     if (diff < -180) diff += 360;
@@ -1523,8 +1474,34 @@ function HomePage() {
                 transformStyle: 'preserve-3d'
               }}
             >
-              {/* Connection Lines SVG overlay */}
+              {/* Connection Lines & 3D Orbital Ring SVG overlay */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 1000 520">
+                {/* Outer Dashed Ellipse */}
+                <ellipse 
+                  cx="500" 
+                  cy="260" 
+                  rx="350" 
+                  ry="155" 
+                  fill="none" 
+                  stroke="rgba(120, 255, 0, 0.22)" 
+                  strokeWidth="1" 
+                  strokeDasharray="4 6" 
+                  className="opacity-35"
+                />
+                
+                {/* Inner Dashed Ellipse */}
+                <ellipse 
+                  cx="500" 
+                  cy="260" 
+                  rx="270" 
+                  ry="120" 
+                  fill="none" 
+                  stroke="rgba(120, 255, 0, 0.12)" 
+                  strokeWidth="0.8" 
+                  strokeDasharray="3 5" 
+                  className="opacity-20"
+                />
+
                 {platformModules.map((mod, i) => {
                   const { x, y } = getCardStyle(i, activePlatformModule);
                   const x2 = 500 + x;
@@ -1542,13 +1519,33 @@ function HomePage() {
                         y1="260" 
                         x2={x2} 
                         y2={y2} 
-                        stroke={isHighlighted ? '#78FF00' : 'rgba(255, 255, 255, 0.05)'} 
-                        strokeWidth={isHighlighted ? '0.75' : '0.25'}
+                        stroke={isActive ? '#78FF00' : isHovered ? 'rgba(120, 255, 0, 0.5)' : 'rgba(255, 255, 255, 0.05)'} 
+                        strokeWidth={isActive ? '1.5' : isHighlighted ? '0.75' : '0.25'}
                         className="transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]"
                         style={{
-                          opacity: isHighlighted ? 0.75 : 0.15
+                          opacity: isActive ? 0.9 : isHighlighted ? 0.6 : 0.15
                         }}
                       />
+
+                      {/* Connection Node Dot on Ellipse */}
+                      <circle 
+                        cx={x2} 
+                        cy={y2} 
+                        r={isActive ? "4" : "2.5"} 
+                        fill={isActive ? "#78FF00" : isHovered ? "rgba(120, 255, 0, 0.7)" : "rgba(120, 255, 0, 0.35)"} 
+                        className={isActive ? "shadow-[0_0_10px_#78FF00]" : ""}
+                      />
+                      
+                      {/* Active Connection Midpoint Dot (as in mockup) */}
+                      {isActive && (
+                        <circle 
+                          cx={500 + x * 0.55} 
+                          cy={260 + y * 0.55} 
+                          r="4.5" 
+                          fill="#78FF00" 
+                          className="shadow-[0_0_12px_#78FF00]"
+                        />
+                      )}
                       
                       {/* Traveling light particle */}
                       {isHighlighted && (
