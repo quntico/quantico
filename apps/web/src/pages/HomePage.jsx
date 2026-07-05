@@ -1435,21 +1435,56 @@ function HomePage() {
             
             {/* Desktop Radial Layout (visible md and up) */}
             <div 
-              className="hidden md:block relative max-w-5xl mx-auto h-[600px] select-none"
+              className="hidden md:block relative w-[1000px] h-[600px] mx-auto select-none"
+              style={{
+                perspective: '1400px',
+                transformStyle: 'preserve-3d'
+              }}
             >
-              {/* Elliptical orbital path rings (2D, centered, matching module positions) */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[400px] border border-white/5 rounded-full pointer-events-none"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[640px] h-[350px] border border-dashed border-[#78FF00]/10 rounded-full pointer-events-none animate-[spin_100s_linear_infinite]"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[450px] border border-dashed border-white/5 rounded-full pointer-events-none animate-[spin_180s_linear_infinite]"></div>
+              {/* Connection Lines & 3D Orbital Ring SVG overlay */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 1000 600">
+                {/* 3D orbital ring path */}
+                {(() => {
+                  const points = [];
+                  for (let angle = 0; angle <= 360; angle += 4) {
+                    const rad = (angle * Math.PI) / 180;
+                    const px = 500 + 395 * Math.cos(rad);
+                    const py = 300 + 90 * Math.sin(rad) + 35 * Math.cos(rad);
+                    points.push(`${px},${py}`);
+                  }
+                  return (
+                    <>
+                      {/* Background soft glow path */}
+                      <polyline
+                        points={points.join(" ")}
+                        fill="none"
+                        stroke="rgba(120, 255, 0, 0.2)"
+                        strokeWidth="3"
+                        className="opacity-15 blur-[2px]"
+                      />
+                      {/* Fine dash line */}
+                      <polyline
+                        points={points.join(" ")}
+                        fill="none"
+                        stroke="rgba(120, 255, 0, 0.35)"
+                        strokeWidth="0.8"
+                        strokeDasharray="4 6"
+                        className="opacity-35"
+                      />
+                    </>
+                  );
+                })()}
 
-              {/* Connection Lines SVG overlay (2D, centered) */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 100 100">
                 {platformModules.map((mod, i) => {
                   const angle = i * 45;
                   const rad = ((angle + carouselRotation) * Math.PI) / 180;
-                  // Center is 50, 50. rx is 36, ry is 33.33 (360px out of 1000px, 200px out of 600px)
-                  const x2 = 50 + 36 * Math.cos(rad);
-                  const y2 = 50 + 33.33 * Math.sin(rad);
+                  
+                  const cosVal = Math.cos(rad);
+                  const sinVal = Math.sin(rad);
+
+                  // Coordinate targets matching the cards exactly
+                  const x2 = 500 + 395 * cosVal;
+                  const y2 = 300 + 90 * sinVal + 35 * cosVal;
                   
                   const isActive = activePlatformModule === i;
                   const isHovered = hoveredPlatformModule === i;
@@ -1459,22 +1494,25 @@ function HomePage() {
                     <g key={mod.id}>
                       {/* Connection Line */}
                       <line 
-                        x1="50" 
-                        y1="50" 
+                        x1="500" 
+                        y1="300" 
                         x2={x2} 
                         y2={y2} 
-                        stroke={isHighlighted ? '#78FF00' : 'rgba(255, 255, 255, 0.08)'} 
-                        strokeWidth={isHighlighted ? '0.35' : '0.15'}
+                        stroke={isHighlighted ? '#78FF00' : 'rgba(255, 255, 255, 0.06)'} 
+                        strokeWidth={isHighlighted ? '0.75' : '0.3'}
                         className="transition-all duration-300"
+                        style={{
+                          opacity: isHighlighted ? 0.8 : 0.25
+                        }}
                       />
                       
                       {/* Traveling light particle */}
                       {isHighlighted && (
-                        <circle r="0.6" fill="#78FF00">
+                        <circle r="2" fill="#78FF00">
                           <animateMotion 
                             dur="1.6s" 
                             repeatCount="indefinite" 
-                            path={`M 50 50 L ${x2} ${y2}`} 
+                            path={`M 500 300 L ${x2} ${y2}`} 
                           />
                         </circle>
                       )}
@@ -1483,23 +1521,26 @@ function HomePage() {
                 })}
               </svg>
 
-              {/* 3D Carousel Cards positioned dynamically on a 2D ellipse */}
+              {/* 3D Carousel Cards positioned dynamically in a real 3D space */}
               {platformModules.map((mod, i) => {
                 const angle = i * 45;
                 const rad = ((angle + carouselRotation) * Math.PI) / 180;
                 
+                const cosVal = Math.cos(rad);
+                const sinVal = Math.sin(rad);
+
                 // Coordinates relative to center
-                const x = 360 * Math.cos(rad);
-                const y = 200 * Math.sin(rad);
+                const x = 395 * cosVal;
+                const y = 90 * sinVal + 35 * cosVal;
 
                 // Closeness factor t based on X position (right is front, left is back)
-                const cosVal = Math.cos(rad);
-                const t = (cosVal + 1) / 2; // 0 at left, 1 at right
+                const t = (cosVal + 1) / 2; // 0 at left/back, 1 at right/front
 
-                const scale = 0.78 + 0.3 * t;
-                const opacity = 0.35 + 0.65 * t;
-                const zIndex = Math.round(10 + 30 * t);
-                const rotateY = -35 * Math.sin(rad);
+                const z = -250 + 430 * t; // translateZ ranges from -250px to 180px
+                const scale = 0.7 + 0.45 * t; // scale from 0.7 to 1.15
+                const opacity = 0.3 + 0.7 * t; // opacity from 0.3 to 1.0
+                const zIndex = Math.round(10 + 40 * t); // z-index from 10 to 50
+                const rotateY = -40 * sinVal; // rotateY card angle to point towards camera/core
 
                 const isHovered = hoveredPlatformModule === i;
                 const isActive = activePlatformModule === i;
@@ -1534,20 +1575,19 @@ function HomePage() {
                       position: 'absolute',
                       left: '50%',
                       top: '50%',
-                      // Transform contains 3D perspective and Y-rotation ONLY for cards, not layout
-                      transform: `translate(-50%, -50%) perspective(600px) rotateY(${rotateY}deg) scale(${scale})`,
+                      transform: `translate3d(-50%, -50%, ${z}px) rotateY(${rotateY}deg) scale(${scale})`,
                       marginLeft: `${x}px`,
                       marginTop: `${y}px`,
                       opacity: opacity,
                       zIndex: zIndex,
-                      transition: 'transform 0.8s cubic-bezier(0.2, 1, 0.2, 1), opacity 0.8s, margin 0.8s'
+                      transition: 'transform 0.8s cubic-bezier(0.2, 1, 0.2, 1), opacity 0.8s, margin 0.8s, z-index 0.8s'
                     }}
                     className={`z-20 flex items-center gap-3.5 px-4 py-3 rounded-lg border backdrop-blur-md min-w-[210px] h-[50px] text-left focus:outline-none transition-all duration-300 ${
                       isActive 
-                        ? 'bg-[#78FF00]/15 border-[#78FF00] shadow-[0_0_30px_rgba(120,255,0,0.3)] text-white' 
+                        ? 'bg-[#78FF00]/20 border-[#78FF00] shadow-[0_0_35px_rgba(120,255,0,0.45)] text-white' 
                         : isHovered
-                          ? 'bg-[#020409]/95 border-[#78FF00]/40 shadow-[0_0_15px_rgba(120,255,0,0.1)] text-white'
-                          : 'bg-[#020409]/85 border-white/10 text-[#B8BDC7]'
+                          ? 'bg-[#020409]/95 border-[#78FF00]/45 shadow-[0_0_20px_rgba(120,255,0,0.15)] text-white'
+                          : 'bg-[#020409]/90 border-white/5 text-[#B8BDC7]'
                     }`}
                   >
                     <div className={`p-2 rounded-md transition-colors ${isActive || isHovered ? 'bg-[#78FF00]/15 text-[#78FF00]' : 'bg-white/5'}`}>
@@ -1570,7 +1610,7 @@ function HomePage() {
               <div 
                 className="absolute top-1/2 left-1/2 z-30 pointer-events-auto"
                 style={{
-                  transform: 'translate(-50%, -50%)'
+                  transform: 'translate3d(-50%, -50%, 0px)'
                 }}
               >
                 <button 
