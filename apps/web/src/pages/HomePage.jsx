@@ -3017,6 +3017,7 @@ function HomePage() {
         isAdmin={isAdmin}
         config={config}
         onMediaUpload={handleInlineMediaUpload}
+        onConfigChange={handleInlineEdit}
       />
     </>
   );

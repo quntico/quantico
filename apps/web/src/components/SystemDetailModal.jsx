@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShieldCheck, Brain, Zap, Video, Headset, ClipboardList, Car, Video as Camera, Clock, Activity, Camera as PhotoCamera } from 'lucide-react';
+import { X, ShieldCheck, Brain, Zap, Video, Headset, ClipboardList, Car, Video as Camera, Clock, Activity, Camera as PhotoCamera, Plus, Minus } from 'lucide-react';
 
-function SystemDetailModal({ isOpen, onClose, system, isAdmin, config, onMediaUpload }) {
+function SystemDetailModal({ isOpen, onClose, system, isAdmin, config, onMediaUpload, onConfigChange }) {
   const fileInputRef = React.useRef(null);
   // Prevent body scroll when open
   useEffect(() => {
@@ -21,6 +21,7 @@ function SystemDetailModal({ isOpen, onClose, system, isAdmin, config, onMediaUp
   const systemMediaKey = `system_${system.num}`;
   const mediaUrl = config?.[`${systemMediaKey}Url`] || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop";
   const mediaType = config?.[`${systemMediaKey}Type`] || 'image';
+  const mediaOpacity = config?.[`${systemMediaKey}Opacity`] !== undefined ? config[`${systemMediaKey}Opacity`] : 100;
 
   return (
     <AnimatePresence>
@@ -54,7 +55,7 @@ function SystemDetailModal({ isOpen, onClose, system, isAdmin, config, onMediaUp
             </div>
             <div className="flex items-center gap-4">
               {isAdmin && (
-                <div>
+                <div className="flex items-center gap-3">
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -68,6 +69,23 @@ function SystemDetailModal({ isOpen, onClose, system, isAdmin, config, onMediaUp
                       }
                     }}
                   />
+                  <div className="flex items-center bg-black/50 rounded-full border border-white/20 p-1 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+                    <button 
+                      onClick={() => onConfigChange(`${systemMediaKey}Opacity`, Math.max(0, mediaOpacity - 10))}
+                      className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+                      title="Oscurecer fondo"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="text-[10px] text-white/70 w-9 text-center font-mono">{mediaOpacity}%</span>
+                    <button 
+                      onClick={() => onConfigChange(`${systemMediaKey}Opacity`, Math.min(100, mediaOpacity + 10))}
+                      className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+                      title="Aclarar fondo"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     className="bg-black/50 hover:bg-black text-white px-4 py-2 rounded-full border border-white/20 hover:border-white/50 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(255,255,255,0.1)]"
@@ -92,12 +110,12 @@ function SystemDetailModal({ isOpen, onClose, system, isAdmin, config, onMediaUp
             {/* Right side background image (Control Room) */}
             <motion.div 
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 1 }}
-              className="absolute top-0 right-0 w-full lg:w-[55%] h-full opacity-30 lg:opacity-100 z-0 pointer-events-none"
+              className="absolute top-0 right-0 w-full lg:w-[55%] h-full z-0 pointer-events-none"
             >
                {mediaType === 'video' || mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') ? (
-                 <video src={mediaUrl} autoPlay loop muted playsInline className="w-full h-full object-cover object-right" />
+                 <video src={mediaUrl} style={{ opacity: mediaOpacity / 100 }} autoPlay loop muted playsInline className="w-full h-full object-cover object-right transition-opacity duration-300" />
                ) : (
-                 <img src={mediaUrl} alt={`${system?.title} Background`} className="w-full h-full object-cover object-right" />
+                 <img src={mediaUrl} style={{ opacity: mediaOpacity / 100 }} alt={`${system?.title} Background`} className="w-full h-full object-cover object-right transition-opacity duration-300" />
                )}
                <div className="absolute inset-0 bg-gradient-to-r from-[#020409]/80 via-[#020409]/70 to-transparent lg:via-[#020409]/60" />
                <div className="absolute inset-0 bg-gradient-to-t from-[#020409]/80 via-transparent to-[#020409]/20" />
