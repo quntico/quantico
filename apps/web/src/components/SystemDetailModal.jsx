@@ -27,10 +27,14 @@ function SystemDetailModal({ isOpen, onClose, system }) {
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-[1400px] h-[90vh] bg-[#020409] flex flex-col overflow-y-auto overflow-x-hidden border border-white/10 rounded-2xl shadow-2xl"
+            className="relative w-full max-w-[1400px] h-auto max-h-[90vh] bg-[#020409] flex flex-col overflow-hidden border rounded-2xl"
+            style={{ 
+              borderColor: `${system.color}40`,
+              boxShadow: `0 0 40px ${system.color}30, 0 0 100px ${system.color}10` 
+            }}
           >
           {/* Header */}
-          <header className="w-full flex items-center justify-between p-6 lg:p-10 relative z-20">
+          <header className="w-full flex items-center justify-between p-4 lg:p-6 relative z-20">
             <div className="flex flex-col gap-2">
               <span className="font-logo text-xl tracking-[0.3em] text-white">QUANTICO</span>
               <div className="flex items-center gap-3 text-[9px] tracking-[0.2em] font-bold text-[#8A8F98]">
@@ -53,7 +57,7 @@ function SystemDetailModal({ isOpen, onClose, system }) {
           </header>
 
           {/* Main Content */}
-          <div className="flex-1 w-full max-w-[1600px] mx-auto flex flex-col lg:flex-row relative z-10 px-6 lg:px-10 pb-10">
+          <div className="flex-1 w-full flex flex-col lg:flex-row relative z-10 px-6 lg:px-10 pb-6 lg:pb-8">
             
             {/* Right side background image (Control Room) */}
             <div className="absolute top-0 right-0 w-full lg:w-[55%] h-full opacity-30 lg:opacity-100 z-0 pointer-events-none">
@@ -67,91 +71,90 @@ function SystemDetailModal({ isOpen, onClose, system }) {
             </div>
 
             {/* Left Content Area */}
-            <div className="w-full lg:w-[65%] flex flex-col justify-center relative z-10 pt-10 lg:pt-0">
+            <div className="w-full lg:w-[65%] flex flex-col justify-center relative z-10 pt-4 lg:pt-0">
               
               {/* Title Section */}
-              <div className="flex items-start gap-6 mb-8">
-                <span className="font-mono text-7xl lg:text-9xl font-bold leading-none tracking-tighter" style={{ color: system.color }}>
+              <div className="flex items-start gap-4 mb-4">
+                <span className="font-mono text-6xl lg:text-8xl font-bold leading-none tracking-tighter" style={{ color: system.color }}>
                   {system.num}
                 </span>
-                <div className="flex flex-col justify-center pt-2 lg:pt-4">
-                  <h1 className="font-title text-5xl lg:text-7xl text-white leading-[1] tracking-wide uppercase">
+                <div className="flex flex-col justify-center pt-2">
+                  <h1 className="font-title text-4xl lg:text-6xl text-white leading-[1] tracking-wide uppercase">
                     {system.title.split('\n').map((line, i) => <React.Fragment key={i}>{line}<br/></React.Fragment>)}
                   </h1>
                 </div>
               </div>
               
-              <div className="w-16 h-1 mb-10" style={{ backgroundColor: system.color }} />
+              <div className="w-12 h-1 mb-6" style={{ backgroundColor: system.color }} />
 
-              <p className="text-[#8A8F98] text-lg lg:text-xl max-w-xl mb-12 leading-relaxed">
+              <p className="text-[#8A8F98] text-base lg:text-lg max-w-xl mb-8 leading-relaxed">
                 {system.title.includes('GOV') ? 'Centro de comando para seguridad pública, movilidad y emergencias.' : system.desc}
               </p>
 
               {/* Three Pillars */}
-              <div className="grid grid-cols-3 max-w-2xl mb-16">
-                <div className="flex flex-col items-center text-center gap-4 p-4 border-r border-white/10">
-                  <ShieldCheck size={36} style={{ color: system.color }} strokeWidth={1.2} />
-                  <span className="text-sm text-white/80 font-medium">Monitoreo<br/>unificado</span>
+              <div className="grid grid-cols-3 max-w-2xl mb-8">
+                <div className="flex flex-col items-center text-center gap-3 p-2 border-r border-white/10">
+                  <ShieldCheck size={28} style={{ color: system.color }} strokeWidth={1.5} />
+                  <span className="text-xs text-white/80 font-medium">Monitoreo<br/>unificado</span>
                 </div>
-                <div className="flex flex-col items-center text-center gap-4 p-4 border-r border-white/10">
-                  <Brain size={36} style={{ color: system.color }} strokeWidth={1.2} />
-                  <span className="text-sm text-white/80 font-medium">Analítica<br/>IA</span>
+                <div className="flex flex-col items-center text-center gap-3 p-2 border-r border-white/10">
+                  <Brain size={28} style={{ color: system.color }} strokeWidth={1.5} />
+                  <span className="text-xs text-white/80 font-medium">Analítica<br/>IA</span>
                 </div>
-                <div className="flex flex-col items-center text-center gap-4 p-4">
-                  <Zap size={36} style={{ color: system.color }} strokeWidth={1.2} />
-                  <span className="text-sm text-white/80 font-medium">Respuesta<br/>coordinada</span>
+                <div className="flex flex-col items-center text-center gap-3 p-2">
+                  <Zap size={28} style={{ color: system.color }} strokeWidth={1.5} />
+                  <span className="text-xs text-white/80 font-medium">Respuesta<br/>coordinada</span>
                 </div>
               </div>
 
               {/* Data Columns */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 border-t border-white/10 pt-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 border-t border-white/10 pt-6">
                 {/* Capacidades */}
                 <div>
-                  <h4 className="text-[10px] tracking-widest font-bold mb-6 uppercase" style={{ color: system.color }}>Capacidades</h4>
-                  <ul className="flex flex-col gap-4 text-sm text-[#8A8F98]">
-                    <li className="flex items-center gap-3"><Video size={16} className="text-white/40" /> Videovigilancia inteligente</li>
-                    <li className="flex items-center gap-3"><Headset size={16} className="text-white/40" /> Despacho y coordinación</li>
-                    <li className="flex items-center gap-3"><ClipboardList size={16} className="text-white/40" /> Gestión de incidentes</li>
-                    <li className="flex items-center gap-3"><Car size={16} className="text-white/40" /> Movilidad y tránsito</li>
+                  <h4 className="text-[9px] tracking-widest font-bold mb-4 uppercase" style={{ color: system.color }}>Capacidades</h4>
+                  <ul className="flex flex-col gap-3 text-xs text-[#8A8F98]">
+                    <li className="flex items-center gap-2"><Video size={14} className="text-white/40" /> Videovigilancia</li>
+                    <li className="flex items-center gap-2"><Headset size={14} className="text-white/40" /> Despacho 911</li>
+                    <li className="flex items-center gap-2"><ClipboardList size={14} className="text-white/40" /> Gestión incidentes</li>
                   </ul>
                 </div>
                 {/* Integra */}
                 <div>
-                  <h4 className="text-[10px] tracking-widest font-bold mb-6 uppercase" style={{ color: system.color }}>Integra</h4>
-                  <p className="text-sm text-[#8A8F98] leading-loose max-w-[200px]">
-                    CCTV + IA • LPR • GIS • CAD/911 • Drones • Radios • Sensores IoT
+                  <h4 className="text-[9px] tracking-widest font-bold mb-4 uppercase" style={{ color: system.color }}>Integra</h4>
+                  <p className="text-xs text-[#8A8F98] leading-loose max-w-[180px]">
+                    CCTV + IA • LPR • GIS • CAD/911 • Drones • Radios
                   </p>
                 </div>
                 {/* Caso de Uso */}
                 <div>
-                  <h4 className="text-[10px] tracking-widest font-bold mb-6 uppercase" style={{ color: system.color }}>Caso de Uso</h4>
-                  <p className="text-sm text-[#8A8F98] leading-relaxed max-w-[250px]">
-                    Centro municipal para coordinar tráfico, incidentes y servicios de emergencia en tiempo real.
+                  <h4 className="text-[9px] tracking-widest font-bold mb-4 uppercase" style={{ color: system.color }}>Caso de Uso</h4>
+                  <p className="text-xs text-[#8A8F98] leading-relaxed max-w-[200px]">
+                    Centro municipal de control y despacho de emergencias en tiempo real.
                   </p>
                 </div>
               </div>
 
               {/* Metrics Footer */}
-              <div className="flex flex-wrap items-center gap-12 border-t border-white/10 pt-8 mt-auto">
-                <div className="flex items-center gap-4">
-                  <Camera size={36} style={{ color: system.color }} strokeWidth={1} />
+              <div className="flex flex-wrap items-center gap-10 border-t border-white/10 pt-6 mt-auto">
+                <div className="flex items-center gap-3">
+                  <Camera size={28} style={{ color: system.color }} strokeWidth={1} />
                   <div className="flex flex-col">
-                    <span className="text-[9px] text-[#8A8F98] tracking-widest uppercase mb-1">Cámaras Integradas</span>
-                    <span className="text-2xl text-white font-mono">1,845</span>
+                    <span className="text-[8px] text-[#8A8F98] tracking-widest uppercase mb-1">Cámaras</span>
+                    <span className="text-xl text-white font-mono">1,845</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <Clock size={36} style={{ color: system.color }} strokeWidth={1} />
+                <div className="flex items-center gap-3">
+                  <Clock size={28} style={{ color: system.color }} strokeWidth={1} />
                   <div className="flex flex-col">
-                    <span className="text-[9px] text-[#8A8F98] tracking-widest uppercase mb-1">Respuesta</span>
-                    <span className="text-2xl text-white font-mono">&lt; 3 min</span>
+                    <span className="text-[8px] text-[#8A8F98] tracking-widest uppercase mb-1">Respuesta</span>
+                    <span className="text-xl text-white font-mono">&lt; 3 min</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <Activity size={36} style={{ color: system.color }} strokeWidth={1} />
+                <div className="flex items-center gap-3">
+                  <Activity size={28} style={{ color: system.color }} strokeWidth={1} />
                   <div className="flex flex-col">
-                    <span className="text-[9px] text-[#8A8F98] tracking-widest uppercase mb-1">Disponibilidad</span>
-                    <span className="text-2xl text-white font-mono">99.9%</span>
+                    <span className="text-[8px] text-[#8A8F98] tracking-widest uppercase mb-1">Uptime</span>
+                    <span className="text-xl text-white font-mono">99.9%</span>
                   </div>
                 </div>
               </div>
