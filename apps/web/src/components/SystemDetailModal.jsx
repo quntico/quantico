@@ -20,13 +20,15 @@ function SystemDetailModal({ isOpen, onClose, system }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[100] bg-[#020409] flex flex-col overflow-y-auto"
-        >
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/80 backdrop-blur-sm overflow-hidden" onClick={onClose}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-[1400px] h-[90vh] bg-[#020409] flex flex-col overflow-y-auto overflow-x-hidden border border-white/10 rounded-2xl shadow-2xl"
+          >
           {/* Header */}
           <header className="w-full flex items-center justify-between p-6 lg:p-10 relative z-20">
             <div className="flex flex-col gap-2">
@@ -156,7 +158,8 @@ function SystemDetailModal({ isOpen, onClose, system }) {
 
             </div>
           </div>
-        </motion.div>
+          </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );
