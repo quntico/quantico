@@ -117,8 +117,8 @@ function SystemDetailModal({ isOpen, onClose, system, isAdmin, config, onMediaUp
                ) : (
                  <img src={mediaUrl} style={{ opacity: mediaOpacity / 100 }} alt={`${system?.title} Background`} className="w-full h-full object-cover object-right transition-opacity duration-300" />
                )}
-               <div className="absolute inset-0 bg-gradient-to-r from-[#020409]/80 via-[#020409]/70 to-transparent lg:via-[#020409]/60" />
-               <div className="absolute inset-0 bg-gradient-to-t from-[#020409]/80 via-transparent to-[#020409]/20" />
+               <div className="absolute inset-0 bg-gradient-to-r from-[#020409] via-[#020409]/50 to-transparent lg:via-transparent" />
+               <div className="absolute inset-0 bg-gradient-to-t from-[#020409]/60 via-transparent to-transparent" />
             </motion.div>
 
             {/* Left Content Area */}
