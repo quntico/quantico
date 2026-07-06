@@ -27,10 +27,10 @@ function SystemDetailModal({ isOpen, onClose, system }) {
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-[1400px] h-auto max-h-[90vh] bg-[#020409] flex flex-col overflow-hidden border rounded-2xl"
+            className="relative w-full max-w-[1400px] h-auto max-h-[90vh] bg-[#020409]/80 backdrop-blur-2xl flex flex-col overflow-hidden border rounded-2xl"
             style={{ 
-              borderColor: `${system.color}40`,
-              boxShadow: `0 0 40px ${system.color}30, 0 0 100px ${system.color}10` 
+              borderColor: `${system.color}20`,
+              boxShadow: `0 0 20px ${system.color}15, 0 0 40px ${system.color}05` 
             }}
           >
           {/* Header */}
@@ -60,39 +60,47 @@ function SystemDetailModal({ isOpen, onClose, system }) {
           <div className="flex-1 w-full flex flex-col lg:flex-row relative z-10 px-6 lg:px-10 pb-6 lg:pb-8">
             
             {/* Right side background image (Control Room) */}
-            <div className="absolute top-0 right-0 w-full lg:w-[55%] h-full opacity-30 lg:opacity-100 z-0 pointer-events-none">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 1 }}
+              className="absolute top-0 right-0 w-full lg:w-[55%] h-full opacity-30 lg:opacity-100 z-0 pointer-events-none"
+            >
                <img 
                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop" 
                  alt="Control Room Background" 
                  className="w-full h-full object-cover object-right"
                />
-               <div className="absolute inset-0 bg-gradient-to-r from-[#020409] via-[#020409]/90 to-transparent lg:via-[#020409]/80" />
-               <div className="absolute inset-0 bg-gradient-to-t from-[#020409] via-transparent to-[#020409]/40" />
-            </div>
+               <div className="absolute inset-0 bg-gradient-to-r from-[#020409]/80 via-[#020409]/70 to-transparent lg:via-[#020409]/60" />
+               <div className="absolute inset-0 bg-gradient-to-t from-[#020409]/80 via-transparent to-[#020409]/20" />
+            </motion.div>
 
             {/* Left Content Area */}
             <div className="w-full lg:w-[65%] flex flex-col justify-center relative z-10 pt-2 lg:pt-0">
               
               {/* Title Section */}
-              <div className="flex items-start gap-4 mb-2">
-                <span className="font-mono text-5xl lg:text-7xl font-bold leading-none tracking-tighter" style={{ color: system.color }}>
-                  {system.num}
-                </span>
-                <div className="flex flex-col justify-center pt-1">
-                  <h1 className="font-title text-3xl lg:text-5xl text-white leading-[1] tracking-wide uppercase">
-                    {system.title.split('\n').map((line, i) => <React.Fragment key={i}>{line}<br/></React.Fragment>)}
-                  </h1>
+              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1, duration: 0.5 }}>
+                <div className="flex items-start gap-4 mb-2">
+                  <span className="font-mono text-5xl lg:text-7xl font-bold leading-none tracking-tighter" style={{ color: system.color }}>
+                    {system.num}
+                  </span>
+                  <div className="flex flex-col justify-center pt-1">
+                    <h1 className="font-title text-3xl lg:text-5xl text-white leading-[1] tracking-wide uppercase">
+                      {system.title.split('\n').map((line, i) => <React.Fragment key={i}>{line}<br/></React.Fragment>)}
+                    </h1>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="w-10 h-1 mb-4" style={{ backgroundColor: system.color }} />
+                
+                <div className="w-10 h-1 mb-4" style={{ backgroundColor: system.color }} />
 
-              <p className="text-[#8A8F98] text-sm lg:text-base max-w-xl mb-6 leading-relaxed">
-                {system.title.includes('GOV') ? 'Centro de comando para seguridad pública, movilidad y emergencias.' : system.desc}
-              </p>
+                <p className="text-[#8A8F98] text-sm lg:text-base max-w-xl mb-6 leading-relaxed">
+                  {system.title.includes('GOV') ? 'Centro de comando para seguridad pública, movilidad y emergencias.' : system.desc}
+                </p>
+              </motion.div>
 
               {/* Three Pillars */}
-              <div className="grid grid-cols-3 max-w-2xl mb-6">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}
+                className="grid grid-cols-3 max-w-2xl mb-6"
+              >
                 <div className="flex flex-col items-center text-center gap-3 p-2 border-r border-white/10">
                   <ShieldCheck size={28} style={{ color: system.color }} strokeWidth={1.5} />
                   <span className="text-xs text-white/80 font-medium">Monitoreo<br/>unificado</span>
@@ -105,10 +113,13 @@ function SystemDetailModal({ isOpen, onClose, system }) {
                   <Zap size={28} style={{ color: system.color }} strokeWidth={1.5} />
                   <span className="text-xs text-white/80 font-medium">Respuesta<br/>coordinada</span>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Data Columns */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 border-t border-white/10 pt-4">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}
+                className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 border-t border-white/10 pt-4"
+              >
                 {/* Capacidades */}
                 <div>
                   <h4 className="text-[9px] tracking-widest font-bold mb-4 uppercase" style={{ color: system.color }}>Capacidades</h4>
@@ -132,10 +143,13 @@ function SystemDetailModal({ isOpen, onClose, system }) {
                     Centro municipal de control y despacho de emergencias en tiempo real.
                   </p>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Metrics Footer */}
-              <div className="flex flex-wrap items-center gap-10 border-t border-white/10 pt-4 mt-auto">
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}
+                className="flex flex-wrap items-center gap-10 border-t border-white/10 pt-4 mt-auto"
+              >
                 <div className="flex items-center gap-3">
                   <Camera size={28} style={{ color: system.color }} strokeWidth={1} />
                   <div className="flex flex-col">
@@ -157,7 +171,7 @@ function SystemDetailModal({ isOpen, onClose, system }) {
                     <span className="text-xl text-white font-mono">99.9%</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
             </div>
           </div>
