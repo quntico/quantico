@@ -3010,7 +3010,14 @@ function HomePage() {
       <ErpCrmModal isOpen={isErpCrmModalOpen} onClose={() => setIsErpCrmModalOpen(false)} />
       <NubeModal isOpen={isNubeModalOpen} onClose={() => setIsNubeModalOpen(false)} />
       <ScadaModal isOpen={isScadaModalOpen} onClose={() => setIsScadaModalOpen(false)} />
-      <SystemDetailModal isOpen={!!selectedSystem} onClose={() => setSelectedSystem(null)} system={selectedSystem} />
+      <SystemDetailModal 
+        isOpen={!!selectedSystem} 
+        onClose={() => setSelectedSystem(null)} 
+        system={selectedSystem}
+        isAdmin={isAdmin}
+        config={config}
+        onMediaUpload={handleInlineMediaUpload}
+      />
     </>
   );
 }

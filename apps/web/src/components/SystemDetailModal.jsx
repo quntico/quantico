@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShieldCheck, Brain, Zap, Video, Headset, ClipboardList, Car, Video as Camera, Clock, Activity } from 'lucide-react';
+import { X, ShieldCheck, Brain, Zap, Video, Headset, ClipboardList, Car, Video as Camera, Clock, Activity, Camera as PhotoCamera } from 'lucide-react';
 
-function SystemDetailModal({ isOpen, onClose, system }) {
+function SystemDetailModal({ isOpen, onClose, system, isAdmin, config, onMediaUpload }) {
+  const fileInputRef = React.useRef(null);
   // Prevent body scroll when open
   useEffect(() => {
     if (isOpen) {
@@ -16,6 +17,10 @@ function SystemDetailModal({ isOpen, onClose, system }) {
   }, [isOpen]);
 
   if (!system) return null;
+
+  const systemMediaKey = `system_${system.num}`;
+  const mediaUrl = config?.[`${systemMediaKey}Url`] || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop";
+  const mediaType = config?.[`${systemMediaKey}Type`] || 'image';
 
   return (
     <AnimatePresence>
@@ -47,13 +52,38 @@ function SystemDetailModal({ isOpen, onClose, system }) {
                 <span>RESILIENCE</span>
               </div>
             </div>
-            
-            <button 
-              onClick={onClose}
-              className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:border-white/30 transition-all bg-black/20 backdrop-blur-sm"
-            >
-              <X size={24} />
-            </button>
+            <div className="flex items-center gap-4">
+              {isAdmin && (
+                <div>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*,video/*"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        const file = e.target.files[0];
+                        const isVideo = file.type.startsWith('video/');
+                        onMediaUpload(systemMediaKey, file, isVideo);
+                      }
+                    }}
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-black/50 hover:bg-black text-white px-4 py-2 rounded-full border border-white/20 hover:border-white/50 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(255,255,255,0.1)]"
+                  >
+                    <PhotoCamera size={16} /> <span className="hidden sm:inline">Fondo</span>
+                  </button>
+                </div>
+              )}
+              <button 
+                onClick={onClose}
+                className="w-10 h-10 lg:w-12 lg:h-12 rounded-full border border-white/10 flex items-center justify-center text-white/50 hover:text-white hover:border-white/30 transition-all bg-black/20 backdrop-blur-sm"
+              >
+                <X size={20} className="lg:hidden" />
+                <X size={24} className="hidden lg:block" />
+              </button>
+            </div>
           </header>
 
           {/* Main Content */}
@@ -64,11 +94,11 @@ function SystemDetailModal({ isOpen, onClose, system }) {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3, duration: 1 }}
               className="absolute top-0 right-0 w-full lg:w-[55%] h-full opacity-30 lg:opacity-100 z-0 pointer-events-none"
             >
-               <img 
-                 src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop" 
-                 alt="Control Room Background" 
-                 className="w-full h-full object-cover object-right"
-               />
+               {mediaType === 'video' || mediaUrl.includes('.mp4') || mediaUrl.includes('.webm') ? (
+                 <video src={mediaUrl} autoPlay loop muted playsInline className="w-full h-full object-cover object-right" />
+               ) : (
+                 <img src={mediaUrl} alt={`${system?.title} Background`} className="w-full h-full object-cover object-right" />
+               )}
                <div className="absolute inset-0 bg-gradient-to-r from-[#020409]/80 via-[#020409]/70 to-transparent lg:via-[#020409]/60" />
                <div className="absolute inset-0 bg-gradient-to-t from-[#020409]/80 via-transparent to-[#020409]/20" />
             </motion.div>
