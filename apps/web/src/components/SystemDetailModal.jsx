@@ -71,28 +71,28 @@ function SystemDetailModal({ isOpen, onClose, system }) {
             </div>
 
             {/* Left Content Area */}
-            <div className="w-full lg:w-[65%] flex flex-col justify-center relative z-10 pt-4 lg:pt-0">
+            <div className="w-full lg:w-[65%] flex flex-col justify-center relative z-10 pt-2 lg:pt-0">
               
               {/* Title Section */}
-              <div className="flex items-start gap-4 mb-4">
-                <span className="font-mono text-6xl lg:text-8xl font-bold leading-none tracking-tighter" style={{ color: system.color }}>
+              <div className="flex items-start gap-4 mb-2">
+                <span className="font-mono text-5xl lg:text-7xl font-bold leading-none tracking-tighter" style={{ color: system.color }}>
                   {system.num}
                 </span>
-                <div className="flex flex-col justify-center pt-2">
-                  <h1 className="font-title text-4xl lg:text-6xl text-white leading-[1] tracking-wide uppercase">
+                <div className="flex flex-col justify-center pt-1">
+                  <h1 className="font-title text-3xl lg:text-5xl text-white leading-[1] tracking-wide uppercase">
                     {system.title.split('\n').map((line, i) => <React.Fragment key={i}>{line}<br/></React.Fragment>)}
                   </h1>
                 </div>
               </div>
               
-              <div className="w-12 h-1 mb-6" style={{ backgroundColor: system.color }} />
+              <div className="w-10 h-1 mb-4" style={{ backgroundColor: system.color }} />
 
-              <p className="text-[#8A8F98] text-base lg:text-lg max-w-xl mb-8 leading-relaxed">
+              <p className="text-[#8A8F98] text-sm lg:text-base max-w-xl mb-6 leading-relaxed">
                 {system.title.includes('GOV') ? 'Centro de comando para seguridad pública, movilidad y emergencias.' : system.desc}
               </p>
 
               {/* Three Pillars */}
-              <div className="grid grid-cols-3 max-w-2xl mb-8">
+              <div className="grid grid-cols-3 max-w-2xl mb-6">
                 <div className="flex flex-col items-center text-center gap-3 p-2 border-r border-white/10">
                   <ShieldCheck size={28} style={{ color: system.color }} strokeWidth={1.5} />
                   <span className="text-xs text-white/80 font-medium">Monitoreo<br/>unificado</span>
@@ -108,7 +108,7 @@ function SystemDetailModal({ isOpen, onClose, system }) {
               </div>
 
               {/* Data Columns */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 border-t border-white/10 pt-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 border-t border-white/10 pt-4">
                 {/* Capacidades */}
                 <div>
                   <h4 className="text-[9px] tracking-widest font-bold mb-4 uppercase" style={{ color: system.color }}>Capacidades</h4>
@@ -135,7 +135,7 @@ function SystemDetailModal({ isOpen, onClose, system }) {
               </div>
 
               {/* Metrics Footer */}
-              <div className="flex flex-wrap items-center gap-10 border-t border-white/10 pt-6 mt-auto">
+              <div className="flex flex-wrap items-center gap-10 border-t border-white/10 pt-4 mt-auto">
                 <div className="flex items-center gap-3">
                   <Camera size={28} style={{ color: system.color }} strokeWidth={1} />
                   <div className="flex flex-col">
