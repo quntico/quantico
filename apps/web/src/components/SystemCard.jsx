@@ -1,6 +1,6 @@
 import React from 'react';
 
-function SystemCard({ num, title, description, desc, icon: Icon, color = '#78FF00' }) {
+function SystemCard({ num, title, description, desc, icon: Icon, color = '#78FF00', onClick }) {
   const displayDesc = description || desc;
   const formattedTitle = title.split('\n').map((line, i) => (
     <React.Fragment key={i}>
@@ -11,7 +11,8 @@ function SystemCard({ num, title, description, desc, icon: Icon, color = '#78FF0
 
   return (
     <div 
-      className="relative p-4 sm:p-5 flex flex-col group overflow-hidden border transition-all duration-500 min-h-[210px] sm:min-h-[230px]"
+      onClick={onClick}
+      className="relative p-4 sm:p-5 flex flex-col group overflow-hidden border transition-all duration-500 min-h-[210px] sm:min-h-[230px] cursor-pointer hover:-translate-y-1"
       style={{
         backgroundColor: '#020409',
         borderColor: 'rgba(255, 255, 255, 0.05)',

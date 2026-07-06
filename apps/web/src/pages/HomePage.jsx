@@ -15,6 +15,7 @@ import Footer from '@/components/Footer.jsx';
 import { getRemoteConfig, saveRemoteConfig, uploadMedia, initializeSupabase, supabase } from '@/lib/supabase.js';
 import SolutionCard from '@/components/SolutionCard.jsx';
 import SystemCard from '@/components/SystemCard.jsx';
+import SystemDetailModal from '@/components/SystemDetailModal.jsx';
 import SmartIndex from '@/components/SmartIndex.jsx';
 import EquipmentCard from '@/components/EquipmentCard.jsx';
 import TechnologyItem from '@/components/TechnologyItem.jsx';
@@ -381,6 +382,8 @@ const dotColors = [
 ];
 
 function HomePage() {
+  const [selectedSystem, setSelectedSystem] = useState(null);
+
   const defaultConfig = {
     logoType: 'text',
     logoImage: '',
@@ -2291,7 +2294,7 @@ function HomePage() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {systems.map((sys) => (
-                <SystemCard key={sys.title} {...sys} />
+                <SystemCard key={sys.title} {...sys} onClick={() => setSelectedSystem(sys)} />
               ))}
             </div>
           </div>
@@ -4514,8 +4517,9 @@ const ScadaModal = ({ isOpen, onClose }) => {
         </div>
 
       </div>
+      <SystemDetailModal isOpen={!!selectedSystem} onClose={() => setSelectedSystem(null)} system={selectedSystem} />
     </div>
   );
-};
+}
 
 export default HomePage;
